@@ -31,6 +31,7 @@ class ParseTableColumns extends AbstractProcessStep
             if (    $table == 'sessions'
                 ||  substr($table, 0, 4) == 'acl_'
                 ||  substr($table, -3) == '_ml'
+                ||  substr($table, 0, 11) == 'cmp_filter_'
                 ||  $table == 'cms_roles'
                 ||  $table == 'cms_sor'
                 ||  $table == 'cms_log_email'
@@ -43,6 +44,7 @@ class ParseTableColumns extends AbstractProcessStep
                 ||  $table == 'cms_user_organization'
                 ||  $table == 'cms_translation_anticipate'    // ?
                 ||  $table == 'pdf_generate_catalog'
+
             ) {
                 continue;
             }
