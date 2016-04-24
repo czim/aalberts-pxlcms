@@ -1,0 +1,23 @@
+<?php
+namespace {{NAMESPACE}};
+{{USEIMPORTS}}
+{{DOCBLOCK}}
+class {{MODEL_CLASSNAME}} extends {{EXTENDS}} {{IMPLEMENTS}}
+{
+    {{USETRAITS}}
+    {{TABLE}}
+    {{TIMESTAMPS}}
+
+    {{DEFAULTS}}
+    {{FILLABLE}}
+    {{TRANSLATED}}
+    {{HIDDEN}}
+    {{CASTS}}
+    {{DATES}}
+    {{SLUGGABLECONFIG}}
+    {{RELATIONSCONFIG}}
+    {{CMSORDEREDCONFIG}}
+    {{ACCESSORS}}
+    {{RELATIONSHIPS}}
+    {{SCOPES}}
+}

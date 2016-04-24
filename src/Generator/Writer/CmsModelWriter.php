@@ -1,0 +1,36 @@
+<?php
+namespace Aalberts\Generator\Writer;
+
+use Czim\PxlCms\Generator\Writer\Model\Steps as CzimSteps;
+
+class CmsModelWriter extends \Czim\PxlCms\Generator\Writer\Model\CmsModelWriter
+{
+
+    protected $processContextClass = ModelWriterContext::class;
+
+    /**
+     * Gathers the steps to pass the dataobject through as a collection
+     * These are the steps for AFTER the initial checks and retrieval
+     * has been handled.
+     *
+     * @return array
+     */
+    protected function processSteps()
+    {
+        return [
+            CzimSteps\CheckConditionsAndSetup::class,
+
+            Steps\StubReplaceSimple::class,
+            CzimSteps\StubReplaceAttributeData::class,
+            CzimSteps\StubReplaceRelationData::class,
+            CzimSteps\StubReplaceAccessorsAndMutators::class,
+            CzimSteps\StubReplaceSluggableData::class,
+            Steps\StubReplaceScopes::class,
+            Steps\StubReplaceDocBlock::class,
+            CzimSteps\StubReplaceImportsAndTraits::class,
+
+            CzimSteps\WriteFile::class,
+        ];
+    }
+
+}
