@@ -22,6 +22,10 @@ class AalbertsCmsServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/config/pxlcms.php', 'pxlcms'
         );
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/aalberts.php', 'aalberts'
+        );
     }
 
     /**
