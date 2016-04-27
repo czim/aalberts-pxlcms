@@ -19,10 +19,7 @@ class Analyzer extends CmsAnalyzer
         return [
             Analyzer\Steps\CheckTables::class,
             Analyzer\Steps\ParseTableColumns::class,
-            //Steps\ResolveModuleNames::class,
-            //Steps\AnalyzeModels::class,
-            //Steps\UnsetRawData::class,
-            //Steps\AnalyzeSluggableInteractive::class,
+            Analyzer\Steps\ManualAdjustments::class,
         ];
     }
     

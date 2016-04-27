@@ -3,6 +3,7 @@ namespace Aalberts\Generator\Analyzer\Steps;
 
 use Aalberts\Generator\Analyzer\AnalyzerContext;
 use Czim\Processor\Steps\AbstractProcessStep;
+use Czim\PxlCms\Generator\Generator;
 
 class ParseTableColumns extends AbstractProcessStep
 {
@@ -55,6 +56,8 @@ class ParseTableColumns extends AbstractProcessStep
             if (false !== ($pos = strpos($table, '_'))) {
                 $prefix = substr($table, 0, $pos);
                 $name   = substr($table, $pos + 1);
+
+                $name = $this->sanitizeName($name);
             }
 
             $tableData = [
@@ -168,6 +171,8 @@ class ParseTableColumns extends AbstractProcessStep
         }
 
         $this->context->output['models'] = $parsedData;
+
+        $this->processPivotTables();
     }
 
 
@@ -244,6 +249,85 @@ class ParseTableColumns extends AbstractProcessStep
         }
 
         return $data;
+    }
+
+
+    protected function processPivotTables()
+    {
+        $knownPivots = config('pxlcms.aalberts_pivots');
+
+        foreach ($this->context->output['models'] as $key => $data) {
+            if ( ! array_key_exists($key, $knownPivots)) continue;
+
+            $pivot = $knownPivots[ $key ];
+
+            $foreignKeyA = array_keys($pivot)[0];
+            $otherTableA = $pivot[ $foreignKeyA ];
+            $foreignKeyB = array_keys($pivot)[1];
+            $otherTableB = $pivot[ $foreignKeyB ];
+
+            // relation 1
+            $relationName = $this->normalizeBelongsToManyMethodName($foreignKeyA);
+            $relation = $this->makeRelationArrayForPivotData($otherTableA, $foreignKeyB, $foreignKeyA, $pivot, $key);
+            $this->context->output['models'][ $otherTableB ]['relationships']['normal'][ $relationName ] = $relation;
+
+            // relation 2
+            $relationName = $this->normalizeBelongsToManyMethodName($foreignKeyB);
+            $relation = $this->makeRelationArrayForPivotData($otherTableB, $foreignKeyA, $foreignKeyB, $pivot, $key);
+            $this->context->output['models'][ $otherTableA ]['relationships']['normal'][ $relationName ] = $relation;
+        }
+
+        foreach (array_keys($knownPivots) as $key) {
+            unset($this->context->output['models'][ $key ]);
+            unset($knownPivots[ $key ]);
+        }
+    }
+
+    protected function normalizeBelongsToManyMethodName($name)
+    {
+        $name = str_plural($name);
+        $name = camel_case($name);
+
+        return $name;
+    }
+
+    /**
+     * @param string $foreignTable
+     * @param string $foreignKey
+     * @param string $otherKey
+     * @param array  $pivot
+     * @param null   $pivotTable
+     * @return array
+     */
+    protected function makeRelationArrayForPivotData($foreignTable, $foreignKey, $otherKey, array $pivot, $pivotTable = null)
+    {
+        return [
+            'type'         => Generator::RELATIONSHIP_BELONGS_TO_MANY,
+            'model'        => $foreignTable,
+            'single'       => false,
+            'count'        => 0,
+            'field'        => null,
+            'key'          => $foreignKey,
+            'other_key'    => $otherKey,
+            'negative'     => false,
+            'special'      => false,
+            'extra'        => array_get($pivot, 'extra', []),
+            'organization' => (array_get($pivot, 'organization') === true),
+            'position'     => array_get($pivot, 'position', false),
+            'active'       => array_get($pivot, 'active', false),
+            'table'        => $pivotTable,
+        ];
+    }
+
+    protected function sanitizeName($name)
+    {
+        if ($name == 'function') {
+            return 'project_function';
+        }
+
+        $name = str_singular($name);
+
+        return $name;
     }
 
 }

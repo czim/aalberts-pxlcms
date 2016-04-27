@@ -25,14 +25,26 @@ class ModelWriterContext extends \Czim\PxlCms\Generator\Writer\Model\ModelWriter
     {
         if (null === $prefix) {
             $prefix = $this->data['prefix'];
-            if (strtolower($prefix) === 'cmp') {
-                $prefix = 'compano';
-            }
         }
 
         return config('pxlcms.generator.namespace.models') . "\\"
-            . ($prefix ? studly_case($prefix) . "\\" : null)
+            . $this->prefixForClassname($prefix)
             . studly_case($name);
+    }
+
+    public function prefixForClassname($prefix)
+    {
+        $prefix = trim($prefix);
+
+        if (strtolower($prefix) === 'cmp') {
+            $prefix = 'compano';
+        }
+
+        if ( ! $prefix) {
+            return null;
+        }
+
+        return studly_case($prefix) . "\\";
     }
 
 }

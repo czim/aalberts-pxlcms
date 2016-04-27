@@ -31,7 +31,13 @@ class ModelWriter extends \Czim\PxlCms\Generator\ModelWriter
         $countTranslationsWritten = 0;
         $countAlreadyExist        = 0;
 
-        foreach ($this->data['models'] as $model) {
+        
+
+        foreach ($this->data['models'] as $key => $model) {
+            if ( ! isset($model['name'])) {
+                s($key);
+                dd($model);
+            }
 
             // for tracking whether translation model has a written main model
             $wroteMainModel = false;

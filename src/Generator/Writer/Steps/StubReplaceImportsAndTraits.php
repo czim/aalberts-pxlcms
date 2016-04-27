@@ -135,6 +135,10 @@ class StubReplaceImportsAndTraits extends \Czim\PxlCms\Generator\Writer\Model\St
                       . "\n";
         }
 
+        $replace = rtrim($replace) . "\n";
+        $replace .= "use " . config('pxlcms.generator.namespace.models') . " as AalbertsModels;\n"
+                  . "\n";
+
         return $replace;
     }
 
