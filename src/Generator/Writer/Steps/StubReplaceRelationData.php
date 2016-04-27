@@ -72,11 +72,9 @@ class StubReplaceRelationData extends \Czim\PxlCms\Generator\Writer\Model\Steps\
                 $relatedClassName = $baseNameSpace . '\\' . $relatedClassName;
             }
 
-            // parameters for belongsToMany are different
-
-
             $relationParameters = '';
 
+            // parameters for belongsToMany are different
             if ($relationship['type'] === 'belongsToMany') {
 
                 if ($relationTable = array_get($relationship, 'table')) {
@@ -97,11 +95,69 @@ class StubReplaceRelationData extends \Czim\PxlCms\Generator\Writer\Model\Steps\
                 }
             }
 
-            $replace .= $this->tab() . "public function {$name}()\n"
+
+            // special stuff for methods with parameters, scope chained etc
+            $parameters     = '';
+            $chainedMethods = '';
+            $returnDirectly = true;
+            $conditionals   = '';
+            $withPivot      = [];
+
+            $relationTable   = array_get($relationship, 'table');
+            $pivotTableScope = $relationTable ? $relationTable . '.' : null;
+
+            $extra = array_get($relationship, 'extra', []);
+            if (count($extra)) {
+                $withPivot = array_keys($extra);
+            }
+
+            // position order
+            if (array_get($relationship, 'position')) {
+                $parameters .= '$ordered = true';
+                $returnDirectly = false;
+                $conditionals = $this->tab(2) . "if (\$ordered) {\n"
+                              . $this->tab(3) . "\$query->orderBy('{$pivotTableScope}position');\n"
+                              . $this->tab(2) . "}\n";
+                $withPivot[] = 'position';
+            }
+
+            // active scope
+            if (array_get($relationship, 'active')) {
+                $parameters     .= ($parameters ? ', ' : null) . '$activeOnly = true';
+                $returnDirectly  = false;
+                $conditionals    = $this->tab(2) . "if (\$activeOnly) {\n"
+                                 . $this->tab(3) . "\$query->where('{$pivotTableScope}active', true);\n"
+                                 . $this->tab(2) . "}\n";
+                $withPivot[] = 'active';
+            }
+
+            // organization scope
+            if (array_get($relationship, 'organization')) {
+                $parameters     .= ($parameters ? ', ' : null) . '$organization = null';
+                $chainedMethods .= "\n". $this->tab(3) . "->where('{$pivotTableScope}organization', \$organization ? \$organization : config('aalberts.organization'))";
+            }
+
+            // extra fields
+            if ($relationship['type'] === 'belongsToMany' && count($withPivot)) {
+                $extra = implode(',', array_map(
+                    function ($column) { return "'" . $column . "'"; },
+                    $withPivot
+                ));
+
+                $chainedMethods .= "\n". $this->tab(3) . "->withPivot([{$extra}])";
+            }
+
+
+            $replace .= $this->tab() . "public function {$name}({$parameters})\n"
                 . $this->tab() . "{\n"
-                . $this->tab(2) . "return \$this->{$relationship['type']}({$relatedClassName}::class"
+                . $this->tab(2) . ($returnDirectly ? 'return' : '$query =')
+                . " \$this->{$relationship['type']}({$relatedClassName}::class"
                 . $relationParameters
-                . ");\n"
+                . ")"
+                . $chainedMethods
+                . ";\n"
+                . ($conditionals ? "\n" . $conditionals . "\n" : null)
+                . ($returnDirectly ? null : $this->tab(2) . "return \$query;\n")
                 . $this->tab() . "}\n"
                 . "\n";
         }

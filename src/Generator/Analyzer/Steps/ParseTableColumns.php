@@ -35,7 +35,6 @@ class ParseTableColumns extends AbstractProcessStep
                 ||  substr($table, 0, 11) == 'cmp_filter_'
                 ||  $table == 'cms_roles'
                 ||  $table == 'cms_sor'
-                ||  $table == 'cms_log_email'
                 ||  $table == 'cms_log_search'
                 ||  $table == 'cms_module'
                 ||  $table == 'cms_operation'

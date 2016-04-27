@@ -306,10 +306,10 @@ class CmsModel extends Model
                 }
 
                 return $caller != $self
-                && $caller != 'mutateAttribute'
-                && $caller != 'getAttributeValue'
-                && $caller != 'getAttribute'
-                && $caller != '__get';
+                    && $caller != 'mutateAttribute'
+                    && $caller != 'getAttributeValue'
+                    && $caller != 'getAttribute'
+                    && $caller != '__get';
             });
 
             if (    array_key_exists('class', $caller)
