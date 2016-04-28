@@ -1,9 +1,6 @@
 <?php
 namespace Aalberts\Generator\Writer\Steps;
 
-use Aalberts\Generator\Writer\CmsModelWriter;
-use Aalberts\Models\CmsModel;
-
 class StubReplaceRelationData extends \Czim\PxlCms\Generator\Writer\Model\Steps\StubReplaceRelationData
 {
 
@@ -145,6 +142,30 @@ class StubReplaceRelationData extends \Czim\PxlCms\Generator\Writer\Model\Steps\
                 ));
 
                 $chainedMethods .= "\n". $this->tab(3) . "->withPivot([{$extra}])";
+            }
+
+            // hasManyThrough is a bit different
+            if ($relationship['type'] === 'hasManyThrough') {
+                $throughClassName = studly_case($this->data['related_models'][ $relationship['through'] ]['name']);
+
+                $prefix = $this->data['related_models'][ $relationship['through'] ]['prefix'];
+                if ($prefix && $this->data['prefix'] != $prefix) {
+                    $prefix = strtolower($prefix);
+                    if ('cmp' == $prefix) {
+                        $prefix = 'compano';
+                    }
+
+                    $throughClassName = studly_case($prefix) . '\\' . $throughClassName;
+
+                    //$baseNameSpace = config('pxlcms.generator.namespace.models');
+                    $baseNameSpace = 'AalbertsModels';
+                    $throughClassName = $baseNameSpace . '\\' . $throughClassName;
+                }
+
+                $relationParameters = ', ' . $throughClassName . '::class';
+                
+                // keys: first the key on the through model, then the key on the target model
+                $relationParameters .= ", \${}, \${}"; 
             }
 
 

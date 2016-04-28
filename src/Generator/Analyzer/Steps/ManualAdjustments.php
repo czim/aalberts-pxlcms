@@ -136,56 +136,7 @@ class ManualAdjustments extends AbstractProcessStep
         ],
     ];
 
-    protected $hasManyThrough = [
-        'cmp_productgroup' => [
-            'cms_filter' => [
-                'through' => 'cms_productgroup_filter',
-                'foreign_key' => 'productgroup',
-                'other_key'   => 'filter',
-                'active' => true,
-                'position' => true,
-                'organization' => true,
-                'extra' => [
-                    'main' => 'boolean',
-                ],
-            ],
-            'cms_filtergroup' => [
-                'through' => 'cms_productgroup_filtergroup',
-                'foreign_key' => 'productgroup',
-                'other_key'   => 'filtergroup',
-                'active' => true,
-                'position' => true,
-                'organization' => true,
-                'extra' => [
-                    'main' => 'boolean',
-                ],
-            ],
-        ],
-        'cms_filter' => [
-            'cmp_productgroup' => [
-                'through' => 'cms_productgroup_filter',
-                'foreign_key' => 'filter',
-                'other_key'   => 'productgroup',
-                'active' => true,
-                'organization' => true,
-                'extra' => [
-                    'main' => 'boolean',
-                ],
-            ],
-        ],
-        'cms_filtergroup' => [
-            'cmp_productgroup' => [
-                'through' => 'cms_productgroup_filter',
-                'foreign_key' => 'filter',
-                'other_key'   => 'productgroup',
-                'active' => true,
-                'organization' => true,
-                'extra' => [
-                    'main' => 'boolean',
-                ],
-            ],
-        ],
-    ];
+    protected $hasManyThrough = [];
 
     // new names for things that cannot be called what they are
     protected $rename = [
@@ -200,7 +151,8 @@ class ManualAdjustments extends AbstractProcessStep
         $this->setCasts();
         $this->setDates();
 
-        $this->setRelations();
+        $this->setBelongsToRelations();
+        $this->setHasManyThroughRelations();
 
         $this->doRenames();
     }
@@ -257,7 +209,7 @@ class ManualAdjustments extends AbstractProcessStep
         // todo
     }
 
-    protected function setRelations()
+    protected function setBelongsToRelations()
     {
         // belongsTo
         // and reverse
@@ -272,25 +224,25 @@ class ManualAdjustments extends AbstractProcessStep
                 }
 
                 $this->context->output['models'][ $table ]['relationships']['normal'][ $relationship['name'] ] = [
-                    'type'         => Generator::RELATIONSHIP_BELONGS_TO,
-                    'model'        => $relationship['table'],
-                    'single'       => true,
-                    'count'        => 1,
-                    'field'        => null,
-                    'key'          => $foreignKey,
-                    'negative'     => false,
-                    'special'      => false,
-                    'table'        => $relationship['table'],
+                    'type'     => Generator::RELATIONSHIP_BELONGS_TO,
+                    'model'    => $relationship['table'],
+                    'single'   => true,
+                    'count'    => 1,
+                    'field'    => null,
+                    'key'      => $foreignKey,
+                    'negative' => false,
+                    'special'  => false,
+                    'table'    => $relationship['table'],
                 ];
 
                 // remove from attributes
                 $this->context->output['models'][ $table ]['normal_attributes'] = array_diff(
                     $this->context->output['models'][ $table ]['normal_attributes'],
-                    [ $foreignKey ]
+                    [$foreignKey]
                 );
-                $this->context->output['models'][ $table ]['normal_fillable'] = array_diff(
+                $this->context->output['models'][ $table ]['normal_fillable']   = array_diff(
                     $this->context->output['models'][ $table ]['normal_attributes'],
-                    [ $foreignKey ]
+                    [$foreignKey]
                 );
 
 
@@ -304,22 +256,46 @@ class ManualAdjustments extends AbstractProcessStep
                 }
 
                 $this->context->output['models'][ $relationship['table'] ]['relationships']['normal'][ $relationship['reverse_name'] ] = [
-                    'type'         => Generator::RELATIONSHIP_HAS_MANY,
-                    'model'        => $table,
-                    'single'       => false,
-                    'count'        => 0,
-                    'field'        => null,
-                    'key'          => $foreignKey,
-                    'negative'     => false,
-                    'special'      => false,
-                    'table'        => $table,
-                    'position'     => array_get($relationship, 'reverse_position', false),
+                    'type'     => Generator::RELATIONSHIP_HAS_MANY,
+                    'model'    => $table,
+                    'single'   => false,
+                    'count'    => 0,
+                    'field'    => null,
+                    'key'      => $foreignKey,
+                    'negative' => false,
+                    'special'  => false,
+                    'table'    => $table,
+                    'position' => array_get($relationship, 'reverse_position', false),
                 ];
             }
         }
 
+    }
 
-        // hasManyThrough (reverse already included)
+    protected function setHasManyThroughRelations()
+    {
+        // reverse already included
 
+        foreach ($this->hasManyThrough as $table => $relations) {
+            foreach ($relations as $otherTable => $relationship) {
+
+                if (array_has($this->context->output['models'][ $table ]['relationships']['normal'], $relationship['name'])) {
+                    throw new \UnexpectedValueException('Duplicate relationship method ' . $relationship['name'] . ' for table ' . $table);
+                }
+
+                $this->context->output['models'][ $table ]['relationships']['normal'][ $relationship['name'] ] = [
+                    'type'         => 'hasManyThrough',
+                    'model'        => $otherTable,
+                    'single'       => false,
+                    'count'        => 0,
+                    'field'        => null,
+                    'key'          => null,
+                    'negative'     => false,
+                    'special'      => false,
+                    'table'        => $otherTable,
+                    'through'      => $relationship['through'],
+                ];
+            }
+        }
     }
 }
