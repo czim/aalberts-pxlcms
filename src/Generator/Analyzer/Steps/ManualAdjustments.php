@@ -134,6 +134,35 @@ class ManualAdjustments extends AbstractProcessStep
         'press_tool' => [
             'manufacturer' => [ 'table' => 'press_manufacturer' ],
         ],
+
+
+        'cmp_filter_angleofbow'                               => [ 'angleofbow' => ['table' => 'cmp_angleofbow', 'reverse_name' => 'filter', 'reverse_single' => true  ] ],
+        'cmp_filter_applications'                             => [ 'applications' => ['table' => 'cmp_applications', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_approvals'                                => [ 'approvals' => ['table' => 'cmp_approvals', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_bowrange'                                 => [ 'bowrange' => ['table' => 'cmp_bowrange', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_colors'                                   => [ 'colors' => ['table' => 'cmp_colors', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_connectiontype'                           => [ 'connectiontype' => ['table' => 'cmp_connectiontype', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_contourcode'                              => [ 'contourcode' => ['table' => 'cmp_contourcode', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_externaltubediameterofconnection'         => [ 'externaltubediameterofconnection' => ['table' => 'cmp_externaltubediameterofconnection', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_finishings'                               => [ 'finishings' => ['table' => 'cmp_finishings', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_manufacturercode'                         => [ 'manufacturercode' => ['table' => 'cmp_manufacturercode', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_materialquality'                          => [ 'materialquality' => ['table' => 'cmp_materialquality', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_materials'                                => [ 'materials' => ['table' => 'cmp_materials', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_maxdischargeflow'                         => [ 'maxdischargeflow' => ['table' => 'cmp_maxdischargeflow', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_maximumoperatingpressureliquid'           => [ 'maximumoperatingpressureliquid' => ['table' => 'cmp_maximumoperatingpressureliquid', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_maxmediumtemp'                            => [ 'maxmediumtemp' => ['table' => 'cmp_maxmediumtemp', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_maxoperatingpressuregas'                  => [ 'maxoperatingpressuregas' => ['table' => 'cmp_maxoperatingpressuregas', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_minmediumtemp'                            => [ 'minmediumtemp' => ['table' => 'cmp_minmediumtemp', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_nominalinternaldiameterofconnection_dn'   => [ 'nominalinternaldiameterofconnection_dn' => ['table' => 'cmp_nominalinternaldiameterofconnection_dn', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_nominalinternaldiameterofconnection_inch' => [ 'nominalinternaldiameterofconnection_inch' => ['table' => 'cmp_nominalinternaldiameterofconnection_inch', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_numberofconnections'                      => [ 'numberofconnections' => ['table' => 'cmp_numberofconnections', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_powerconsumption'                         => [ 'powerconsumption' => ['table' => 'cmp_powerconsumption', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_productgroup'                             => [ 'productgroup' => ['table' => 'cmp_productgroup', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_productline'                              => [ 'productline' => ['table' => 'cmp_productline', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_producttype'                              => [ 'producttype' => ['table' => 'cmp_producttype', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_pumpbrand'                                => [ 'pumpbrand' => ['table' => 'cmp_pumpbrand', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_shape'                                    => [ 'shape' => ['table' => 'cmp_shape', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_solutions'                                => [ 'solutions' => ['table' => 'cmp_solutions', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
     ];
 
     protected $hasManyThrough = [];
@@ -217,7 +246,6 @@ class ManualAdjustments extends AbstractProcessStep
             foreach ($relations as $foreignKey => $relationship) {
 
                 $relationship = array_add($relationship, 'name', $foreignKey);
-                $relationship = array_add($relationship, 'reverse_name', camel_case(str_plural($this->context->output['models'][ $table ]['name'])));
 
                 if (array_has($this->context->output['models'][ $table ]['relationships']['normal'], $relationship['name'])) {
                     throw new \UnexpectedValueException('Duplicate relationship method ' . $relationship['name'] . ' for table ' . $table);
@@ -251,15 +279,23 @@ class ManualAdjustments extends AbstractProcessStep
                     continue;
                 }
 
+                $hasOne = array_get($relationship, 'reverse_single', false);
+
+                $defaultReverseName = $hasOne
+                    ?   camel_case(str_singular($this->context->output['models'][ $table ]['name']))
+                    :   camel_case(str_plural($this->context->output['models'][ $table ]['name']));
+                $relationship = array_add($relationship, 'reverse_name', $defaultReverseName);
+
+
                 if (array_has($this->context->output['models'][ $relationship['table'] ]['relationships']['normal'], $relationship['reverse_name'])) {
                     throw new \UnexpectedValueException('Duplicate reverse relationship method ' . $relationship['reverse_name'] . ' for table ' . $relationship['table'] . ' reversed for table ' . $table);
                 }
 
                 $this->context->output['models'][ $relationship['table'] ]['relationships']['normal'][ $relationship['reverse_name'] ] = [
-                    'type'     => Generator::RELATIONSHIP_HAS_MANY,
+                    'type'     => $hasOne ? Generator::RELATIONSHIP_HAS_ONE : Generator::RELATIONSHIP_HAS_MANY,
                     'model'    => $table,
-                    'single'   => false,
-                    'count'    => 0,
+                    'single'   => $hasOne,
+                    'count'    => $hasOne ? 1 : 0,
                     'field'    => null,
                     'key'      => $foreignKey,
                     'negative' => false,

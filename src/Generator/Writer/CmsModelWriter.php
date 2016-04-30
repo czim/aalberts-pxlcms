@@ -23,7 +23,7 @@ class CmsModelWriter extends \Czim\PxlCms\Generator\Writer\Model\CmsModelWriter
             Steps\StubReplaceSimple::class,
             CzimSteps\StubReplaceAttributeData::class,
             Steps\StubReplaceRelationData::class,
-            CzimSteps\StubReplaceAccessorsAndMutators::class,
+            Steps\StubReplaceAccessorsAndMutators::class,
             CzimSteps\StubReplaceSluggableData::class,
             Steps\StubReplaceScopes::class,
             Steps\StubReplaceDocBlock::class,
