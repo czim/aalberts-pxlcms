@@ -273,6 +273,10 @@ class ManualAdjustments extends AbstractProcessStep
                     [$foreignKey]
                 );
 
+                if (array_key_exists($foreignKey, $this->context->output['models'][ $table ]['casts'])) {
+                    unset($this->context->output['models'][ $table ]['casts'][ $foreignKey ]);
+                }
+
 
                 // handle reverse
                 if (array_get($relationship, 'skip_reverse')) {
