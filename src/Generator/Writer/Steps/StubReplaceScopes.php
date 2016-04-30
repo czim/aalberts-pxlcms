@@ -2,8 +2,9 @@
 namespace Aalberts\Generator\Writer\Steps;
 
 use Czim\PxlCms\Generator\Writer\Model\CmsModelWriter;
+use Czim\PxlCms\Generator\Writer\Model\Steps\StubReplaceScopes as PxlCmsStubReplaceScopes;
 
-class StubReplaceScopes extends \Czim\PxlCms\Generator\Writer\Model\Steps\StubReplaceScopes
+class StubReplaceScopes extends PxlCmsStubReplaceScopes
 {
 
     /**
