@@ -216,6 +216,17 @@ class CmsModel extends Model
         return Carbon::createFromFormat('Y-m-d H:i:s', $value);
     }
 
+    public function getAccessedtsAttribute()
+    {
+        $value = $this->attributes['accessedts'];
+
+        if (0 === $value || null === $value || '0000-00-00 00:00:00' === $value) {
+            return null;
+        }
+
+        return Carbon::createFromFormat('Y-m-d H:i:s', $value);
+    }
+
     /**
      * Mutator to make sure created timestamp uses MySQL DateTime format
      *
