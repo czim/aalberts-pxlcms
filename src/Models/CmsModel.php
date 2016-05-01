@@ -73,7 +73,6 @@ class CmsModel extends Model
     protected $cmsPositionColumn = 'position';
 
     /**
-     * Stored in database as Unix timestamps
      * @var string
      */
     protected $dateFormat = 'Y-m-d H:i:s';
