@@ -113,6 +113,13 @@ class CmsModel extends Model
     protected $cmsSluggableLocally;
 
     /**
+     * Date columns stored as something other than a Unix Timestamp
+     *
+     * @var string[]
+     */
+    protected $nonTimestampDates = [];
+
+    /**
      * The default CMS model listify config
      *
      * @var array
@@ -159,7 +166,9 @@ class CmsModel extends Model
     {
         // for timestamps, do NOT pass through the mutator, or
         // we'll end up with Carbon instances
-        if (static::CREATED_AT === $key || static::UPDATED_AT === $key) {
+        if (    static::CREATED_AT === $key || static::UPDATED_AT === $key
+            ||  in_array($key, $this->nonTimestampDates)
+        ) {
             return $value;
         }
 
@@ -175,6 +184,11 @@ class CmsModel extends Model
     {
         if (0 === $value || null === $value || '0000-00-00 00:00:00' === $value) {
             return null;
+        }
+
+        // catch standard datetime format
+        if (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value)) {
+            $value = Carbon::createFromFormat('Y-m-d H:i:s', $value);
         }
 
         return parent::asDateTime($value);
@@ -241,6 +255,25 @@ class CmsModel extends Model
     }
 
     /**
+     * Mutator to make sure accessed timestamp uses MySQL DateTime format
+     *
+     * @param mixed $value
+     * @return $this
+     */
+    public function setAccessedtsAttribute($value)
+    {
+        if ($value instanceof Carbon) {
+            $value = $value->format('Y-m-d H:i:s');
+        } else {
+            $value = null;
+        }
+
+        $this->attributes['accessedts'] = $value;
+
+        return $this;
+    }
+
+    /**
      * Convert the model's attributes to an array.
      *
      * @inheritdoc
@@ -257,7 +290,16 @@ class CmsModel extends Model
             }
         }
 
-        return parent::attributesToArray();
+        $attributes = parent::attributesToArray();
+
+        // make sure that our date values are strings
+        foreach ($this->getDates() as $key) {
+            if ($attributes[$key] instanceof \DateTime) {
+                $attributes[$key] = $attributes[$key]->format($this->getDateFormat());
+            }
+        }
+
+        return $attributes;
     }
 
     // ------------------------------------------------------------------------------
