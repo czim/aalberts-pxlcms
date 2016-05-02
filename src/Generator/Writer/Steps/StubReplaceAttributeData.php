@@ -7,6 +7,28 @@ class StubReplaceAttributeData extends PxlCmsStubReplaceAttributeData
 {
 
     /**
+     * @inheritdoc
+     */
+    protected function getDatesReplace()
+    {
+        $replace = parent::getDatesReplace();
+
+        $nonTimestamps = [];
+
+        foreach ($this->data['casts'] as $column => $type) {
+            if ($type !== 'date') continue;
+
+            $nonTimestamps[] = $column;
+        }
+
+        if (count($nonTimestamps)) {
+            $replace .= $this->getAttributePropertySection('nonTimestampDates', $nonTimestamps);
+        }
+
+        return $replace;
+    }
+
+    /**
      * Returns the replacement for the casts placeholder
      *
      * @return string
