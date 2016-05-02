@@ -27,6 +27,7 @@ class ManualAdjustments extends AbstractProcessStep
     protected $dates = [
         'cmp_item'    => [ 'accessedts' ],
         'cmp_product' => [ 'accessedts' ],
+        'cms_news'    => [ 'date' ],
     ];
 
     protected $belongsTo = [
@@ -182,8 +183,6 @@ class ManualAdjustments extends AbstractProcessStep
 
         $this->setBelongsToRelations();
         $this->setHasManyThroughRelations();
-
-        $this->doRenames();
     }
 
     /**
@@ -207,6 +206,15 @@ class ManualAdjustments extends AbstractProcessStep
 
                 $this->context->output['models'][ $table ][ 'normal_attributes' ][] = $column;
                 $this->context->output['models'][ $table ][ 'normal_fillable' ][] = $column;
+
+                if ( isset($this->context->output['models'][ $table ]['casts'][ $column ]) ) {
+
+                    if ( ! isset($this->context->output['models'][ $table ]['casts_translated'])) {
+                        $this->context->output['models'][ $table ]['casts_translated'] = [];
+                    }
+
+                    $this->context->output['models'][ $table ]['casts_translated'][ $column ] = $this->context->output['models'][ $table ]['casts'][ $column ];
+                }
             }
         }
     }
@@ -231,11 +239,6 @@ class ManualAdjustments extends AbstractProcessStep
                 $this->context->output['models'][ $table ][ 'dates' ][] = $column;
             }
         }
-    }
-
-    protected function doRenames()
-    {
-        // todo
     }
 
     protected function setBelongsToRelations()

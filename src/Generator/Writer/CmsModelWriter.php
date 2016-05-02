@@ -21,7 +21,7 @@ class CmsModelWriter extends \Czim\PxlCms\Generator\Writer\Model\CmsModelWriter
             CzimSteps\CheckConditionsAndSetup::class,
 
             Steps\StubReplaceSimple::class,
-            CzimSteps\StubReplaceAttributeData::class,
+            Steps\StubReplaceAttributeData::class,
             Steps\StubReplaceRelationData::class,
             Steps\StubReplaceAccessorsAndMutators::class,
             CzimSteps\StubReplaceSluggableData::class,

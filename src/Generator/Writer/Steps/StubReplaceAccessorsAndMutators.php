@@ -13,9 +13,11 @@ class StubReplaceAccessorsAndMutators extends PxlCmsStubReplaceAccessorsAndMutat
     {
         return array_merge(
             parent::collectAccessors(),
-            $this->collectCompanoFilterAccessors()
+            $this->collectCompanoFilterAccessors(),
+            $this->collectSpecialDateMutators()
         );
     }
+
 
     /**
      * For Compano filters with 'products' fields
@@ -38,6 +40,29 @@ class StubReplaceAccessorsAndMutators extends PxlCmsStubReplaceAccessorsAndMutat
         }
 
         return $accessors;
+    }
+
+
+    protected function collectSpecialDateMutators()
+    {
+        $mutators = [];
+
+        foreach ($this->data['casts'] as $column => $type) {
+            if ($type !== 'date_timestamp') continue;
+
+            $content = $this->tab(2)
+                     . "\$this->attributes['{$column}'] = \$value ? strtotime(\$value) : null;\n\n"
+                     . $this->tab(2)
+                     . "return \$this;\n";
+
+            $mutators[ $column ] = [
+                'parameters' => ['$value'],
+                'content'    => $content,
+                'mutator'    => true,
+            ];
+        }
+
+        return $mutators;
     }
 
 }

@@ -115,6 +115,18 @@ class ModelWriter extends \Czim\PxlCms\Generator\ModelWriter
 
         $array['prefix'] = $model['prefix'];
 
+        // make sure translated casts are dealt with fully
+        $array['casts'] = array_get($model, 'casts_translated', []);
+
+        foreach (array_keys($array['casts']) as $column) {
+            $array['normal_attributes'] = array_merge($array['normal_attributes'], [ $column ]);
+            $array['normal_fillable']   = array_merge($array['normal_fillable'], [ $column ]);
+
+            if (in_array($column, $model['dates'])) {
+                $array['dates'] = array_merge($array['dates'], $column);
+            }
+        }
+
         return $array;
     }
 
