@@ -235,6 +235,8 @@ class CmsModel extends Model
      */
     public function setCreatedtsAttribute($value)
     {
+        $value = $this->asDateTime($value);
+
         if ($value instanceof Carbon) {
             $value = $value->format('Y-m-d H:i:s');
         } else {
@@ -254,6 +256,8 @@ class CmsModel extends Model
      */
     public function setModifiedtsAttribute($value)
     {
+        $value = $this->asDateTime($value);
+
         if ($value instanceof Carbon) {
             $value = $value->format('Y-m-d H:i:s');
         } else {
@@ -273,6 +277,8 @@ class CmsModel extends Model
      */
     public function setAccessedtsAttribute($value)
     {
+        $value = $this->asDateTime($value);
+
         if ($value instanceof Carbon) {
             $value = $value->format('Y-m-d H:i:s');
         } else {
