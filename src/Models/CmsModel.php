@@ -140,6 +140,17 @@ class CmsModel extends Model
     protected $cmsOrderBy = [];
 
 
+    /**
+     * Returns the default scope to set for the listify config (replaces above 'scope' value)
+     *
+     * @return mixed
+     */
+    protected function getCmsListifyDefaultScope()
+    {
+        return '1 = 1';
+    }
+
+
     // ------------------------------------------------------------------------------
     //      Date adjustments for Unix Timestamp storage
     // ------------------------------------------------------------------------------

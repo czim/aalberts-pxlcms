@@ -210,8 +210,8 @@ return [
 
             // FQN for (optional) traits to import/use (whether they are used is not determined by this)
             'traits' => [
-                'listify_fqn'             => "Lookitsatravis\\Listify\\Listify",
-                'listify_constructor_fqn' => "Czim\\PxlCms\\Models\\ListifyConstructorTrait",
+                'listify_fqn'             => "Czim\\Listify\\Listify",
+                'listify_constructor_fqn' => "Aalberts\\Models\\ListifyConstructorTrait",
                 'translatable_fqn'        => "Czim\\PxlCms\\Translatable\\Translatable",
                 'rememberable_fqn'        => "Watson\\Rememberable\\Rememberable",
 

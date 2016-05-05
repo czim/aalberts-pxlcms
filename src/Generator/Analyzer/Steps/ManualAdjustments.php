@@ -183,6 +183,8 @@ class ManualAdjustments extends AbstractProcessStep
 
         $this->setBelongsToRelations();
         $this->setHasManyThroughRelations();
+        
+        $this->setCustomListifyScopes();
     }
 
     /**
@@ -340,5 +342,22 @@ class ManualAdjustments extends AbstractProcessStep
                 ];
             }
         }
+    }
+
+    protected function setCustomListifyScopes()
+    {
+        // content is scoped by parent/organization
+        $this->context->output['models']['cms_content']['listify_scope'] = [
+            "return '`' . \$this->getTable() . '`.`parent` = ' . (int) array_get(\$this->attributes, 'parent', 0)",
+            "     . ' and '",
+            "     . '`' . \$this->getTable() . '`.`organization` = ' . (int) array_get(\$this->attributes, 'organization', 0);",
+        ];
+
+        // gallery items are scoped by their parent entry
+        $this->context->output['models']['cms_news_gallery']['listify_scope'] = [
+            "return '`' . \$this->getTable() . '`.``entry` = ' . (int) array_get(\$this->attributes, 'entry', 0);",
+        ];
+
+        // todo: others?
     }
 }
