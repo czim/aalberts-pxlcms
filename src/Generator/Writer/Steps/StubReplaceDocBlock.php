@@ -10,6 +10,37 @@ class StubReplaceDocBlock extends PxlCmsStubReplaceDocBlock
     /**
      * @return array
      */
+    protected function collectIdeHelperDirectAttributeRows()
+    {
+        if ( ! config('pxlcms.generator.models.ide_helper.tag_attribute_properties')) {
+            return [];
+        }
+
+        $rows = parent::collectIdeHelperDirectAttributeRows();
+
+        if ($this->data['timestamps']) {
+
+            $type = config('pxlcms.generator.models.date_property_fqn', '\\Carbon\\Carbon');
+
+            $rows[] = [
+                'tag'  => 'property',
+                'type' => $type,
+                'name' => '$created_at',
+            ];
+            $rows[] = [
+                'tag'  => 'property',
+                'type' => $type,
+                'name' => '$updated_at',
+            ];
+
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @return array
+     */
     protected function collectIdeHelperRelationRows()
     {
         if ( ! config('pxlcms.generator.models.ide_helper.tag_relationship_magic_properties')) {
