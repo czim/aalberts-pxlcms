@@ -13,15 +13,6 @@ class StubReplaceCustomListifyScope extends AbstractProcessStep
 
     protected function getListifyReplace()
     {
-        // build method like this:
-
-        //protected function getCmsListifyDefaultScope()
-        //{
-        //    return '`' . $this->getTable() . '`.``parent` = ' . (int) $this->parent
-        //    . ' and '
-        //    . '`' . $this->getTable() . '`.`organization` = ' . (int) $this->organization;
-        //}
-
         $listifyLines = $this->data->listify_scope ?: [];
 
         if ( ! count($listifyLines)) return '';
