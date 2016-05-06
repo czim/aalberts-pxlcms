@@ -353,11 +353,38 @@ class ManualAdjustments extends AbstractProcessStep
             "     . '`' . \$this->getTable() . '`.`organization` = ' . (int) array_get(\$this->attributes, 'organization', 0);",
         ];
 
+        $this->context->output['models']['cms_country']['listify_scope'] = [
+            "return '`' . \$this->getTable() . '`.`parent` = ' . (int) array_get(\$this->attributes, 'parent', 0);",
+        ];
+
+        $this->context->output['models']['cms_customblock']['listify_scope'] = [
+            "return '`' . \$this->getTable() . '`.`content` = ' . (int) array_get(\$this->attributes, 'content', 0);",
+        ];
+
+
         // gallery items are scoped by their parent entry
+        $this->context->output['models']['cms_content_gallery']['listify_scope'] = [
+            "return '`' . \$this->getTable() . '`.`entry` = ' . (int) array_get(\$this->attributes, 'entry', 0);",
+        ];
+
+        $this->context->output['models']['cms_content_gallery_image']['listify_scope'] = [
+            "return '`' . \$this->getTable() . '`.`entry` = ' . (int) array_get(\$this->attributes, 'entry', 0);",
+        ];
+
         $this->context->output['models']['cms_news_gallery']['listify_scope'] = [
-            "return '`' . \$this->getTable() . '`.``entry` = ' . (int) array_get(\$this->attributes, 'entry', 0);",
+            "return '`' . \$this->getTable() . '`.`entry` = ' . (int) array_get(\$this->attributes, 'entry', 0);",
+        ];
+
+        $this->context->output['models']['cms_project_gallery']['listify_scope'] = [
+            "return '`' . \$this->getTable() . '`.`entry` = ' . (int) array_get(\$this->attributes, 'entry', 0);",
+        ];
+
+        $this->context->output['models']['cms_project_gallery_image']['listify_scope'] = [
+            "return '`' . \$this->getTable() . '`.`entry` = ' . (int) array_get(\$this->attributes, 'entry', 0);",
         ];
 
         // todo: others?
+        // cms_productgroup_filtergroup     no idea what the position should be scoped against..
+
     }
 }
