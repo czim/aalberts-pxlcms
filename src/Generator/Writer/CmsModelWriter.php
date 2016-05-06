@@ -29,6 +29,7 @@ class CmsModelWriter extends \Czim\PxlCms\Generator\Writer\Model\CmsModelWriter
             Steps\StubReplaceDocBlock::class,
             Steps\StubReplaceImportsAndTraits::class,
             Steps\StubReplaceCustomListifyScope::class,
+            Steps\StubReplaceCleanListifyScope::class,
 
             CzimSteps\WriteFile::class,
         ];
