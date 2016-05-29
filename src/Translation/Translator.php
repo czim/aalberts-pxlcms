@@ -82,6 +82,23 @@ class Translator
     }
 
     /**
+     * Checks and returns whether there have been updates to the translations since
+     * they were last cached.
+     */
+    public function checkForUpdates()
+    {
+        if (null ==  $this->getCacheUpdateTime()) return true;
+
+        // get last update to the translations table
+        $translation = Translation::unordered()->orderBy('modifiedts', 'desc')->take(1)->first([ 'modifiedts' ]);
+
+        $translationUpdate = $translation->modifiedts;
+
+        return $this->checkCacheUpdateAgainstTime($translationUpdate);
+    }
+
+
+    /**
      * Retrieves a single translation from the database, caches and returns it.
      * This *will* override the cache. It will returns the phrase if no translation
      * was found.
@@ -95,7 +112,6 @@ class Translator
         $phrase = $this->getPhraseByLabel($label);
 
         if ( ! $phrase) {
-            //throw new ModelNotFoundException("Could not find Phrase for '{$label}'");
             return $label;
         }
 
@@ -146,22 +162,6 @@ class Translator
     {
         Cache::tags([ $this->getCacheTag() ])
             ->put($this->getCacheUpdateKey(), new DateTime(), $this->getCacheMinutes());
-    }
-
-    /**
-     * Checks and returns whether there have been updates to the translations since
-     * they were last cached.
-     */
-    public function checkForUpdates()
-    {
-        if (null ==  $this->getCacheUpdateTime()) return true;
-
-        // get last update to the translations table
-        $translation = Translation::unordered()->orderBy('modifiedts', 'desc')->take(1)->first([ 'modifiedts' ]);
-
-        $translationUpdate = $translation->modifiedts;
-
-        return $this->checkCacheUpdateAgainstTime($translationUpdate);
     }
 
     /**
@@ -277,4 +277,5 @@ class Translator
     {
         return (new Phrase)->lookUpLanguageIdForLocale($locale);
     }
+
 }
