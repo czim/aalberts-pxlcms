@@ -27,6 +27,8 @@ class AalbertsCmsServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/config/aalberts.php', 'aalberts'
         );
+
+        $this->bindFacades();
     }
 
     /**
@@ -52,6 +54,13 @@ class AalbertsCmsServiceProvider extends ServiceProvider
     {
         $this->app->singleton('aalberts.generate', function() {
             return new Commands\GenerateCommand;
+        });
+    }
+
+    protected function bindFacades()
+    {
+        $this->app->singleton('aalberts-translate', function () {
+            return new Translation\Translator();
         });
     }
 }
