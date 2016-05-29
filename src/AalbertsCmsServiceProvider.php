@@ -8,7 +8,8 @@ class AalbertsCmsServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/config/pxlcms.php' => config_path('pxlcms.php'),
+            __DIR__ . '/config/pxlcms.php'   => config_path('pxlcms.php'),
+            __DIR__ . '/config/aalberts.php' => config_path('aalberts.php'),
         ]);
     }
 
