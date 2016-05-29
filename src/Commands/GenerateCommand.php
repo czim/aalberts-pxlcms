@@ -1,5 +1,5 @@
 <?php
-namespace Aalberts;
+namespace Aalberts\Commands;
 
 use Aalberts\Generator\ModelGenerator;
 use Czim\PxlCms\Generator\Generator;

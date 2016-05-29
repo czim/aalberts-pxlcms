@@ -35,7 +35,8 @@ class AalbertsCmsServiceProvider extends ServiceProvider
      */
     protected function registerConsoleCommands()
     {
-        $this->registerPxlCmsGenerate();
+        $this->registerGenerateCommand();
+
         $this->commands([
             'aalberts.generate'
         ]);
@@ -46,10 +47,10 @@ class AalbertsCmsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerPxlCmsGenerate()
+    protected function registerGenerateCommand()
     {
         $this->app->singleton('aalberts.generate', function() {
-            return new GenerateCommand;
+            return new Commands\GenerateCommand;
         });
     }
 }
