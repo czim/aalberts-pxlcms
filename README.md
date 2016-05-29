@@ -29,6 +29,11 @@ Publish the configuration:
 $ php artisan vendor:publish
 ```
 
+## Cache
+
+This package requires that a cache driver be used that supports tagging (such as Redis).
+
+
 ## Configuration
 
 ### .env
