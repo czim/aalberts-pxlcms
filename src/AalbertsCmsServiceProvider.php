@@ -33,23 +33,18 @@ class AalbertsCmsServiceProvider extends ServiceProvider
 
     /**
      * Register the package console commands.
-     *
-     * @return void
      */
     protected function registerConsoleCommands()
     {
         $this->registerGenerateCommand();
+        $this->registerCacheTranslationsCommand();
 
         $this->commands([
-            'aalberts.generate'
+            'aalberts.generate',
+            'aalberts.cache.translations',
         ]);
     }
 
-    /**
-     * Register the generate command with the container.
-     *
-     * @return void
-     */
     protected function registerGenerateCommand()
     {
         $this->app->singleton('aalberts.generate', function() {
@@ -57,10 +52,19 @@ class AalbertsCmsServiceProvider extends ServiceProvider
         });
     }
 
+    protected function registerCacheTranslationsCommand()
+    {
+        $this->app->singleton('aalberts.cache.translations', function() {
+            return new Commands\CacheTranslationsCommand;
+        });
+    }
+
+
     protected function bindFacades()
     {
         $this->app->singleton('aalberts-translate', function () {
             return new Translation\Translator();
         });
     }
+
 }
