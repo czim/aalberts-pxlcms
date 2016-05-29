@@ -32,7 +32,10 @@
     "autoload": {
         "psr-4": {
             "Aalberts\\": "src"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "scripts": {
         "test": "phpunit"
