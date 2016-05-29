@@ -40,6 +40,19 @@ AALBERTS_ORGANIZATION=2
 AALBERTS_ORGANIZATION_KEY=VSH
 ```
 
+### Scheduling
+
+It is much more efficient to keep all translations cached, to prevent lookups for individual `atrans()` calls.
+Translations are not automatically cached, at least not in a batch. 
+
+To make sure the cache stays up to date, schedule the `artisan:cache:translations` command to run periodically.
+It is recommended to keep the interval at least 5 minutes or to prevent overlap. 
+The command will check whether a cache is required by comparing the latest `modifiedts` date for all the organization's translations.
+If no updates since the last cache time are detected, the cache will not be renewed. 
+
+If no cache has been set at all, this command will always fill the cache.
+
+
 ### Translations
 
 Add `aalberts` translations files for all locales that your application uses and set content like the following:
