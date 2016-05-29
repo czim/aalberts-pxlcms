@@ -27,10 +27,6 @@ class GenerateCommand extends Command
     protected $description = 'Generate app files based on Aalberts CMS database content.';
 
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
