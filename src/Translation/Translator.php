@@ -1,13 +1,14 @@
 <?php
 namespace Aalberts\Translation;
 
+use Aalberts\Contracts\TranslatorInterface;
 use App\Models\Aalberts\Cms\Phrase;
 use App\Models\Aalberts\Cms\Translation;
 use Cache;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 
-class Translator
+class Translator implements TranslatorInterface
 {
     // defaults if not present in config
     const CACHE_KEY_PREFIX = 'aalberts-translation:';
