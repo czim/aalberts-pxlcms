@@ -20,4 +20,12 @@ interface TranslatorInterface
      */
     public function cacheTranslations();
 
+    /**
+     * Checks and returns whether there have been updates to the translations since
+     * they were last cached.
+     *
+     * @return boolean      true if updates are available
+     */
+    public function checkForUpdates();
+
 }

@@ -157,7 +157,9 @@ class Translator
         if (null ==  $this->getCacheUpdateTime()) return true;
 
         // get last update to the translations table
-        $translationUpdate = new DateTime();
+        $translation = Translation::unordered()->orderBy('modifiedts', 'desc')->take(1)->first([ 'modifiedts' ]);
+
+        $translationUpdate = $translation->modifiedts;
 
         return $this->checkCacheUpdateAgainstTime($translationUpdate);
     }
