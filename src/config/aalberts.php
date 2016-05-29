@@ -73,6 +73,11 @@ return [
 
         // FQN for DateFormatterInterface to use if the format is 'special'
         'special' => \Aalberts\Models\DateFormatters\StandardDateFormatter::class,
+
+        // if we should use trans() to get month translations, the translation
+        // key in which the locale definitions can be found - with '01' => 'jan', etc
+        'months-translate-key' => 'aalberts.months',
+
     ],
 
 ];
