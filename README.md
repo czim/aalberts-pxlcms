@@ -31,6 +31,15 @@ $ php artisan vendor:publish
 
 ## Configuration
 
+### .env
+
+Set the following keys for your application in the `.env` file like so (or adjust `confing/aalberts.php` directly).
+
+``` bash
+AALBERTS_ORGANIZATION=2
+AALBERTS_ORGANIZATION_KEY=VSH
+```
+
 ### Translations
 
 Add `aalberts` translations files for all locales that your application uses and set content like the following:
