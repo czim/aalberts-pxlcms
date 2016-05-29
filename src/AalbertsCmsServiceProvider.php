@@ -42,6 +42,7 @@ class AalbertsCmsServiceProvider extends ServiceProvider
         $this->commands([
             'aalberts.generate',
             'aalberts.cache.translations',
+            'aalberts.flush.translations',
         ]);
     }
 
@@ -56,6 +57,10 @@ class AalbertsCmsServiceProvider extends ServiceProvider
     {
         $this->app->singleton('aalberts.cache.translations', function() {
             return new Commands\CacheTranslationsCommand;
+        });
+
+        $this->app->singleton('aalberts.flush.translations', function() {
+            return new Commands\FlushTranslationsCommand;
         });
     }
 

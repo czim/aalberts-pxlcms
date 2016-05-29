@@ -27,5 +27,10 @@ interface TranslatorInterface
      * @return boolean      true if updates are available
      */
     public function checkForUpdates();
+    
+    /**
+     * Flushes the entire translations cache
+     */
+    public function flushCache();
 
 }

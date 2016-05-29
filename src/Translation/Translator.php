@@ -83,6 +83,14 @@ class Translator implements TranslatorInterface
     }
 
     /**
+     * Flushes the entire translations cache
+     */
+    public function flushCache()
+    {
+        Cache::tags([ $this->getCacheTag() ])->flush();
+    }
+
+    /**
      * Checks and returns whether there have been updates to the translations since
      * they were last cached.
      */
