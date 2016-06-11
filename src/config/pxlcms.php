@@ -105,7 +105,7 @@ return [
     'cache' => [
 
         // CMS Languages
-        'languages' => 60,
+        'languages' => 86400,
 
         // Resizes for Images (looked up for images by fieldId)
         'resizes' => 60,
