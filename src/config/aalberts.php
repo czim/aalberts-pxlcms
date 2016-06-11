@@ -44,9 +44,6 @@ return [
             // Time to live in minutes
             'ttl' => 86400,
 
-            // Tag to apply for translation cache
-            'tag' => 'translation',
-
             // The locales to cache empty results for (to prevent lookups where the label itself
             // should be used as the translation).
             'locales' => [

@@ -2,6 +2,7 @@
 namespace Aalberts\Translation;
 
 use Aalberts\Contracts\TranslatorInterface;
+use Aalberts\Enums\CacheTags;
 use App\Models\Aalberts\Cms\Phrase;
 use App\Models\Aalberts\Cms\Translation;
 use Cache;
@@ -14,7 +15,6 @@ class Translator implements TranslatorInterface
     const CACHE_KEY_PREFIX = 'aalberts-translation:';
     const CACHE_UPDATE_KEY = 'aalberts-translation-update';
     const CACHE_MINUTES    = 86400;
-    const CACHE_TAG        = 'translation';
 
 
     /**
@@ -227,7 +227,7 @@ class Translator implements TranslatorInterface
      */
     protected function getCacheTag()
     {
-        return config('aalberts.translator.cache.tag', static::CACHE_TAG);
+        return CacheTags::TRANSLATION;
     }
 
     /**
