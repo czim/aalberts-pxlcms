@@ -508,7 +508,9 @@ class CmsModel extends Model
         /** @var Model $languageModel */
         $languageModel = static::$cmsLanguageModel;
 
-        $language = $languageModel::find($languageId);
+        $language = $languageModel::where('id', $languageId)
+            ->remember((config('pxlcms.cache.languages', 15)))
+            ->first();
 
         if (empty($language)) return null;
 
