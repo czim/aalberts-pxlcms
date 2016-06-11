@@ -37,12 +37,17 @@ class AalbertsCmsServiceProvider extends ServiceProvider
     protected function registerConsoleCommands()
     {
         $this->registerGenerateCommand();
-        $this->registerCacheTranslationsCommand();
+        $this->registerCacheTranslationsCommands();
+        $this->registerCacheContentCommands();
 
         $this->commands([
             'aalberts.generate',
             'aalberts.cache.translations',
             'aalberts.flush.translations',
+            'aalberts.cache.cms.check',
+            'aalberts.flush.cms',
+            'aalberts.cache.cmp.check',
+            'aalberts.flush.cmp',
         ]);
     }
 
@@ -53,7 +58,7 @@ class AalbertsCmsServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerCacheTranslationsCommand()
+    protected function registerCacheTranslationsCommands()
     {
         $this->app->singleton('aalberts.cache.translations', function() {
             return new Commands\CacheTranslationsCommand;
@@ -61,6 +66,25 @@ class AalbertsCmsServiceProvider extends ServiceProvider
 
         $this->app->singleton('aalberts.flush.translations', function() {
             return new Commands\FlushTranslationsCommand;
+        });
+    }
+
+    protected function registerCacheContentCommands()
+    {
+        $this->app->singleton('aalberts.cache.cms.check', function() {
+            return new Commands\CmsCacheExpiryCheckCommand;
+        });
+
+        $this->app->singleton('aalberts.cache.cmp.check', function() {
+            return new Commands\CompanoCacheExpiryCheckCommand;
+        });
+
+        $this->app->singleton('aalberts.flush.cms', function() {
+            return new Commands\FlushCmsCacheCommand;
+        });
+
+        $this->app->singleton('aalberts.flush.cmp', function() {
+            return new Commands\FlushCompanoCacheCommand;
         });
     }
 
