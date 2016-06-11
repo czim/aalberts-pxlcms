@@ -47,6 +47,22 @@ AALBERTS_ORGANIZATION_KEY=VSH
 
 ### Scheduling
 
+Translations, CMS content and Compano content are all cached for common lookups.
+All translations should be loaded in cache at all times; other content may be cached on demand.
+
+A typical schedule for this in your `Console/Kernel.php` is:
+
+```
+        $schedule->command('aalberts:cache:translations')->everyFiveMinutes();
+        $schedule->command('aalberts:cache:cms:check')->everyTenMinutes();
+        $schedule->command('aalberts:cache:cmp:check')->dailyAt('06:00');
+```
+
+
+### Translations
+
+#### Labels
+
 It is much more efficient to keep all translations cached, to prevent lookups for individual `atrans()` calls.
 Translations are not automatically cached, at least not in a batch. 
 
@@ -57,8 +73,7 @@ If no updates since the last cache time are detected, the cache will not be rene
 
 If no cache has been set at all, this command will always fill the cache.
 
-
-### Translations
+#### Local translations
 
 Add `aalberts` translations files for all locales that your application uses and set content like the following:
 
