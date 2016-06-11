@@ -26,7 +26,8 @@ class ContentRepository extends AbstractRepository
      */
     public function findByLabel($label)
     {
-        return $this->where('label', $label)
+        return $this->query()
+            ->where('label', $label)
             ->remember($this->defaultTtl())
             ->cacheTags($this->cacheTags())
             ->first();
