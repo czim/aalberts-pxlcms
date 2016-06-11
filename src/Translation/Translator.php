@@ -31,6 +31,7 @@ class Translator implements TranslatorInterface
         if (false === $translation) {
             // get and cache new translation
             $translation = $this->retrieveTranslation($label, $locale);
+            $this->addTranslationToCache($label, $translation, $locale);
         }
 
         return $translation ?: $label;
@@ -50,28 +51,15 @@ class Translator implements TranslatorInterface
             $localesToDo = $this->getCacheLocales();
 
             foreach ($phrase->translations as $translation) {
-
                 $locale = $this->getLocaleForLanguageId($translation->language);
-
-                Cache::tags([ $this->getCacheTag() ])
-                    ->put(
-                        $this->getCacheKey($locale, $phrase->phrase),
-                        $translation->translation,
-                        $this->getCacheMinutes()
-                    );
-
+                $this->addTranslationToCache($phrase->phrase, $translation, $locale);
                 $localesToDo = array_diff($localesToDo, [ $locale ]);
             }
 
             // if the locale is not present, cache the label as its own translation (as a fallback)
             if (count($localesToDo)) {
                 foreach ($localesToDo as $locale) {
-                    Cache::tags([ $this->getCacheTag() ])
-                        ->put(
-                            $this->getCacheKey($locale, $phrase->phrase),
-                            $phrase->phrase,
-                            $this->getCacheMinutes()
-                        );
+                    $this->addTranslationToCache($phrase->phrase, $phrase->phrase, $locale);
                 }
             }
         }
@@ -108,7 +96,7 @@ class Translator implements TranslatorInterface
 
 
     /**
-     * Retrieves a single translation from the database, caches and returns it.
+     * Retrieves a single translation from the database and returns it.
      * This *will* override the cache. It will returns the phrase if no translation
      * was found.
      *
@@ -213,6 +201,25 @@ class Translator implements TranslatorInterface
         if ( ! Cache::tags([$cacheTag])->has($cacheKey)) return false;
 
         return Cache::tags([$cacheTag])->get($cacheKey);
+    }
+
+    /**
+     * Puts a specific translation for a phrase in the cache
+     *
+     * @param string      $label
+     * @param string      $translation
+     * @param null|string $locale
+     */
+    protected function addTranslationToCache($label, $translation, $locale = null)
+    {
+        $locale = $locale ?: app()->getLocale();
+
+        Cache::tags([ $this->getCacheTag() ])
+            ->put(
+                $this->getCacheKey($locale, $label),
+                $translation,
+                $this->getCacheMinutes()
+            );
     }
 
     /**
