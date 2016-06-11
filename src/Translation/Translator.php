@@ -16,6 +16,14 @@ class Translator implements TranslatorInterface
     const CACHE_UPDATE_KEY = 'aalberts-translation-update';
     const CACHE_MINUTES    = 86400;
 
+    /**
+     * Cachekey-keyed static memory for process-scope cache.
+     * This is solely to prevent the actual Cache from being spammed
+     * unnecessarily during a single process/stack.
+     *
+     * @var array
+     */
+    protected static $memory = [];
 
     /**
      * Translates a label into the current language
@@ -76,6 +84,7 @@ class Translator implements TranslatorInterface
     public function flushCache()
     {
         Cache::tags([ $this->getCacheTag() ])->flush();
+        static::$memory = [];
     }
 
     /**
@@ -198,10 +207,19 @@ class Translator implements TranslatorInterface
         $cacheKey       = $this->getCacheKey($locale, $label);
         $cacheTag       = $this->getCacheTag();
 
+        if (array_key_exists($cacheKey, static::$memory)) {
+            return static::$memory[ $cacheKey ];
+        }
+
         if ( ! Cache::tags([$cacheTag])->has($cacheKey)) return false;
 
-        return Cache::tags([$cacheTag])->get($cacheKey);
+        $translation = Cache::tags([$cacheTag])->get($cacheKey);
+
+        static::$memory[ $cacheKey ] = $translation;
+
+        return $translation;
     }
+
 
     /**
      * Puts a specific translation for a phrase in the cache
@@ -212,14 +230,17 @@ class Translator implements TranslatorInterface
      */
     protected function addTranslationToCache($label, $translation, $locale = null)
     {
-        $locale = $locale ?: app()->getLocale();
+        $locale   = $locale ?: app()->getLocale();
+        $cacheKey = $this->getCacheKey($locale, $label);
 
         Cache::tags([ $this->getCacheTag() ])
             ->put(
-                $this->getCacheKey($locale, $label),
+                $cacheKey,
                 $translation,
                 $this->getCacheMinutes()
             );
+
+        static::$memory[ $cacheKey ] = $translation;
     }
 
     /**
