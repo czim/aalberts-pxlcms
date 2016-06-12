@@ -3,18 +3,29 @@ namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTags;
 use App\Models\Aalberts\Cms\Content as ContentModel;
+use Czim\Repository\Criteria\Common\FieldIsValue;
+use Czim\Repository\Criteria\Common\WithRelations;
+use Czim\Repository\Enums\CriteriaKey;
+use Illuminate\Support\Collection;
 
 class ContentRepository extends AbstractRepository
 {
     protected $translated = true;
     protected $cacheTags = [ CacheTags::CONTENT ];
 
-    /**
-     * @return string
-     */
     public function model()
     {
         return ContentModel::class;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function defaultCriteria()
+    {
+        return parent::defaultCriteria()->merge([
+            CriteriaKey::WITH  => new WithRelations($this->withBase()),
+        ]);
     }
 
     /**
@@ -26,11 +37,49 @@ class ContentRepository extends AbstractRepository
      */
     public function findByLabel($label)
     {
+        $this->pushCriteriaOnce(
+            new WithRelations(array_merge($this->withBase(), $this->withDetail())),
+            CriteriaKey::WITH
+        );
+
         return $this->query()
             ->where('label', $label)
             ->remember($this->defaultTtl())
             ->cacheTags($this->cacheTags())
             ->first();
+    }
+
+    /**
+     * Returns the children for a content parent.
+     * Cached.
+     *
+     * @param ContentModel $parent
+     * @param int          $depth maximum depth to check, 1 = only direct children
+     * @return Collection|ContentModel[]
+     */
+    public function getChildren(ContentModel $parent, $depth = 3)
+    {
+        // build with relations 'tree' parameter
+        $childrenWith = [];
+
+        for ($x = 1; $x <= $depth; $x++) {
+            $childrenWith[ rtrim(str_repeat('children.', $x), '.') ] = $this->eagerLoadCachedCallable();
+        }
+
+        if ($depth > 0) {
+            $this->pushCriteriaOnce(new WithRelations(
+                array_merge($this->withBase(), $childrenWith)
+            ), CriteriaKey::WITH);
+        }
+
+        $children = $this->query()
+            ->where('page', true)
+            ->where('parent', $parent->id)
+            ->remember($this->defaultTtl())
+            ->cacheTags($this->cacheTags())
+            ->get();
+
+        return $children;
     }
 
 
@@ -43,19 +92,22 @@ class ContentRepository extends AbstractRepository
      * @param null|string $locale
      * @return null|ContentModel
      */
-    public function getBySlug($slug, $page = null, $locale = null)
+    public function findBySlug($slug, $page = null, $locale = null)
     {
-        $query = $this->query()
+        $this->pushCriteriaOnce(
+            new WithRelations(array_merge($this->withBase(), $this->withDetail())),
+            CriteriaKey::WITH
+        );
+
+        if (null !== $page) {
+            $this->pushCriteriaOnce(new FieldIsValue('page', (bool) $page));
+        }
+
+        return $this->query()
             ->whereHas('translations', function ($query) use ($slug, $locale) {
                 return $query->where('language', $this->languageIdForLocale($locale))
                              ->where('slug', $slug);
-            });
-
-        if (null !== $page) {
-            $query->where('page', (bool) $page);
-        }
-
-        return $query
+            })
             ->remember($this->defaultTtl())
             ->cacheTags($this->cacheTags())
             ->first();
@@ -69,9 +121,9 @@ class ContentRepository extends AbstractRepository
      * @param null|string $locale
      * @return ContentModel|null
      */
-    public function getPageBySlug($slug, $locale = null)
+    public function findPageBySlug($slug, $locale = null)
     {
-        return $this->getBySlug($slug, true, $locale);
+        return $this->findBySlug($slug, true, $locale);
     }
 
 
@@ -89,7 +141,7 @@ class ContentRepository extends AbstractRepository
         return [
             'contentGalleries'                      => $this->eagerLoadCachedCallable(),
             'contentGalleries.contentGalleryImages' => $this->eagerLoadCachedCallable(),
-            'translations'                          => $this->eagerLoadCachedCallable(),
+            'translations'                          => $this->eagerLoadCachedTranslationCallable(),
             'parent'                                => $this->eagerLoadCachedCallable(),
             'children'                              => $this->eagerLoadCachedCallable(),
         ];
@@ -103,8 +155,7 @@ class ContentRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'relatedproducts' => $this->eagerLoadCachedCallable(null [ CacheTags::PRODUCT ]),
-            'contents'        => $this->eagerLoadCachedCallable(null, [ CacheTags::CONTENT ]),
+            'relatedproducts' => $this->eagerLoadCachedCallable(null, [ CacheTags::PRODUCT ]),
         ];
     }
 
