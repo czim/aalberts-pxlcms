@@ -1,12 +1,12 @@
 <?php
 namespace Aalberts\Models\Scopes;
 
+use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ScopeInterface;
 
-class ForOrganizationScope implements ScopeInterface
+class ForOrganizationScope implements Scope
 {
 
     /**
@@ -21,7 +21,7 @@ class ForOrganizationScope implements ScopeInterface
 
         $builder->where($column, $this->getActiveOrganizationId());
 
-        $this->addWithInactive($builder);
+        $this->addForAnyOrganization($builder);
     }
 
     /**
@@ -106,7 +106,7 @@ class ForOrganizationScope implements ScopeInterface
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
      */
-    protected function addWithInactive(Builder $builder)
+    protected function addForAnyOrganization(Builder $builder)
     {
         $builder->macro('forAnyOrganization', function (Builder $builder) {
 
