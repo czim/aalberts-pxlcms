@@ -142,6 +142,10 @@ class ProjectRepository extends AbstractRepository
             ->first();
     }
 
+    
+    // ------------------------------------------------------------------------------
+    //      With Relations
+    // ------------------------------------------------------------------------------
 
     /**
      * Returns with parameter array to use by default

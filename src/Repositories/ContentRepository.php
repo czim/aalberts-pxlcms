@@ -74,6 +74,11 @@ class ContentRepository extends AbstractRepository
         return $this->getBySlug($slug, true, $locale);
     }
 
+
+    // ------------------------------------------------------------------------------
+    //      With Relations
+    // ------------------------------------------------------------------------------
+
     /**
      * Returns with parameter array to use by default
      *

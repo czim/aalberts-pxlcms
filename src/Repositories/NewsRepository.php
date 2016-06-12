@@ -99,6 +99,7 @@ class NewsRepository extends AbstractRepository
     public function recent($limit = 5)
     {
         return $this->query()
+            ->withoutGlobalScope(PositionOrderedScope::class)
             ->remember($this->defaultTtl())
             ->cacheTags($this->cacheTags())
             ->take($limit)->get();
