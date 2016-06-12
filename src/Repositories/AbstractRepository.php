@@ -120,14 +120,19 @@ abstract class AbstractRepository extends ExtendedRepository
      * @param null          $locale
      * @param null|int      $ttl
      * @param null|string[] $cacheTags
+     * @param null|array    $select     if set, the columns to select for the query
      * @return callable
      */
-    protected function eagerLoadTranslationCallable($locale = null, $ttl = null, $cacheTags = null)
+    protected function eagerLoadTranslationCallable($locale = null, $ttl = null, $cacheTags = null, $select = null)
     {
-        return function ($query) use ($locale, $ttl, $cacheTags) {
+        return function ($query) use ($locale, $ttl, $cacheTags, $select) {
             /** @var \Illuminate\Database\Eloquent\Builder|\Watson\Rememberable\Query\Builder $query */
 
             $query->where('language', $this->languageIdForLocale($locale));
+
+            if (is_array($select)) {
+                $query->select($select);
+            }
 
             if (null !== $ttl) {
                 $query->remember($ttl);
