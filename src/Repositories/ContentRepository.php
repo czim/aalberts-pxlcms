@@ -2,7 +2,7 @@
 namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTags;
-use App\Models\Aalberts\Cms\Content;
+use App\Models\Aalberts\Cms\Content as ContentModel;
 
 class ContentRepository extends AbstractRepository
 {
@@ -14,7 +14,7 @@ class ContentRepository extends AbstractRepository
      */
     public function model()
     {
-        return Content::class;
+        return ContentModel::class;
     }
 
     /**
@@ -22,7 +22,7 @@ class ContentRepository extends AbstractRepository
      * Cached.
      *
      * @param string $label
-     * @return null|Content
+     * @return null|ContentModel
      */
     public function findByLabel($label)
     {
@@ -41,7 +41,7 @@ class ContentRepository extends AbstractRepository
      * @param string      $slug
      * @param null|bool   $page     if a boolean, whether to forge a page = t/f check
      * @param null|string $locale
-     * @return null|Content
+     * @return null|ContentModel
      */
     public function getBySlug($slug, $page = null, $locale = null)
     {
@@ -67,7 +67,7 @@ class ContentRepository extends AbstractRepository
      *
      * @param string      $slug
      * @param null|string $locale
-     * @return Content|null
+     * @return ContentModel|null
      */
     public function getPageBySlug($slug, $locale = null)
     {

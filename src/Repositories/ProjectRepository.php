@@ -2,7 +2,7 @@
 namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTags;
-use App\Models\Aalberts\Cms\Project;
+use App\Models\Aalberts\Cms\Project as ProjectModel;
 use Czim\Repository\Criteria\Common\OrderBy;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
@@ -14,7 +14,7 @@ class ProjectRepository extends AbstractRepository
     
     public function model()
     {
-        return Project::class;
+        return ProjectModel::class;
     }
 
     /**
@@ -49,7 +49,7 @@ class ProjectRepository extends AbstractRepository
      *
      * @param string|int $find      ID or slug of the record
      * @param bool       $bySlug    if true, expects $find to be a slug, otherwise an ID
-     * @return Project
+     * @return ProjectModel
      */
     public function detail($find, $bySlug = true)
     {
@@ -70,7 +70,7 @@ class ProjectRepository extends AbstractRepository
 
     /**
      * @param string $slug
-     * @return null|Project
+     * @return null|ProjectModel
      */
     public function findBySlug($slug)
     {
