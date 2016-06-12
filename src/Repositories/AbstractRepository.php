@@ -117,6 +117,24 @@ abstract class AbstractRepository extends ExtendedRepository
     // ------------------------------------------------------------------------------
 
     /**
+     * Returns eager load callable for typical translations, which defaults to standard cache
+     * settings for the repository.
+     *
+     * @param null          $locale
+     * @param null|int      $ttl
+     * @param null|string[] $cacheTags
+     * @param null|array    $select     if set, the columns to select for the query
+     * @return callable
+     */
+    protected function eagerLoadCachedTranslationCallable($locale = null, $ttl = null, $cacheTags = null, $select = null)
+    {
+        if (null === $cacheTags) $cacheTags = $this->cacheTags();
+        if (null === $ttl)       $ttl       = $this->defaultTtl();
+        
+        return $this->eagerLoadTranslationCallable($locale, $ttl, $cacheTags, $select);
+    }
+
+    /**
      * @param null          $locale
      * @param null|int      $ttl
      * @param null|string[] $cacheTags
