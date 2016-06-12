@@ -3,6 +3,8 @@ namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTags;
 use App\Models\Aalberts\Cms\News as NewsModel;
+use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
+use Czim\Repository\Criteria\Common\FieldIsValue;
 use Czim\Repository\Criteria\Common\OrderBy;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
@@ -24,7 +26,7 @@ class NewsRepository extends AbstractRepository
     {
         return parent::defaultCriteria()->merge([
             CriteriaKey::WITH  => new WithRelations($this->withBase()),
-            CriteriaKey::ORDER => new OrderBy('date', 'desc')
+            CriteriaKey::ORDER => new OrderBy(['date' => 'desc', 'createdts' => 'desc' ])
         ]);
     }
 
@@ -32,12 +34,16 @@ class NewsRepository extends AbstractRepository
      * Returns news items for index listing.
      * Cached.
      *
-     * @param int $count
+     * @param int         $count
+     * @param null|string $type
      * @return mixed
      */
-    public function index($count = 10)
+    public function index($count = 10, $type = null)
     {
+        $this->forTypeOnce($type);
+
         return $this->query()
+            ->withoutGlobalScope(PositionOrderedScope::class)
             ->remember($this->defaultTtl())
             ->cacheTags($this->cacheTags())
             ->paginate($count);
@@ -97,6 +103,72 @@ class NewsRepository extends AbstractRepository
             ->cacheTags($this->cacheTags())
             ->take($limit)->get();
     }
+    
+    /**
+     * Returns 'previous' record data given the current record.
+     * Cached.
+     *
+     * @param NewsModel   $news
+     * @param null|string $type
+     */
+    public function previous(NewsModel $news, $type = null)
+    {
+        $this->withoutRelationsOnce()
+             ->pushCriteriaOnce(new WithRelations($this->withNextOrPrevious()), CriteriaKey::WITH)
+             ->forTypeOnce($type);
+
+        return $this->query()
+            ->withoutGlobalScope(PositionOrderedScope::class)
+            ->select(['id', 'label'])
+            ->where('id', '!=', $news->id)
+            ->where(function ($query) use ($news) {
+                $query->where('date', '<', $news->date->timestamp)
+                    ->orWhere(function ($query) use ($news) {
+                        $query->where('date', '=', $news->date->timestamp)
+                            ->where('createdts', '<=', $news->createdts);
+                    });
+            })
+            ->remember($this->defaultTtl())
+            ->cacheTags($this->cacheTags())
+            ->take(1)
+            ->first();
+    }
+
+    /**
+     * Returns 'next' record data given the current record.
+     * Cached.
+     *
+     * @param NewsModel   $news
+     * @param null|string $type
+     * @return
+     */
+    public function next(NewsModel $news, $type = null)
+    {
+        $this->reverseDirectionOnce()
+             ->pushCriteriaOnce(new WithRelations($this->withNextOrPrevious()), CriteriaKey::WITH)
+             ->forTypeOnce($type);
+
+        return $this->query()
+            ->withoutGlobalScope(PositionOrderedScope::class)
+            ->select(['id', 'label'])
+            ->where('id', '!=', $news->id)
+            ->where(function ($query) use ($news) {
+                $query->where('date', '>', $news->date->timestamp)
+                    ->orWhere(function ($query) use ($news) {
+                        $query->where('date', '=', $news->date->timestamp)
+                            ->where('createdts', '>=', $news->createdts);
+                    });
+            })
+            ->remember($this->defaultTtl())
+            ->cacheTags($this->cacheTags())
+            ->take(1)
+            ->first();
+    }
+
+
+    // ------------------------------------------------------------------------------
+    //      With Relations
+    // ------------------------------------------------------------------------------
 
     /**
      * Returns with parameter array to use by default
@@ -108,7 +180,7 @@ class NewsRepository extends AbstractRepository
         return [
             'newsGalleries'                   => $this->eagerLoadCachedCallable(),
             'newsGalleries.newsGalleryImages' => $this->eagerLoadCachedCallable(),
-            'translations'                    => $this->eagerLoadCachedCallable(),
+            'translations'                    => $this->eagerLoadCachedTranslationCallable(),
         ];
     }
 
@@ -123,6 +195,64 @@ class NewsRepository extends AbstractRepository
             'relatedproducts' => $this->eagerLoadCachedCallable(null  [ CacheTags::PRODUCT ]),
             'contents'        => $this->eagerLoadCachedCallable(null, [ CacheTags::CONTENT ]),
         ];
+    }
+
+    /**
+     * Returns with parameter array to use for next/previous lookup
+     * 
+     * @return array
+     */
+    protected function withNextOrPrevious()
+    {
+        return [
+            'translations' => $this->eagerLoadCachedTranslationCallable(
+                null, null, null,
+                [ 'id', 'entry', 'language', 'slug', 'title' ]
+            ),
+        ];
+    }
+
+
+    // ------------------------------------------------------------------------------
+    //      Criteria
+    // ------------------------------------------------------------------------------
+
+    /**
+     * Applies criteria once to reverse the standard sorting order
+     * 
+     * @return $this
+     */
+    protected function reverseDirectionOnce()
+    {
+        $this->pushCriteriaOnce(
+            new OrderBy([ 'date' => 'asc', 'createdts' => 'asc' ]),
+            CriteriaKey::ORDER
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function withoutRelationsOnce()
+    {
+        $this->removeCriteriaOnce(CriteriaKey::WITH);
+
+        return $this;
+    }
+
+    /**
+     * @param null|string $type
+     * @return $this
+     */
+    protected function forTypeOnce($type)
+    {
+        if ($type) {
+            $this->pushCriteriaOnce(new FieldIsValue('type', $type));
+        }
+
+        return $this;
     }
 
 }

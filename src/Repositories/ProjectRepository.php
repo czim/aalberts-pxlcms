@@ -3,6 +3,7 @@ namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTags;
 use App\Models\Aalberts\Cms\Project as ProjectModel;
+use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Czim\Repository\Criteria\Common\OrderBy;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
@@ -24,7 +25,7 @@ class ProjectRepository extends AbstractRepository
     {
         return parent::defaultCriteria()->merge([
             CriteriaKey::WITH  => new WithRelations($this->withBase()),
-            CriteriaKey::ORDER => new OrderBy('position', 'asc')
+            //CriteriaKey::ORDER => new OrderBy('position', 'asc')
         ]);
     }
 
@@ -96,6 +97,53 @@ class ProjectRepository extends AbstractRepository
     }
 
     /**
+     * Returns 'previous' record data given the current record.
+     * Cached.
+     *
+     * @param ProjectModel $project
+     * @param null|string  $type
+     */
+    public function previous(ProjectModel $project, $type = null)
+    {
+        $this->withoutRelationsOnce()
+             ->pushCriteriaOnce(new WithRelations($this->withNextOrPrevious()), CriteriaKey::WITH);
+
+        return $this->query()
+            ->select(['id', 'label'])
+            ->where('id', '!=', $project->id)
+            ->where('position', '>', $project->position)
+            ->remember($this->defaultTtl())
+            ->cacheTags($this->cacheTags())
+            ->take(1)
+            ->first();
+    }
+
+    /**
+     * Returns 'next' record data given the current record.
+     * Cached.
+     *
+     * @param ProjectModel $project
+     * @param null|string  $type
+     * @return
+     */
+    public function next(ProjectModel $project, $type = null)
+    {
+        $this->reverseDirectionOnce()
+             ->pushCriteriaOnce(new WithRelations($this->withNextOrPrevious()), CriteriaKey::WITH);
+
+        return $this->query()
+            ->withoutGlobalScope(PositionOrderedScope::class)
+            ->select(['id', 'label'])
+            ->where('id', '!=', $project->id)
+            ->where('position', '<', $project->position)
+            ->remember($this->defaultTtl())
+            ->cacheTags($this->cacheTags())
+            ->take(1)
+            ->first();
+    }
+
+
+    /**
      * Returns with parameter array to use by default
      *
      * @return array
@@ -105,7 +153,7 @@ class ProjectRepository extends AbstractRepository
         return [
             'projectGalleries'                      => $this->eagerLoadCachedCallable(),
             'projectGalleries.projectGalleryImages' => $this->eagerLoadCachedCallable(),
-            'translations'                          => $this->eagerLoadCachedCallable(),
+            'translations'                          => $this->eagerLoadCachedTranslationCallable(),
         ];
     }
 
@@ -119,6 +167,50 @@ class ProjectRepository extends AbstractRepository
         return [
             'contents' => $this->eagerLoadCachedCallable(null, [ CacheTags::CONTENT ]),
         ];
+    }
+
+    /**
+     * Returns with parameter array to use for next/previous lookup
+     *
+     * @return array
+     */
+    protected function withNextOrPrevious()
+    {
+        return [
+            'translations' => $this->eagerLoadCachedTranslationCallable(
+                null, null, null,
+                [ 'id', 'entry', 'language', 'slug', 'title' ]
+            ),
+        ];
+    }
+
+    // ------------------------------------------------------------------------------
+    //      Criteria
+    // ------------------------------------------------------------------------------
+
+    /**
+     * Applies criteria once to reverse the standard sorting order
+     *
+     * @return $this
+     */
+    protected function reverseDirectionOnce()
+    {
+        $this->pushCriteriaOnce(
+            new OrderBy([ 'position' => 'desc' ]),
+            CriteriaKey::ORDER
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function withoutRelationsOnce()
+    {
+        $this->removeCriteriaOnce(CriteriaKey::WITH);
+
+        return $this;
     }
 
 }
