@@ -1,6 +1,7 @@
 <?php
 namespace Aalberts\Commands;
 
+use Aalberts\Repositories\Cache\CmsCacheChecker;
 use Illuminate\Console\Command;
 
 /**
@@ -17,8 +18,14 @@ class CmsCacheExpiryCheckCommand extends Command
 
     public function handle()
     {
-
-
+        $cacheChecker = new CmsCacheChecker();
+        
+        if ($cacheChecker->checkNews()) $this->comment('News cache flushed.');
+        if ($cacheChecker->checkContent()) $this->comment('Content cache flushed.');
+        if ($cacheChecker->checkProjects()) $this->comment('Projects cache flushed.');
+        if ($cacheChecker->checkDownloads()) $this->comment('Downloads cache flushed.');
+        
+        
         $this->info('Checked CMS cache expiry.');
     }
 
