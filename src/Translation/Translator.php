@@ -60,7 +60,7 @@ class Translator implements TranslatorInterface
 
             foreach ($phrase->translations as $translation) {
                 $locale = $this->getLocaleForLanguageId($translation->language);
-                $this->addTranslationToCache($phrase->phrase, $translation, $locale);
+                $this->addTranslationToCache($phrase->phrase, $translation->translation, $locale);
                 $localesToDo = array_diff($localesToDo, [ $locale ]);
             }
 
