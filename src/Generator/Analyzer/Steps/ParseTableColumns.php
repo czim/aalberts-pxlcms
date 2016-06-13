@@ -102,6 +102,7 @@ class ParseTableColumns extends AbstractProcessStep
                 'scope_active'          => null,
                 'scope_position'        => null,
                 'filter_products_column' => ($prefix == 'filter'),
+                'presenter'             => null,
             ];
 
             // translated?

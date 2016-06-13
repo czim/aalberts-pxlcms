@@ -174,6 +174,13 @@ class ManualAdjustments extends AbstractProcessStep
         'cms_function_ml' => 'project_function_translations',   // ?
     ];
 
+    protected $presenters = [
+        'cms_content'  => 'Cms\\ContentPresenter',
+        'cms_news'     => 'Cms\\NewsPresenter',
+        'cms_project'  => 'Cms\\ProjectPresenter',
+        'cmp_supplier' => 'Compano\\SupplierPresenter',
+    ];
+
 
     protected function process()
     {
@@ -185,6 +192,8 @@ class ManualAdjustments extends AbstractProcessStep
         $this->setHasManyThroughRelations();
         
         $this->setCustomListifyScopes();
+
+        $this->setPresenters();
     }
 
     /**
@@ -385,6 +394,12 @@ class ManualAdjustments extends AbstractProcessStep
 
         // todo: others?
         // cms_productgroup_filtergroup     no idea what the position should be scoped against..
+    }
 
+    protected function setPresenters()
+    {
+        foreach ($this->presenters as $table => $namespace) {
+            $this->context->output['models'][ $table ][ 'presenter' ] = $namespace;
+        }
     }
 }

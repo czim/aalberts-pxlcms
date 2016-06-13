@@ -13,7 +13,8 @@ class StubReplaceImportsAndTraits extends PxlCmsStubReplaceImportsAndTraits
     {
         return array_merge(
             parent::collectTraits(),
-            $this->collectOrganizationTrait()
+            $this->collectOrganizationTrait(),
+            $this->collectPresenterTrait()
         );
     }
 
@@ -27,6 +28,17 @@ class StubReplaceImportsAndTraits extends PxlCmsStubReplaceImportsAndTraits
 
         return [ 'ForOrganization' ];
     }
+
+    /**
+     * @return array
+     */
+    protected function collectPresenterTrait()
+    {
+        if ( ! $this->data['presenter']) return [];
+
+        return [ 'PresentableTrait' ];
+    }
+
 
 
     /**
@@ -51,6 +63,12 @@ class StubReplaceImportsAndTraits extends PxlCmsStubReplaceImportsAndTraits
 
         if ($this->data['has_organization']) {
             $lines[] = 'Aalberts\\Models\\Scopes\\ForOrganization';
+        }
+
+        if ($this->data['presenter']) {
+            $lines[] = config('pxlcms.generator.models.traits.presentable_fqn');
+            $lines[] = rtrim(config('pxlcms.generator.namespace.presenters'), '\\')
+                     . '\\' . $this->data['presenter'];
         }
 
         return $lines;
