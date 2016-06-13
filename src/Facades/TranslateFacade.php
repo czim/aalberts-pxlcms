@@ -3,6 +3,11 @@ namespace Aalberts\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * Class TranslateFacade
+ *
+ * @see \Aalberts\Translation\Translator
+ */
 class TranslateFacade extends Facade
 {
 
