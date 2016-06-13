@@ -2,20 +2,19 @@
 namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTags;
-use App\Models\Aalberts\Cms\Country as CountryModel;
-use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
+use App\Models\Aalberts\Cms\Language as LanguageModel;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
 use Illuminate\Database\Eloquent\Collection;
 
-class CountryRepository extends AbstractRepository
+class LanguageRepository extends AbstractRepository
 {
     protected $translated = true;
     protected $cacheTags = [ CacheTags::COUNTRY ];
 
     public function model()
     {
-        return CountryModel::class;
+        return LanguageModel::class;
     }
 
     /**
@@ -34,7 +33,7 @@ class CountryRepository extends AbstractRepository
      * Cached.
      *
      * @param string $code
-     * @return null|CountryModel
+     * @return null|LanguageModel
      */
     public function findByCode($code)
     {
@@ -51,41 +50,58 @@ class CountryRepository extends AbstractRepository
     }
 
     /**
-     * Returns active / available for this organization.
-     * Cached.
-     * 
-     * @return Collection|CountryModel[]
-     */
-    public function available()
-    {
-        return $this->query()
-            ->withoutGlobalScope(PositionOrderedScope::class)
-            ->join('cms_organization_language', 'cms_organization_language.language', '=', 'cms_language.id')
-            ->where('cms_organization_language.organization', config('aalberts.organization'))
-            ->orderBy('cms_organization_language.default', 'desc')
-            ->orderBy('position', 'asc')
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
-            ->get();
-    }
-
-    /**
-     * Returns default for this organization.
+     * Looks up a content entry by its id.
      * Cached.
      *
-     * @return null|CountryModel
+     * @param int $id
+     * @return null|LanguageModel
      */
-    public function defaultAvailable()
+    public function findById($id)
     {
+        $this->pushCriteriaOnce(
+            new WithRelations(array_merge($this->withBase(), $this->withDetail())),
+            CriteriaKey::WITH
+        );
+
         return $this->query()
-            ->join('cms_organization_country', 'cms_organization_country.language', '=', 'cms_country.id')
-            ->where('cms_organization_country.organization', config('aalberts.organization'))
-            ->where('cms_organization_country.default', true)
+            ->where('id',  $id)
             ->remember($this->defaultTtl())
             ->cacheTags($this->cacheTags())
             ->first();
     }
 
+    /**
+     * Returns active / available for this organization.
+     * Cached.
+     *
+     * @return Collection|LanguageModel[]
+     */
+    public function available()
+    {
+        return $this->query()
+            ->join('cms_organization_language', 'cms_organization_language.language', '=', 'cms_language.id')
+            ->where('cms_organization_language.organization', config('aalberts.organization'))
+            ->remember($this->defaultTtl())
+            ->cacheTags($this->cacheTags())
+            ->get();
+    }
+    
+    /**
+     * Returns default for this organization.
+     * Cached.
+     *
+     * @return null|LanguageModel
+     */
+    public function defaultAvailable()
+    {
+        return $this->query()
+            ->join('cms_organization_language', 'cms_organization_language.language', '=', 'cms_language.id')
+            ->where('cms_organization_language.organization', config('aalberts.organization'))
+            ->where('cms_organization_language.default', true)
+            ->remember($this->defaultTtl())
+            ->cacheTags($this->cacheTags())
+            ->first();
+    }
 
 
     // ------------------------------------------------------------------------------
@@ -110,8 +126,7 @@ class CountryRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'languages' => $this->eagerLoadCachedCallable(null, [ CacheTags::COUNTRY ]),
-            'suppliers' => $this->eagerLoadCachedCallable(null, [ CacheTags::CMP_SUPPLIER ]),
+            'countries' => $this->eagerLoadCachedCallable(null, [ CacheTags::COUNTRY ]),
         ];
     }
 
