@@ -193,7 +193,7 @@ class NewsRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'relatedproducts' => $this->eagerLoadCachedCallable(null  [ CacheTags::PRODUCT ]),
+            'relatedproducts' => $this->eagerLoadCachedCallable(null  [ CacheTags::CMP_PRODUCT ]),
             'contents'        => $this->eagerLoadCachedCallable(null, [ CacheTags::CONTENT ]),
         ];
     }

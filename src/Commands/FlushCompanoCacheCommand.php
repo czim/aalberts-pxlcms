@@ -14,7 +14,10 @@ class FlushCompanoCacheCommand extends Command
     public function handle()
     {
         Cache::tags([
-            CacheTags::PRODUCT,
+            CacheTags::CMP_PRODUCT,
+            CacheTags::CMP_SUPPLIER,
+            CacheTags::CMP_MISC,
+            
             CacheTags::TOP_PRODUCT,
         ])->flush();
 
