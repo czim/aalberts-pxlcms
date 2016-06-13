@@ -340,8 +340,6 @@ class Translator implements TranslatorInterface
     {
         $this->logger->warning("Missing translation for phrase: '{$phrase}'.");
 
-        dd('logged');
-
         event( new DetectedMissingTranslationPhrase($phrase) );
     }
 
