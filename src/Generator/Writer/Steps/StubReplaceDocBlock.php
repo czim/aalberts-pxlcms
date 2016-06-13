@@ -25,12 +25,12 @@ class StubReplaceDocBlock extends PxlCmsStubReplaceDocBlock
             $rows[] = [
                 'tag'  => 'property',
                 'type' => $type,
-                'name' => '$created_at',
+                'name' => '$createdts',
             ];
             $rows[] = [
                 'tag'  => 'property',
                 'type' => $type,
-                'name' => '$updated_at',
+                'name' => '$modifiedts',
             ];
 
         }
