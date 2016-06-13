@@ -17,9 +17,10 @@ Add this line of code to the providers array located in your `config/app.php` fi
     Aalberts\AalbertsCmsServiceProvider::class,
 ```
 
-And add the Translate facade alias to the same file:
+And add the facade aliases to the same file:
 
 ``` php
+    'Aalberts'  => Aalberts\Facades\AalbertsFacade::class,
     'Translate' => Aalberts\Facades\TranslateFacade::class,
 ```
 
