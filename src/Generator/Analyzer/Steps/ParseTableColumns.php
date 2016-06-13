@@ -119,6 +119,7 @@ class ParseTableColumns extends AbstractProcessStep
             }
 
             $parsedColumns = [];
+            $timestampColumnCount = 0;
 
             foreach ($columns as $column) {
                 $name = array_get($column, 'Field');
@@ -127,7 +128,7 @@ class ParseTableColumns extends AbstractProcessStep
                 $parsedColumns[ $name ] = $this->translateColumnData($column);
 
                 if ($name === 'createdts' || $name === 'modifiedts') {
-                    $tableData['timestamps'] = true;
+                    $timestampColumnCount++;
                 }
 
                 if ($name === 'position') {
@@ -137,6 +138,11 @@ class ParseTableColumns extends AbstractProcessStep
                 if ($name == 'organization' && $parsedColumns[ $name ]['type'] == 'integer') {
                     $tableData['has_organization'] = true;
                 }
+            }
+
+            // timestamps only if both columns present
+            if ($timestampColumnCount > 1) {
+                $tableData['timestamps'] = true;
             }
 
             foreach ($parsedColumns as $name => $column) {
