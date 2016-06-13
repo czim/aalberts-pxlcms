@@ -14,6 +14,8 @@ return [
     // Code (in Compano) for the organization (VSH, Seppelfricke, etc)
     'salesorganizationcode' => env('AALBERTS_ORGANIZATION_KEY', 'VSH'),
 
+    // Slug in cmp_suppliers table to use for default supplier
+    'supplier-slug' => null,
 
     /*
     |--------------------------------------------------------------------------
