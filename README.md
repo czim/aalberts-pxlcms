@@ -29,6 +29,14 @@ Publish the configuration:
 $ php artisan vendor:publish
 ```
 
+Set up event listening for missing translation phrases. Add the following pair to your `EventServiceProvider` class:
+
+``` php
+    \Aalberts\Events\DetectedMissingTranslationPhrase::class => [
+        \Aalberts\Listeners\MissingTranslationPhraseListener::class
+    ], 
+```
+
 ## Cache
 
 This package requires that a cache driver be used that supports tagging (such as Redis).
