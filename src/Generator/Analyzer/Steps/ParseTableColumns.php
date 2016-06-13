@@ -80,6 +80,7 @@ class ParseTableColumns extends AbstractProcessStep
                 'is_listified'          => false,
                 'ordered_by'            => [],
                 'timestamps'            => null,
+                'timestamp_onlycreated' => false,
                 'normal_fillable'       => [],
                 'translated_fillable'   => [],
                 'hidden'                => [],
@@ -144,6 +145,8 @@ class ParseTableColumns extends AbstractProcessStep
             // timestamps only if both columns present
             if ($timestampColumnCount > 1) {
                 $tableData['timestamps'] = true;
+            } elseif ($timestampColumnCount == 1) {
+                $tableData['timestamp_onlycreated'] = true;
             }
 
             foreach ($parsedColumns as $name => $column) {

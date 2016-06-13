@@ -18,7 +18,7 @@ class StubReplaceDocBlock extends PxlCmsStubReplaceDocBlock
 
         $rows = parent::collectIdeHelperDirectAttributeRows();
 
-        if ($this->data['timestamps']) {
+        if ($this->data['timestamps'] || $this->data['timestamp_onlycreated']) {
 
             $type = config('pxlcms.generator.models.date_property_fqn', '\\Carbon\\Carbon');
 
@@ -27,12 +27,14 @@ class StubReplaceDocBlock extends PxlCmsStubReplaceDocBlock
                 'type' => $type,
                 'name' => '$createdts',
             ];
-            $rows[] = [
-                'tag'  => 'property',
-                'type' => $type,
-                'name' => '$modifiedts',
-            ];
 
+            if ($this->data['timestamps']) {
+                $rows[] = [
+                    'tag'  => 'property',
+                    'type' => $type,
+                    'name' => '$modifiedts',
+                ];
+            }
         }
 
         return $rows;
