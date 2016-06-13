@@ -95,8 +95,8 @@ class AalbertsCmsServiceProvider extends ServiceProvider
 
     protected function bindFacades()
     {
-        $this->app->singleton('aalberts-helper', function () {
-            return new AalbertsHelper;
+        $this->app->singleton('aalberts-helper', function (Application $app) {
+            return $app->make(AalbertsHelper::class);
         });
 
         $this->app->singleton('aalberts-translate', function (Application $app) {
