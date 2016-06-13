@@ -118,6 +118,30 @@ class Translator implements TranslatorInterface
         return $this->checkCacheUpdateAgainstTime($translationUpdate);
     }
 
+    /**
+     * Adds a phrase to the database, if it does not yet exist.
+     *
+     * @param string $phrase
+     * @return boolean
+     */
+    public function addPhrase($phrase)
+    {
+        $existing = $this->getPhraseByLabel($phrase);
+        if ($existing) return false;
+
+        $new = new Phrase([
+            'phrase'       => $phrase,
+            'organization' => config('aalberts.organization'),
+            'active'       => true,
+        ]);
+
+        if ($new->save()) {
+            $this->logger->debug("Added phrase to database: '{$phrase}'.");
+        }
+
+        return false;
+    }
+
 
     /**
      * Retrieves a single translation from the database and returns it.

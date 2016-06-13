@@ -33,4 +33,12 @@ interface TranslatorInterface
      */
     public function flushCache();
 
+    /**
+     * Adds a phrase to the database, if it does not yet exist.
+     *
+     * @param string $phrase
+     * @return boolean
+     */
+    public function addPhrase($phrase);
+
 }
