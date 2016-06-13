@@ -1,8 +1,10 @@
 <?php
 namespace Aalberts\Translation;
 
+use Aalberts\Contracts\NoticesLoggerInterface;
 use Aalberts\Contracts\TranslatorInterface;
 use Aalberts\Enums\CacheTags;
+use Aalberts\Events\DetectedMissingTranslationPhrase;
 use App\Models\Aalberts\Cms\Phrase;
 use App\Models\Aalberts\Cms\Translation;
 use Cache;
@@ -24,6 +26,19 @@ class Translator implements TranslatorInterface
      * @var array
      */
     protected static $memory = [];
+
+    /**
+     * @var NoticesLoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @param NoticesLoggerInterface $logger
+     */
+    public function __construct(NoticesLoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * Translates a label into the current language
@@ -118,6 +133,7 @@ class Translator implements TranslatorInterface
         $phrase = $this->getPhraseByLabel($label);
 
         if ( ! $phrase) {
+            $this->handleMissingTranslationPhrase($label);
             return $label;
         }
 
@@ -313,6 +329,20 @@ class Translator implements TranslatorInterface
     protected function getLanguageIdForLocale($locale)
     {
         return (new Phrase)->lookUpLanguageIdForLocale($locale);
+    }
+
+    /**
+     * Logs a warning about a translations phrase not being present in the database
+     *
+     * @param string $phrase
+     */
+    protected function handleMissingTranslationPhrase($phrase)
+    {
+        $this->logger->warning("Missing translation for phrase: '{$phrase}'.");
+
+        dd('logged');
+
+        event( new DetectedMissingTranslationPhrase($phrase) );
     }
 
 }

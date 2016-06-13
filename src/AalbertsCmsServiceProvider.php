@@ -1,6 +1,9 @@
 <?php
 namespace Aalberts;
 
+use Aalberts\Contracts\NoticesLoggerInterface;
+use Aalberts\Loggers\NoticesLogger;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 class AalbertsCmsServiceProvider extends ServiceProvider
@@ -29,6 +32,7 @@ class AalbertsCmsServiceProvider extends ServiceProvider
         );
 
         $this->bindFacades();
+        $this->bindLoggers();
     }
 
     /**
@@ -91,8 +95,15 @@ class AalbertsCmsServiceProvider extends ServiceProvider
 
     protected function bindFacades()
     {
-        $this->app->singleton('aalberts-translate', function () {
-            return new Translation\Translator();
+        $this->app->singleton('aalberts-translate', function (Application $app) {
+            return $app->make(Translation\Translator::class);
+        });
+    }
+
+    protected function bindLoggers()
+    {
+        $this->app->singleton(NoticesLoggerInterface::class, function () {
+            return new NoticesLogger();
         });
     }
 
