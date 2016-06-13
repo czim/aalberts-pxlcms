@@ -181,6 +181,7 @@ return [
             'models'       => 'App\\Models\\Aalberts',
             'requests'     => 'App\\Http\\Requests',
             'repositories' => 'App\\Repositories',
+            'presenters'   => 'Aalberts\\Models\\Presenters',
         ],
 
         'aesthetics' => [
@@ -218,6 +219,7 @@ return [
                 'scope_active_fqn'        => "Czim\\PxlCms\\Models\\Scopes\\OnlyActive",
                 'scope_position_fqn'      => "Czim\\PxlCms\\Models\\Scopes\\PositionOrdered",
                 'scope_cmsordered_fqn'    => "Czim\\PxlCms\\Models\\Scopes\\CmsOrdered",
+                'presentable_fqn'         => "Laracasts\\Presenter\\PresentableTrait",
             ],
 
             // How to handle default/global scopes for models
