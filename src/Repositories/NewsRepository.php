@@ -42,10 +42,8 @@ class NewsRepository extends AbstractRepository
     {
         $this->forTypeOnce($type);
 
-        return $this->query()
+        return $this->cachedQuery()
             ->withoutGlobalScope(PositionOrderedScope::class)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->paginate($count);
     }
 
@@ -68,9 +66,8 @@ class NewsRepository extends AbstractRepository
             return $this->findBySlug($find);
         }
         
-        return $this->where('id', (int) $find)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
+        return $this->cachedQuery()
+            ->where('id', (int) $find)
             ->first();
     }
 
@@ -83,9 +80,7 @@ class NewsRepository extends AbstractRepository
      */
     public function findBySlug($slug)
     {
-        return $this->query()
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
+        return $this->cachedQuery()
             ->whereTranslation('slug', $slug)
             ->first();
     }
@@ -98,10 +93,8 @@ class NewsRepository extends AbstractRepository
      */
     public function recent($limit = 5)
     {
-        return $this->query()
+        return $this->cachedQuery()
             ->withoutGlobalScope(PositionOrderedScope::class)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->take($limit)->get();
     }
     
@@ -118,7 +111,7 @@ class NewsRepository extends AbstractRepository
              ->pushCriteriaOnce(new WithRelations($this->withNextOrPrevious()), CriteriaKey::WITH)
              ->forTypeOnce($type);
 
-        return $this->query()
+        return $this->cachedQuery()
             ->withoutGlobalScope(PositionOrderedScope::class)
             ->select(['id', 'label'])
             ->where('id', '!=', $news->id)
@@ -129,8 +122,6 @@ class NewsRepository extends AbstractRepository
                             ->where('createdts', '<=', $news->createdts);
                     });
             })
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->take(1)
             ->first();
     }
@@ -149,7 +140,7 @@ class NewsRepository extends AbstractRepository
              ->pushCriteriaOnce(new WithRelations($this->withNextOrPrevious()), CriteriaKey::WITH)
              ->forTypeOnce($type);
 
-        return $this->query()
+        return $this->cachedQuery()
             ->withoutGlobalScope(PositionOrderedScope::class)
             ->select(['id', 'label'])
             ->where('id', '!=', $news->id)
@@ -160,8 +151,6 @@ class NewsRepository extends AbstractRepository
                             ->where('createdts', '>=', $news->createdts);
                     });
             })
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->take(1)
             ->first();
     }
