@@ -42,10 +42,8 @@ class ContentRepository extends AbstractRepository
             CriteriaKey::WITH
         );
 
-        return $this->query()
+        return $this->cachedQuery()
             ->where('label', $label)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->first();
     }
 
@@ -72,11 +70,9 @@ class ContentRepository extends AbstractRepository
             ), CriteriaKey::WITH);
         }
 
-        $children = $this->query()
+        $children = $this->cachedQuery()
             ->where('page', true)
             ->where('parent', $parent->id)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->get();
 
         return $children;
@@ -103,13 +99,11 @@ class ContentRepository extends AbstractRepository
             $this->pushCriteriaOnce(new FieldIsValue('page', (bool) $page));
         }
 
-        return $this->query()
+        return $this->cachedQuery()
             ->whereHas('translations', function ($query) use ($slug, $locale) {
                 return $query->where('language', $this->languageIdForLocale($locale))
                              ->where('slug', $slug);
             })
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->first();
     }
 

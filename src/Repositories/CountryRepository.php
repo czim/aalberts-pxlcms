@@ -43,10 +43,8 @@ class CountryRepository extends AbstractRepository
             CriteriaKey::WITH
         );
 
-        return $this->query()
+        return $this->cachedQuery()
             ->where('code',  $code)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->first();
     }
 
@@ -58,14 +56,12 @@ class CountryRepository extends AbstractRepository
      */
     public function available()
     {
-        return $this->query()
+        return $this->cachedQuery()
             ->withoutGlobalScope(PositionOrderedScope::class)
             ->join('cms_organization_language', 'cms_organization_language.language', '=', 'cms_language.id')
             ->where('cms_organization_language.organization', config('aalberts.organization'))
             ->orderBy('cms_organization_language.default', 'desc')
             ->orderBy('position', 'asc')
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->get();
     }
 
@@ -77,12 +73,10 @@ class CountryRepository extends AbstractRepository
      */
     public function defaultAvailable()
     {
-        return $this->query()
+        return $this->cachedQuery()
             ->join('cms_organization_country', 'cms_organization_country.language', '=', 'cms_country.id')
             ->where('cms_organization_country.organization', config('aalberts.organization'))
             ->where('cms_organization_country.default', true)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->first();
     }
 

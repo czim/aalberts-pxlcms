@@ -42,10 +42,8 @@ class LanguageRepository extends AbstractRepository
             CriteriaKey::WITH
         );
 
-        return $this->query()
+        return $this->cachedQuery()
             ->where('code',  $code)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->first();
     }
 
@@ -63,10 +61,8 @@ class LanguageRepository extends AbstractRepository
             CriteriaKey::WITH
         );
 
-        return $this->query()
+        return $this->cachedQuery()
             ->where('id',  $id)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->first();
     }
 
@@ -78,11 +74,9 @@ class LanguageRepository extends AbstractRepository
      */
     public function available()
     {
-        return $this->query()
+        return $this->cachedQuery()
             ->join('cms_organization_language', 'cms_organization_language.language', '=', 'cms_language.id')
             ->where('cms_organization_language.organization', config('aalberts.organization'))
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->get();
     }
     
@@ -94,12 +88,10 @@ class LanguageRepository extends AbstractRepository
      */
     public function defaultAvailable()
     {
-        return $this->query()
+        return $this->cachedQuery()
             ->join('cms_organization_language', 'cms_organization_language.language', '=', 'cms_language.id')
             ->where('cms_organization_language.organization', config('aalberts.organization'))
             ->where('cms_organization_language.default', true)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->first();
     }
 

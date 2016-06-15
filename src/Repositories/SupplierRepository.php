@@ -22,7 +22,7 @@ class SupplierRepository extends AbstractRepository
     public function defaultCriteria()
     {
         return parent::defaultCriteria()->merge([
-            CriteriaKey::WITH  => new WithRelations($this->withBase()),
+            CriteriaKey::WITH => new WithRelations($this->withBase()),
         ]);
     }
 
@@ -41,10 +41,8 @@ class SupplierRepository extends AbstractRepository
             CriteriaKey::WITH
         );
 
-        return $this->query()
+        return $this->cachedQuery()
             ->where('slug',  $slug)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->first();
     }
 

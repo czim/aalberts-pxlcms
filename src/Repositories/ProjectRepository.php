@@ -7,6 +7,7 @@ use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Czim\Repository\Criteria\Common\OrderBy;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProjectRepository extends AbstractRepository
 {
@@ -38,9 +39,7 @@ class ProjectRepository extends AbstractRepository
      */
     public function index($count = 6)
     {
-        return $this->query()
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
+        return $this->cachedQuery()
             ->paginate($count);
     }
 
@@ -63,9 +62,8 @@ class ProjectRepository extends AbstractRepository
             return $this->findBySlug($find);
         }
 
-        return $this->where('id', (int) $find)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
+        return $this->cachedQuery()
+            ->where('id', (int) $find)
             ->first();
     }
 
@@ -75,9 +73,7 @@ class ProjectRepository extends AbstractRepository
      */
     public function findBySlug($slug)
     {
-        return $this->query()
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
+        return $this->cachedQuery()
             ->whereTranslation('slug', $slug)
             ->first();
     }
@@ -87,12 +83,11 @@ class ProjectRepository extends AbstractRepository
      * Cached.
      *
      * @param int $limit
+     * @return array|Collection|ProjectModel[]
      */
     public function recent($limit = 3)
     {
-        return $this->query()
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
+        return $this->cachedQuery()
             ->take($limit)->get();
     }
 
@@ -108,12 +103,10 @@ class ProjectRepository extends AbstractRepository
         $this->withoutRelationsOnce()
              ->pushCriteriaOnce(new WithRelations($this->withNextOrPrevious()), CriteriaKey::WITH);
 
-        return $this->query()
+        return $this->cachedQuery()
             ->select(['id', 'label'])
             ->where('id', '!=', $project->id)
             ->where('position', '>', $project->position)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->take(1)
             ->first();
     }
@@ -131,13 +124,11 @@ class ProjectRepository extends AbstractRepository
         $this->reverseDirectionOnce()
              ->pushCriteriaOnce(new WithRelations($this->withNextOrPrevious()), CriteriaKey::WITH);
 
-        return $this->query()
+        return $this->cachedQuery()
             ->withoutGlobalScope(PositionOrderedScope::class)
             ->select(['id', 'label'])
             ->where('id', '!=', $project->id)
             ->where('position', '<', $project->position)
-            ->remember($this->defaultTtl())
-            ->cacheTags($this->cacheTags())
             ->take(1)
             ->first();
     }

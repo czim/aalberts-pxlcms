@@ -5,6 +5,7 @@ use Aalberts\Models\CmsModel;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
 use Czim\Repository\ExtendedRepository;
+use Illuminate\Database\Eloquent\Builder;
 
 abstract class AbstractRepository extends ExtendedRepository
 {
@@ -79,6 +80,25 @@ abstract class AbstractRepository extends ExtendedRepository
     protected function cacheTags()
     {
         return $this->cacheTags;
+    }
+
+    /**
+     * Returns a standard repository query, with caching enabled.
+     * Applies defaults if not set.
+     *
+     * @param null $ttl
+     * @param null $cacheTags
+     * @return Builder|\Watson\Rememberable\Query\Builder
+     */
+    public function cachedQuery($ttl = null, $cacheTags = null)
+    {
+        if (null === $ttl)       $ttl       = $this->defaultTtl();
+        if (null === $cacheTags) $cacheTags = $this->cacheTags();
+        
+        return $this->query()
+            ->remember($ttl)
+            ->cacheTags($cacheTags);
+            
     }
 
 
