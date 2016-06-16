@@ -11,7 +11,7 @@ class PusherEventCommand extends Command
     
     public function handle()
     {
-        Artisan::call('aalberts:flush:cms', [ $this->getCacheType() ]);
+        Artisan::call('aalberts:flush:cms', [ 'type' => $this->getCacheType() ]);
 
         $this->info('Called CMS flush command.');
     }
