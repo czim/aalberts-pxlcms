@@ -7,20 +7,67 @@ use Illuminate\Console\Command;
 
 class FlushCmsCacheCommand extends Command
 {
-
-    protected $signature   = 'aalberts:flush:cms';
-    protected $description = 'Flushes the Aalberts CMS content cache. Warning: this will NOT refresh the cache!';
+    protected $signature   = 'aalberts:flush:cms {type?}';
+    protected $description = 'Flushes the Aalberts CMS content cache.';
     
     public function handle()
     {
-        Cache::tags([
+        $tags = $this->getRelevantTags();
+
+        Cache::tags($tags)->flush();
+
+        $this->info(
+            'Flushed CMS content cache.'
+            . (count($tags) ? ' Tags: ' . implode(', ', $tags) : null)
+        );
+    }
+
+    protected function getRelevantTags()
+    {
+        $tags = $this->getRelevantTagsForType($this->argument('type'));
+
+        return count($tags) ? $tags : $this->getAllTags();
+    }
+
+    protected function getAllTags()
+    {
+        return [
             CacheTags::CONTENT,
             CacheTags::NEWS,
             CacheTags::PROJECT,
             CacheTags::DOWNLOAD,
-        ])->flush();
-
-        $this->info('Flushed CMS content cache.');
+        ];
     }
 
+    /**
+     * @param string $type
+     * @return string[]
+     */
+    protected function getRelevantTagsForType($type)
+    {
+        if ( ! $type) {
+            return [];
+        }
+
+        $type = strtolower($type);
+
+        switch ($type) {
+
+            // exceptions, combinations of cache tags based on the updated type
+
+            // unknown, just clear the entire cache
+            case 'unknown':
+                return [];
+
+            // default is to treat the type, if we can, as a tag
+            default:
+                try {
+                    new CacheTags($type);
+                } catch (\Exception $e) {
+                    $this->error("Invalid cache type: '{$type}'");
+                    die;
+                }
+                return [ $type ];
+        }
+    }
 }
