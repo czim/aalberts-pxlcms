@@ -43,6 +43,7 @@ class AalbertsCmsServiceProvider extends ServiceProvider
         $this->registerGenerateCommand();
         $this->registerCacheTranslationsCommands();
         $this->registerCacheContentCommands();
+        $this->registerPusherCommands();
 
         $this->commands([
             'aalberts.generate',
@@ -52,6 +53,7 @@ class AalbertsCmsServiceProvider extends ServiceProvider
             'aalberts.flush.cms',
             'aalberts.cache.cmp.check',
             'aalberts.flush.cmp',
+            'aalberts.pusher.event',
         ]);
     }
 
@@ -89,6 +91,13 @@ class AalbertsCmsServiceProvider extends ServiceProvider
 
         $this->app->singleton('aalberts.flush.cmp', function() {
             return new Commands\FlushCompanoCacheCommand;
+        });
+    }
+
+    protected function registerPusherCommands()
+    {
+        $this->app->singleton('aalberts.pusher.event', function() {
+            return new Commands\PusherEventCommand;
         });
     }
 
