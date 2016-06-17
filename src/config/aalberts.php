@@ -38,6 +38,12 @@ return [
 
     'translator' => [
 
+        // Whether to automatically add phrases if they do not exist in the database.
+        // This requires the event to be set up; otherwise it will have no effect.
+        // This is mainly intended to allow easy dis/enabling of the functionality
+        // for a given environment.
+        'add-phrases' => env('AALBERTS_ADD_PHRASES'),
+
         'cache' => [
             // Cache keys
             'key'        => 'aalberts-translation:',
@@ -105,6 +111,20 @@ return [
         // key in which the locale definitions can be found - with '01' => 'jan', etc
         'months-translate-key' => 'aalberts.months',
 
+    ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Special Content
+    |--------------------------------------------------------------------------
+    |
+    | Labels for 'hard-coded' content. Keyed by internal identifiers used in the
+    | code, value is the label in the CMS. This setup will be different for
+    | each organization.
+    */
+
+    'content' => [
     ],
 
 ];

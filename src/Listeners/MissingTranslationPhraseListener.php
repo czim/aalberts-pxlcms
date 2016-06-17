@@ -21,6 +21,9 @@ class MissingTranslationPhraseListener
      */
     public function handle(DetectedMissingTranslationPhrase $event)
     {
+        // only do this if enabled in the environment
+        if ( ! config('aalberts.translator.add-phrases')) return;
+
         if ( ! TranslateFacade::addPhrase($event->phrase)) {
             Log::warning("Failed to add translation phrase '{$event->phrase}' to the Aalberts CMS!");
         }
