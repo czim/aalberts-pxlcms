@@ -40,5 +40,20 @@ abstract class AbstractPresenter extends Presenter
         return (( ! preg_match('#^(https?:)?//#i', $url)) ? 'http://' : '')
         . $url;
     }
-    
+
+    /**
+     * Returns a link with the aalberts upload path appended, if required.
+     * 
+     * @param string $link
+     * @return string
+     */
+    protected function decorateUrlWithAalbertsUpload($link)
+    {
+        if (preg_match('#^https?://#i', $link)) {
+            return $link;
+        }
+
+        return rtrim(config('aalberts.paths.uploads'), '/') . '/' . $link;
+    }
+
 }
