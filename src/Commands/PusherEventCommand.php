@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class PusherEventCommand extends Command
 {
-    protected $signature   = 'aalberts:event {channel} {type} {id?}';
+    protected $signature   = 'aalberts:event {channel} {type} {data?}';
     protected $description = 'Handles aalberts pusher events.';
     
     public function handle()
