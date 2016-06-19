@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class PusherEventCommand extends Command
 {
-    protected $signature   = 'aalberts:event {channel} {type} {data?}';
+    protected $signature   = 'aalberts:event {scope} {event} {type} {data?}';
     protected $description = 'Handles aalberts pusher events.';
     
     public function handle()
@@ -19,6 +19,19 @@ class PusherEventCommand extends Command
     protected function getCacheType()
     {
         return $this->argument('type');
+    }
+
+    /**
+     * Decodes the command line data argument
+     *
+     * @param string $data
+     * @return array
+     */
+    protected function decodeData($data)
+    {
+        if (empty($data)) return [];
+
+        return json_decode(base64_decode($data), true);
     }
 
 }
