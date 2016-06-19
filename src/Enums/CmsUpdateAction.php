@@ -4,13 +4,13 @@ namespace Aalberts\Enums;
 use MyCLabs\Enum\Enum;
 
 /**
- * Class CmsUpdateActions
+ * Class CmsUpdateAction
  *
  * Note about upload & remove:
  * These actions indicate only that a file was uploaded or removed in a form.
  * They are fired before the parent record of the file/image is actually saved.
  */
-class CmsUpdateActions extends Enum
+class CmsUpdateAction extends Enum
 {
     const ACTION_CREATE  = 'create';
     const ACTION_EDIT    = 'edit';

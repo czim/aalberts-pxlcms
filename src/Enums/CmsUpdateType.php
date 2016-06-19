@@ -4,12 +4,12 @@ namespace Aalberts\Enums;
 use MyCLabs\Enum\Enum;
 
 /**
- * Class CmsUpdateTypes
+ * Class CmsUpdateType
  *
  * These are listed in the order in which their modules appear
  * in the CMS side menu.
  */
-class CmsUpdateTypes extends Enum
+class CmsUpdateType extends Enum
 {
     const CONTENT                  = 'content';
     const CONTENT_GALLERY          = 'content.gallery';
