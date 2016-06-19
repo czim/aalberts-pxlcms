@@ -94,6 +94,24 @@ class Translator implements TranslatorInterface
     }
 
     /**
+     * Updates cache for a single translation.
+     *
+     * @param string      $label
+     * @param string|null $translation
+     * @param string|null $locale
+     */
+    public function cacheTranslation($label, $translation = null, $locale = null)
+    {
+        $locale = $locale ?: app()->getLocale();
+
+        if (null === $translation) {
+            $translation = $this->retrieveTranslation($label, $locale);
+        }
+
+        $this->addTranslationToCache($label, $translation, $locale);
+    }
+
+    /**
      * Flushes the entire translations cache
      */
     public function flushCache()

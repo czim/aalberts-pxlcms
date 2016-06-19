@@ -21,6 +21,15 @@ interface TranslatorInterface
     public function cacheTranslations();
 
     /**
+     * Updates cache for a single translation.
+     *
+     * @param string      $label
+     * @param string|null $translation
+     * @param string|null $locale
+     */
+    public function cacheTranslation($label, $translation = null, $locale = null);
+
+    /**
      * Checks and returns whether there have been updates to the translations since
      * they were last cached.
      *
