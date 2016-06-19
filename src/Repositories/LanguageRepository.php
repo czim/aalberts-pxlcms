@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Repositories;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms\Language as LanguageModel;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 class LanguageRepository extends AbstractRepository
 {
     protected $translated = true;
-    protected $cacheTags = [ CacheTags::COUNTRY ];
+    protected $cacheTags = [ CacheTag::COUNTRY ];
 
     public function model()
     {
@@ -118,7 +118,7 @@ class LanguageRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'countries' => $this->eagerLoadCachedCallable(null, [ CacheTags::COUNTRY ]),
+            'countries' => $this->eagerLoadCachedCallable(null, [ CacheTag::COUNTRY ]),
         ];
     }
 

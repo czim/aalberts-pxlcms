@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Repositories;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms\Country as CountryModel;
 use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Czim\Repository\Criteria\Common\WithRelations;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 class CountryRepository extends AbstractRepository
 {
     protected $translated = true;
-    protected $cacheTags = [ CacheTags::COUNTRY ];
+    protected $cacheTags = [ CacheTag::COUNTRY ];
 
     public function model()
     {
@@ -104,8 +104,8 @@ class CountryRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'languages' => $this->eagerLoadCachedCallable(null, [ CacheTags::COUNTRY ]),
-            'suppliers' => $this->eagerLoadCachedCallable(null, [ CacheTags::CMP_SUPPLIER ]),
+            'languages' => $this->eagerLoadCachedCallable(null, [ CacheTag::COUNTRY ]),
+            'suppliers' => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_SUPPLIER ]),
         ];
     }
 

@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Repositories;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms\News as NewsModel;
 use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Czim\Repository\Criteria\Common\FieldIsValue;
@@ -12,7 +12,7 @@ use Czim\Repository\Enums\CriteriaKey;
 class NewsRepository extends AbstractRepository
 {
     protected $translated = true;
-    protected $cacheTags = [ CacheTags::NEWS ];
+    protected $cacheTags = [ CacheTag::NEWS ];
 
     public function model()
     {
@@ -182,8 +182,8 @@ class NewsRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'relatedproducts' => $this->eagerLoadCachedCallable(null  [ CacheTags::CMP_PRODUCT ]),
-            'contents'        => $this->eagerLoadCachedCallable(null, [ CacheTags::CONTENT ]),
+            'relatedproducts' => $this->eagerLoadCachedCallable(null  [ CacheTag::CMP_PRODUCT ]),
+            'contents'        => $this->eagerLoadCachedCallable(null, [ CacheTag::CONTENT ]),
         ];
     }
 

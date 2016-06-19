@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Repositories;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms\Download as DownloadModel;
 use Czim\Repository\Criteria\Common\WhereHas;
 use Czim\Repository\Criteria\Common\WithRelations;
@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class DownloadRepository extends AbstractRepository
 {
     protected $translated = true;
-    protected $cacheTags = [ CacheTags::DOWNLOAD ];
+    protected $cacheTags = [ CacheTag::DOWNLOAD ];
 
     public function model()
     {
@@ -166,8 +166,8 @@ class DownloadRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'contents'       => $this->eagerLoadCachedCallable(null, [CacheTags::CONTENT]),
-            'suppliers'      => $this->eagerLoadCachedCallable(null, [CacheTags::CMP_SUPPLIER]),
+            'contents'       => $this->eagerLoadCachedCallable(null, [CacheTag::CONTENT]),
+            'suppliers'      => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_SUPPLIER]),
             'downloadFiles'  => $this->eagerLoadCachedCallable(),
             'downloadImages' => $this->eagerLoadCachedCallable(),
         ];

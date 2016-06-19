@@ -3,7 +3,7 @@ namespace Aalberts\Enums;
 
 use MyCLabs\Enum\Enum;
 
-class CacheTags extends Enum
+class CacheTag extends Enum
 {
     
     const TRANSLATION = 'translation';

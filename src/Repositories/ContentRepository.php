@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Repositories;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms\Content as ContentModel;
 use Czim\Repository\Criteria\Common\FieldIsValue;
 use Czim\Repository\Criteria\Common\WithRelations;
@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 class ContentRepository extends AbstractRepository
 {
     protected $translated = true;
-    protected $cacheTags = [ CacheTags::CONTENT ];
+    protected $cacheTags = [ CacheTag::CONTENT ];
 
     public function model()
     {
@@ -149,7 +149,7 @@ class ContentRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'relatedproducts' => $this->eagerLoadCachedCallable(null, [ CacheTags::CMP_PRODUCT ]),
+            'relatedproducts' => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
         ];
     }
 

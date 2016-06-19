@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Repositories\Cache;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms as CmsModels;
 use Cache;
 use Czim\PxlCms\Models\Scopes\OnlyActiveScope;
@@ -25,22 +25,22 @@ class CmsCacheChecker
 
     public function checkNews()
     {
-        return $this->expireCacheIfUpdated(CacheTags::NEWS);
+        return $this->expireCacheIfUpdated(CacheTag::NEWS);
     }
 
     public function checkProjects()
     {
-        return $this->expireCacheIfUpdated(CacheTags::PROJECT);
+        return $this->expireCacheIfUpdated(CacheTag::PROJECT);
     }
 
     public function checkDownloads()
     {
-        return $this->expireCacheIfUpdated(CacheTags::DOWNLOAD);
+        return $this->expireCacheIfUpdated(CacheTag::DOWNLOAD);
     }
 
     public function checkContent()
     {
-        return $this->expireCacheIfUpdated(CacheTags::CONTENT);
+        return $this->expireCacheIfUpdated(CacheTag::CONTENT);
     }
 
 
@@ -88,7 +88,7 @@ class CmsCacheChecker
     {
         switch ($type) {
 
-            case CacheTags::NEWS:
+            case CacheTag::NEWS:
                 $times = [
                     $this->getLatestTimeFromQuery(CmsModels\News::query()),
                     $this->getLatestTimeFromQuery(CmsModels\NewsGallery::query()),
@@ -96,7 +96,7 @@ class CmsCacheChecker
                 ];
                 break;
 
-            case CacheTags::PROJECT:
+            case CacheTag::PROJECT:
                 $times = [
                     $this->getLatestTimeFromQuery(CmsModels\Project::query()),
                     $this->getLatestTimeFromQuery(CmsModels\ProjectGallery::query()),
@@ -105,7 +105,7 @@ class CmsCacheChecker
                 ];
                 break;
 
-            case CacheTags::DOWNLOAD:
+            case CacheTag::DOWNLOAD:
                 $times = [
                     $this->getLatestTimeFromQuery(CmsModels\Download::query()),
                     $this->getLatestTimeFromQuery(CmsModels\DownloadFile::query(), 'createdts'),
@@ -113,7 +113,7 @@ class CmsCacheChecker
                 ];
                 break;
 
-            case CacheTags::CONTENT:
+            case CacheTag::CONTENT:
                 $times = [
                     $this->getLatestTimeFromQuery(CmsModels\Content::query()),
                     $this->getLatestTimeFromQuery(CmsModels\ContentGallery::query(), 'createdts'),

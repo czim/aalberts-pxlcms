@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Repositories;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms\Project as ProjectModel;
 use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Czim\Repository\Criteria\Common\OrderBy;
@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class ProjectRepository extends AbstractRepository
 {
     protected $translated = true;
-    protected $cacheTags = [ CacheTags::PROJECT ];
+    protected $cacheTags = [ CacheTag::PROJECT ];
     
     public function model()
     {
@@ -160,7 +160,7 @@ class ProjectRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'contents' => $this->eagerLoadCachedCallable(null, [ CacheTags::CONTENT ]),
+            'contents' => $this->eagerLoadCachedCallable(null, [ CacheTag::CONTENT ]),
         ];
     }
 

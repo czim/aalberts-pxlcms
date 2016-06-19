@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Repositories;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Compano\Supplier as SupplierModel;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
@@ -9,7 +9,7 @@ use Czim\Repository\Enums\CriteriaKey;
 class SupplierRepository extends AbstractRepository
 {
     protected $translated = true;
-    protected $cacheTags = [ CacheTags::CMP_SUPPLIER ];
+    protected $cacheTags = [ CacheTag::CMP_SUPPLIER ];
 
     public function model()
     {
@@ -71,8 +71,8 @@ class SupplierRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'countries' => $this->eagerLoadCachedCallable(null, [ CacheTags::COUNTRY ]),
-            'downloads' => $this->eagerLoadCachedCallable(null, [ CacheTags::DOWNLOAD ]),
+            'countries' => $this->eagerLoadCachedCallable(null, [ CacheTag::COUNTRY ]),
+            'downloads' => $this->eagerLoadCachedCallable(null, [ CacheTag::DOWNLOAD ]),
         ];
     }
 

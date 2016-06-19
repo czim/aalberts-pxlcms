@@ -3,7 +3,7 @@ namespace Aalberts\Translation;
 
 use Aalberts\Contracts\NoticesLoggerInterface;
 use Aalberts\Contracts\TranslatorInterface;
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use Aalberts\Events\DetectedMissingTranslationPhrase;
 use App\Models\Aalberts\Cms\Phrase;
 use App\Models\Aalberts\Cms\Translation;
@@ -306,7 +306,7 @@ class Translator implements TranslatorInterface
      */
     protected function getCacheTag()
     {
-        return CacheTags::TRANSLATION;
+        return CacheTag::TRANSLATION;
     }
 
     /**

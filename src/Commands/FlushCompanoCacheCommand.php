@@ -1,7 +1,7 @@
 <?php
 namespace Aalberts\Commands;
 
-use Aalberts\Enums\CacheTags;
+use Aalberts\Enums\CacheTag;
 use Cache;
 use Illuminate\Console\Command;
 
@@ -36,11 +36,11 @@ class FlushCompanoCacheCommand extends Command
     protected function getAllTags()
     {
         return [
-            CacheTags::CMP_PRODUCT,
-            CacheTags::CMP_SUPPLIER,
-            CacheTags::CMP_MISC,
+            CacheTag::CMP_PRODUCT,
+            CacheTag::CMP_SUPPLIER,
+            CacheTag::CMP_MISC,
 
-            CacheTags::TOP_PRODUCT,
+            CacheTag::TOP_PRODUCT,
         ];
     }
 
@@ -67,7 +67,7 @@ class FlushCompanoCacheCommand extends Command
             // default is to treat the type, if we can, as a tag
             default:
                 try {
-                    new CacheTags($type);
+                    new CacheTag($type);
                 } catch (\Exception $e) {
                     $this->error("Invalid cache type: '{$type}'");
                     die;
