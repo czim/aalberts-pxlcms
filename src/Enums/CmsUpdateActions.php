@@ -12,15 +12,16 @@ use MyCLabs\Enum\Enum;
  */
 class CmsUpdateActions extends Enum
 {
-    const ACTION_CREATE     = 'create';
-    const ACTION_EDIT       = 'edit';
-    const ACTION_DELETE     = 'delete';
-    const ACTION_SORT       = 'sort';       // any change to order
-    const ACTION_ACTIVE     = 'active';     // toggle active status
-    const ACTION_DEFAULT    = 'default';    // item set as the default
+    const ACTION_CREATE  = 'create';
+    const ACTION_EDIT    = 'edit';
+    const ACTION_DELETE  = 'delete';
+    const ACTION_SORT    = 'sort';          // any change to order
+    const ACTION_ACTIVE  = 'active';        // toggle active status
+    const ACTION_DEFAULT = 'default';       // item set as the default
 
     // actions related to file uploads
-    const ACTION_UPLOAD     = 'upload';
-    const ACTION_REMOVE     = 'remove';
+    const ACTION_UPLOAD = 'upload';
+    const ACTION_REMOVE = 'remove';
+    const ACTION_RESIZE = 'resize';         // only manual
 
 }

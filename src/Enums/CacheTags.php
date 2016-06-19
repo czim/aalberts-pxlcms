@@ -15,9 +15,17 @@ class CacheTags extends Enum
 
     const TOP_PRODUCT = 'top-product';
 
-    const CONTENT  = 'content';
-    const NEWS     = 'news';
-    const PROJECT  = 'project';
-    const DOWNLOAD = 'download';
+    const CONTENT      = 'content';
+    const NEWS         = 'news';
+    const PROJECT      = 'project';
+    const DOWNLOAD     = 'download';
+    const CMS_FUNCTION = 'cms-function';
+
+    const RELATEDPRODUCT = 'relatedproduct';
+    const CUSTOMBLOCK    = 'customblock';
+
+    // combined all the press dimensions, tools, remarks, etc
+    const PRESS = 'press';
+
 
 }
