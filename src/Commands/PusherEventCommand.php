@@ -56,6 +56,63 @@ class PusherEventCommand extends Command
 
         switch ($type) {
 
+            case CmsUpdateType::CONTENT:
+            case CmsUpdateType::CONTENT_GALLERY:
+            case CmsUpdateType::CONTENT_GALLERY_IMAGE:
+            case CmsUpdateType::CONTENT_RELATED_PRODUCTS:
+            case CmsUpdateType::CONTENT_RELATED_NEWS:
+            case CmsUpdateType::CONTENT_RELATED_PROJECTS:
+            case CmsUpdateType::CONTENT_CUSTOM_BLOCKS:
+            case CmsUpdateType::CONTENT_TILE:
+            case CmsUpdateType::CONTENT_TILE_IMAGE:
+            case CmsUpdateType::CONTENT_DOWNLOAD:
+                $this->flushCacheForTag(CacheTag::CONTENT);
+                break;
+
+            case CmsUpdateType::NEWS:
+            case CmsUpdateType::NEWS_GALLERY:
+            case CmsUpdateType::NEWS_GALLERY_IMAGE:
+            case CmsUpdateType::NEWS_RELATED_PRODUCTS:
+                $this->flushCacheForTag(CacheTag::NEWS);
+                break;
+
+            case CmsUpdateType::PROJECT:
+            case CmsUpdateType::PROJECT_IMAGE:
+            case CmsUpdateType::PROJECT_GALLERY:
+            case CmsUpdateType::PROJECT_GALLERY_IMAGE:
+                $this->flushCacheForTag(CacheTag::PROJECT);
+                break;
+
+            case CmsUpdateType::PROJECTFUNCTION:
+                $this->flushCacheForTag(CacheTag::CMS_FUNCTION);
+                break;
+
+            case CmsUpdateType::RELATEDPRODUCT:
+            case CmsUpdateType::RELATEDPRODUCT_IMAGE:
+                $this->flushCacheForTag(CacheTag::RELATEDPRODUCT);
+                break;
+
+            case CmsUpdateType::CUSTOMBLOCK:
+            case CmsUpdateType::CUSTOMBLOCK_IMAGE:
+                $this->flushCacheForTag(CacheTag::CUSTOMBLOCK);
+                break;
+
+            case CmsUpdateType::DOWNLOAD:
+            case CmsUpdateType::DOWNLOAD_FILE:
+            case CmsUpdateType::DOWNLOAD_IMAGE:
+                $this->flushCacheForTag(CacheTag::DOWNLOAD);
+                break;
+
+            case CmsUpdateType::PRESS:
+            case CmsUpdateType::PRESS_DIMENSION:
+            case CmsUpdateType::PRESS_MANUFACTURER:
+            case CmsUpdateType::PRESS_PRODUCTLINE:
+            case CmsUpdateType::PRESS_TOOL:
+            case CmsUpdateType::PRESS_REMARK:
+            case CmsUpdateType::PRESS_LOOKUP:
+                $this->flushCacheForTag(CacheTag::PRESS);
+                break;
+
             case CmsUpdateType::TRANSLATION:
                 $this->handleTranslationUpdate(
                     array_get($data, 'phrase'),
@@ -63,6 +120,54 @@ class PusherEventCommand extends Command
                     array_get($data, 'translation'),
                     $action === CmsUpdateAction::ACTION_DELETE
                 );
+                break;
+
+            case CmsUpdateType::PRODUCTGROUP:
+            case CmsUpdateType::PRODUCTGROUP_IMAGE:
+                $this->flushCacheForTag(CacheTag::PRODUCTGROUP);
+                break;
+
+            case CmsUpdateType::POPULAR_PRODUCT:
+            case CmsUpdateType::HIGHLIGHTED_PRODUCT:
+                $this->flushCacheForTag(CacheTag::TOP_PRODUCT);
+                break;
+
+            case CmsUpdateType::FILTERGROUP:
+            case CmsUpdateType::FILTERGROUP_PRODUCTGROUP:
+                $this->flushCacheForTag(CacheTag::FILTERGROUP);
+                break;
+
+            case CmsUpdateType::APPROVAL:
+            case CmsUpdateType::APPROVAL_IMAGE:
+                $this->flushCacheForTag(CacheTag::APPROVAL);
+                break;
+
+            case CmsUpdateType::SOLUTION:
+            case CmsUpdateType::SOLUTION_IMAGE:
+                $this->flushCacheForTag(CacheTag::SOLUTION);
+                break;
+
+            case CmsUpdateType::APPLICATION:
+            case CmsUpdateType::APPLICATION_IMAGE:
+                $this->flushCacheForTag(CacheTag::APPLICATION);
+                break;
+
+            case CmsUpdateType::STORE:
+                $this->flushCacheForTag(CacheTag::STORE);
+                break;
+
+            case CmsUpdateType::COUNTRY_LANGUAGE:
+            case CmsUpdateType::COUNTRY_SUPPLIER:
+            case CmsUpdateType::COUNTRY:
+                $this->flushCacheForTag(CacheTag::COUNTRY);
+                break;
+
+            case CmsUpdateType::LANGUAGE:
+                $this->flushCacheForTag([ CacheTag::LANGUAGE, CacheTag::COUNTRY]);
+                break;
+
+            case CmsUpdateType::EXTERNAL_PROJECT:
+                $this->flushCacheForTag(CacheTag::EXTERNALPROJECT);
                 break;
 
             default:
