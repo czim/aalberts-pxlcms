@@ -3,7 +3,7 @@ namespace Aalberts\Enums;
 
 use MyCLabs\Enum\Enum;
 
-class DownloadCategories extends Enum
+class DownloadCategory extends Enum
 {
     const DOCUMENT    = 'doc';
     const CERTIFICATE = 'cer';
