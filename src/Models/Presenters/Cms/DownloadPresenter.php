@@ -21,7 +21,7 @@ class DownloadPresenter extends AbstractPresenter
         if ( ! $file) return null;
 
         /** @var DownloadFile $file */
-        return $this->decorateUrlWithAalbertsUpload($file->file);
+        return $this->decorateUrlWithAalbertsUpload($file->file, 'files');
     }
 
 }

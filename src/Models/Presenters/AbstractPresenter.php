@@ -43,17 +43,20 @@ abstract class AbstractPresenter extends Presenter
 
     /**
      * Returns a link with the aalberts upload path appended, if required.
-     * 
-     * @param string $link
+     *
+     * @param string      $link
+     * @param string|null $directory    optional extra relative directory in path
      * @return string
      */
-    protected function decorateUrlWithAalbertsUpload($link)
+    protected function decorateUrlWithAalbertsUpload($link, $directory = null)
     {
         if (preg_match('#^https?://#i', $link)) {
             return $link;
         }
 
-        return rtrim(config('aalberts.paths.uploads'), '/') . '/' . $link;
+        return rtrim(config('aalberts.paths.uploads'), '/') . '/'
+             . ($directory ?  trim($directory, '/') . '/' : '')
+             . $link;
     }
 
 }
