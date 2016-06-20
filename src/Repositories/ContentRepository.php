@@ -137,6 +137,7 @@ class ContentRepository extends AbstractRepository
             'parent'                                => $this->eagerLoadCachedCallable(),
             'children'                              => $this->eagerLoadCachedCallable(),
             'contentGalleries'                      => $this->eagerLoadCachedCallable(),
+            'contentGalleries.translations'         => $this->eagerLoadCachedCallable(),
             'contentGalleries.contentGalleryImages' => $this->eagerLoadCachedCallable(),
         ];
     }

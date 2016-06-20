@@ -147,6 +147,7 @@ class ProjectRepository extends AbstractRepository
     {
         return [
             'projectGalleries'                      => $this->eagerLoadCachedCallable(),
+            'projectGalleries.translations'         => $this->eagerLoadCachedCallable(),
             'projectGalleries.projectGalleryImages' => $this->eagerLoadCachedCallable(),
             'translations'                          => $this->eagerLoadCachedTranslationCallable(),
         ];

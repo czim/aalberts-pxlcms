@@ -168,9 +168,10 @@ class NewsRepository extends AbstractRepository
     protected function withBase()
     {
         return [
-            'newsGalleries'                   => $this->eagerLoadCachedCallable(),
-            'newsGalleries.newsGalleryImages' => $this->eagerLoadCachedCallable(),
             'translations'                    => $this->eagerLoadCachedTranslationCallable(),
+            'newsGalleries'                   => $this->eagerLoadCachedCallable(),
+            'newsGalleries.translations'      => $this->eagerLoadCachedCallable(),
+            'newsGalleries.newsGalleryImages' => $this->eagerLoadCachedCallable(),
         ];
     }
 
@@ -182,8 +183,10 @@ class NewsRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'relatedproducts' => $this->eagerLoadCachedCallable(null  [ CacheTag::CMP_PRODUCT ]),
-            'contents'        => $this->eagerLoadCachedCallable(null, [ CacheTag::CONTENT ]),
+            'relatedproducts'                       => $this->eagerLoadCachedCallable(null  [ CacheTag::CMP_PRODUCT ]),
+            'relatedproducts.relatedproductsImages' => $this->eagerLoadCachedCallable(null  [ CacheTag::CMP_PRODUCT ]),
+
+            'contents' => $this->eagerLoadCachedCallable(null, [ CacheTag::CONTENT ]),
         ];
     }
 
