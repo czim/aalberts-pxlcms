@@ -175,11 +175,13 @@ class ManualAdjustments extends AbstractProcessStep
     ];
 
     protected $presenters = [
-        'cms_content'  => 'Cms\\ContentPresenter',
-        'cms_download' => 'Cms\\DownloadPresenter',
-        'cms_news'     => 'Cms\\NewsPresenter',
-        'cms_project'  => 'Cms\\ProjectPresenter',
-        'cmp_supplier' => 'Compano\\SupplierPresenter',
+        'cms_content'        => 'Cms\\ContentPresenter',
+        'cms_download'       => 'Cms\\DownloadPresenter',
+        'cms_news'           => 'Cms\\NewsPresenter',
+        'cms_project'        => 'Cms\\ProjectPresenter',
+        'cms_relatedproduct' => 'Cms\\RelatedproductPresenter',
+
+        'cmp_supplier'       => 'Compano\\SupplierPresenter',
     ];
 
 
