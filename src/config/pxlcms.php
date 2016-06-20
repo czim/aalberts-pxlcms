@@ -578,25 +578,25 @@ return [
             'content'        => 'cms_content',
             'relatedproduct' => 'cms_relatedproduct',  // ?
             'position'       => true,
-            'organization'   => true,
+            'organization'   => false,    // not used
         ],
         'cms_content_news' => [
             'content'      => 'cms_content',
             'news'         => 'cms_news',
             'position'     => true,
-            'organization' => true,
+            'organization' => false,    // not used
         ],
         'cms_content_project' => [
             'content'      => 'cms_content',
             'project'      => 'cms_project',
             'position'     => true,
-            'organization' => true,
+            'organization' => false,    // not used
         ],
         'cms_content_relatedproduct' => [
             'content'        => 'cms_content',
             'relatedproduct' => 'cms_relatedproduct',
             'position'       => true,
-            'organization'   => true,
+            'organization'   => false,    // not used
         ],
 
         'cms_country_filter' => [
