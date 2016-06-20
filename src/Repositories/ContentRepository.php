@@ -133,11 +133,11 @@ class ContentRepository extends AbstractRepository
     protected function withBase()
     {
         return [
-            'contentGalleries'                      => $this->eagerLoadCachedCallable(),
-            'contentGalleries.contentGalleryImages' => $this->eagerLoadCachedCallable(),
             'translations'                          => $this->eagerLoadCachedTranslationCallable(),
             'parent'                                => $this->eagerLoadCachedCallable(),
             'children'                              => $this->eagerLoadCachedCallable(),
+            'contentGalleries'                      => $this->eagerLoadCachedCallable(),
+            'contentGalleries.contentGalleryImages' => $this->eagerLoadCachedCallable(),
         ];
     }
 
@@ -149,7 +149,25 @@ class ContentRepository extends AbstractRepository
     protected function withDetail()
     {
         return [
-            'relatedproducts' => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
+            'relatedproducts'                      => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'relatedproducts.translations'         => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'relatedproducts.relatedproductImages' => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+
+            'news'              => $this->eagerLoadCachedCallable(null, [CacheTag::NEWS]),
+            'news.translations' => $this->eagerLoadCachedCallable(null, [CacheTag::NEWS]),
+
+            'projects'                                       => $this->eagerLoadCachedCallable(null, [CacheTag::PROJECT]),
+            'projects.translations'                          => $this->eagerLoadCachedCallable(null, [CacheTag::PROJECT]),
+            'projects.projectGalleries'                      => $this->eagerLoadCachedCallable(null, [CacheTag::PROJECT]),
+            'projects.projectGalleries.projectGalleryImages' => $this->eagerLoadCachedCallable(null, [CacheTag::PROJECT]),
+
+            'downloads'               => $this->eagerLoadCachedCallable(null, [CacheTag::DOWNLOAD]),
+            'downloads.translations'  => $this->eagerLoadCachedCallable(null, [CacheTag::DOWNLOAD]),
+            'downloads.downloadFiles' => $this->eagerLoadCachedCallable(null, [CacheTag::DOWNLOAD]),
+
+            'applications'    => $this->eagerLoadCachedCallable(null, [CacheTag::APPLICATION]),
+            'solutions'       => $this->eagerLoadCachedCallable(null, [CacheTag::SOLUTION]),
+            'functions'       => $this->eagerLoadCachedCallable(null, [CacheTag::CMS_FUNCTION]),
         ];
     }
 
