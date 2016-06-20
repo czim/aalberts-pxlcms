@@ -2,34 +2,30 @@
 namespace Aalberts\Models\Presenters\Cms;
 
 use Aalberts\Models\Presenters\AbstractPresenter;
+use Aalberts\Models\Presenters\Traits\HasGalleryHeaderImage;
 
 class NewsPresenter extends AbstractPresenter
 {
-    
+    use HasGalleryHeaderImage;
+
+    protected $galleryRelation      = 'newsGalleries';
+    protected $galleryImageRelation = 'newsGalleryImages';
+
+
+    /**
+     * @return null|string
+     */
     public function date()
     {
         return $this->normalizeDate($this->entity->date);
     }
 
+    /**
+     * @return null|string
+     */
     public function dateTime()
     {
         return $this->normalizeDateTime($this->entity->date);
-    }
-
-    public function hasHeaderImage()
-    {
-        return (     $this->entity->newsGalleries
-                &&   count($this->entity->newsGalleries)
-                &&   $this->entity->newsGalleries->first()->newsGalleryImages
-                &&   count($this->entity->newsGalleries->first()->newsGalleryImages)
-                );
-    }
-
-    public function headerImage()
-    {
-        if ( ! $this->hasHeaderImage()) return null;
-
-        return $this->entity->newsGalleries->first()->newsGalleryImages->first()->file;
     }
 
     /**

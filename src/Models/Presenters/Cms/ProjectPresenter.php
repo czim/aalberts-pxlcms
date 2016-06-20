@@ -2,20 +2,35 @@
 namespace Aalberts\Models\Presenters\Cms;
 
 use Aalberts\Models\Presenters\AbstractPresenter;
+use Aalberts\Models\Presenters\Traits\HasGalleryHeaderImage;
 
 class ProjectPresenter extends AbstractPresenter
 {
-    
+    use HasGalleryHeaderImage;
+
+    protected $galleryRelation      = 'projectGalleries';
+    protected $galleryImageRelation = 'projectGalleryImages';
+
+
+    /**
+     * @return null|string
+     */
     public function date()
     {
         return $this->normalizeDate($this->entity->date);
     }
 
+    /**
+     * @return null|string
+     */
     public function dateTime()
     {
         return $this->normalizeDateTime($this->entity->date);
     }
 
+    /**
+     * @return string
+     */
     public function datePeriod()
     {
         $period = '';
@@ -40,22 +55,6 @@ class ProjectPresenter extends AbstractPresenter
         $period .= $this->entity->launch_date;
 
         return $period;
-    }
-
-    public function hasHeaderImage()
-    {
-        return (     $this->entity->projectGalleries
-                &&   count($this->entity->projectGalleries)
-                &&   $this->entity->projectGalleries->first()->projectGalleryImages
-                &&   count($this->entity->projectGalleries->first()->projectGalleryImages)
-                );
-    }
-
-    public function headerImage()
-    {
-        if ( ! $this->hasHeaderImage()) return null;
-
-        return $this->entity->projectGalleries->first()->projectGalleryImages->first()->file;
     }
 
     /**

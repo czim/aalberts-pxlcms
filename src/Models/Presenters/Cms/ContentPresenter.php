@@ -2,9 +2,15 @@
 namespace Aalberts\Models\Presenters\Cms;
 
 use Aalberts\Models\Presenters\AbstractPresenter;
+use Aalberts\Models\Presenters\Traits\HasGalleryHeaderImage;
 
 class ContentPresenter extends AbstractPresenter
 {
+    use HasGalleryHeaderImage;
+    
+    protected $galleryRelation      = 'contentGalleries';
+    protected $galleryImageRelation = 'contentGalleryImages';
+    
     
     public function date()
     {
@@ -14,22 +20,6 @@ class ContentPresenter extends AbstractPresenter
     public function dateTime()
     {
         return $this->normalizeDateTime($this->entity->date);
-    }
-
-    public function hasHeaderImage()
-    {
-        return (     $this->entity->contentGalleries
-                &&   count($this->entity->contentGalleries)
-                &&   $this->entity->contentGalleries->first()->contentGalleryImages
-                &&   count($this->entity->contentGalleries->first()->contentGalleryImages)
-                );
-    }
-
-    public function headerImage()
-    {
-        if ( ! $this->hasHeaderImage()) return null;
-
-        return $this->entity->contentGalleries->first()->contentGalleryImages->first()->file;
     }
 
 }

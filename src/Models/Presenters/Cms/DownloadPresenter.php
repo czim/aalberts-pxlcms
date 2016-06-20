@@ -7,6 +7,9 @@ use App\Models\Aalberts\Cms\DownloadFile;
 class DownloadPresenter extends AbstractPresenter
 {
 
+    /**
+     * @return null|string
+     */
     public function link()
     {
         $file = $this->entity->downloadFiles->first();
