@@ -16,7 +16,7 @@ class Translator implements TranslatorInterface
     // defaults if not present in config
     const CACHE_KEY_PREFIX = 'aalberts-translation:';
     const CACHE_UPDATE_KEY = 'aalberts-translation-update';
-    const CACHE_MINUTES    = 86400;
+    const CACHE_MINUTES    = 1440;
 
     /**
      * Cachekey-keyed static memory for process-scope cache.
