@@ -317,7 +317,7 @@ class Translator implements TranslatorInterface
     protected function getCacheKey($locale, $label)
     {
         return config('aalberts.translator.cache.key', static::CACHE_KEY_PREFIX)
-        . $locale . ':' . $label;
+             . $locale . ':' . $label;
     }
 
     /**
