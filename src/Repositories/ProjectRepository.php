@@ -133,6 +133,30 @@ class ProjectRepository extends AbstractRepository
             ->first();
     }
 
+    /**
+     * @param string   $term
+     * @param null|int $count   limit results
+     * @return ProjectModel|Collection
+     */
+    public function search($term, $count = null)
+    {
+        $query = $this->query()
+            ->whereHas('translations', function($query) use ($term) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query->where('language', $this->languageIdForLocale())
+                    ->where(function($query) use ($term) {
+                        /** @var \Illuminate\Database\Eloquent\Builder $query */
+                        $query->where('title', 'like', '%' . $term . '%')
+                            ->orWhere('content', 'like', '%' . $term . '%');
+                    });
+            });
+
+        if (null !== $count) {
+            $query->take($count);
+        }
+
+        return $query->get();
+    }
     
     // ------------------------------------------------------------------------------
     //      With Relations

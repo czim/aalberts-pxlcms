@@ -141,6 +141,44 @@ class DownloadRepository extends AbstractRepository
         return $this;
     }
 
+    /**
+     * @param string   $term
+     * @param null|int $count   limit results
+     * @return DownloadModel|Collection
+     */
+    public function search($term, $count = null)
+    {
+        $terms = array_filter(explode(' ', $term));
+
+        $query = $this->query()
+            ->whereHas('translations', function($query) use ($terms) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+
+                $query->where('language', $this->languageIdForLocale())
+                    ->where(function($query) use ($terms) {
+                        /** @var \Illuminate\Database\Eloquent\Builder $query */
+
+                        $query
+                            ->where(function($query) use ($terms) {
+                                foreach ($terms as $splitTerm) {
+                                    $query->where('title', 'like', '%' . $splitTerm . '%');
+                                }
+                            })
+                            ->orWhere(function($query) use ($terms) {
+                                foreach ($terms as $splitTerm) {
+                                    $query->where('description', 'like', '%' . $splitTerm . '%');
+                                }
+                            });
+                    });
+            });
+
+        if (null !== $count) {
+            $query->take($count);
+        }
+
+        return $query->get();
+    }
+
 
     // ------------------------------------------------------------------------------
     //      With Relations

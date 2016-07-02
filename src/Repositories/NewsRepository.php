@@ -3,11 +3,13 @@ namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms\News as NewsModel;
+use App\Models\Aalberts\Cms\News;
 use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Czim\Repository\Criteria\Common\FieldIsValue;
 use Czim\Repository\Criteria\Common\OrderBy;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
+use Illuminate\Database\Eloquent\Collection;
 
 class NewsRepository extends AbstractRepository
 {
@@ -89,13 +91,20 @@ class NewsRepository extends AbstractRepository
      * Get the most recent X news items.
      * Cached.
      *
-     * @param int $limit
+     * @param int   $limit
+     * @param int[] $excludeIds
+     * @return Collection|News[]
      */
-    public function recent($limit = 5)
+    public function recent($limit = 5, $excludeIds = [])
     {
-        return $this->cachedQuery()
-            ->withoutGlobalScope(PositionOrderedScope::class)
-            ->take($limit)->get();
+        $query = $this->cachedQuery()
+            ->withoutGlobalScope(PositionOrderedScope::class);
+        
+        if ( ! empty($excludeIds)) {
+            $query->whereNotIn('id', $excludeIds);
+        }
+        
+        return $query->take($limit)->get();
     }
     
     /**
@@ -153,6 +162,31 @@ class NewsRepository extends AbstractRepository
             })
             ->take(1)
             ->first();
+    }
+
+    /**
+     * @param string   $term
+     * @param null|int $count   limit results
+     * @return Collection|NewsModel
+     */
+    public function search($term, $count = null)
+    {
+        $query = $this->query()
+            ->whereHas('translations', function($query) use ($term) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query->where('language', $this->languageIdForLocale())
+                    ->where(function($query) use ($term) {
+                        /** @var \Illuminate\Database\Eloquent\Builder $query */
+                        $query->where('title', 'like', '%' . $term . '%')
+                              ->orWhere('content', 'like', '%' . $term . '%');
+                    });
+            });
+
+        if (null !== $count) {
+            $query->take($count);
+        }
+
+        return $query->get();
     }
 
 
