@@ -126,22 +126,6 @@ class DownloadRepository extends AbstractRepository
 
 
     /**
-     * Restricts the results by the current language
-     *
-     * @return $this
-     */
-    protected function restrictByLanguageOnce()
-    {
-        $this->pushCriteriaOnce(
-            new WhereHas('languages', function (Builder $query) {
-                $query->where('cms_language.id', $this->languageIdForLocale());
-            })
-        );
-
-        return $this;
-    }
-
-    /**
      * @param string   $term
      * @param null|int $count   limit results
      * @return DownloadModel|Collection
@@ -177,6 +161,28 @@ class DownloadRepository extends AbstractRepository
         }
 
         return $query->get();
+    }
+
+    
+    // ------------------------------------------------------------------------------
+    //      Criteria
+    // ------------------------------------------------------------------------------
+    
+
+    /**
+     * Restricts the results by the current language
+     *
+     * @return $this
+     */
+    protected function restrictByLanguageOnce()
+    {
+        $this->pushCriteriaOnce(
+            new WhereHas('languages', function (Builder $query) {
+                $query->where('cms_language.id', $this->languageIdForLocale());
+            })
+        );
+
+        return $this;
     }
 
 
