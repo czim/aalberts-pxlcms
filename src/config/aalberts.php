@@ -50,7 +50,7 @@ return [
             'update-key' => 'aalberts-translation-update',
 
             // Time to live in minutes
-            'ttl' => 86400,
+            'ttl' => 1440,
 
             // The locales to cache empty results for (to prevent lookups where the label itself
             // should be used as the translation).
@@ -86,8 +86,8 @@ return [
         // Default ttl in minutes. Compano concerns cmp_ tables (products, items, etc).
         // CMS concerns cms_ tables (news, content,  etc)
         'ttl' => [
-            'cms'     => 86400,
-            'compano' => 86400,
+            'cms'     => 1440,
+            'compano' => 1440,
         ],
     ],
 
@@ -113,6 +113,17 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Searching
+    |--------------------------------------------------------------------------
+    |
+    | Whether searches performed on the website should be logged to the
+    | database. This requires the event listener to be set up, and is merely
+    | a way to overrule the bound behavior.
+    */
+
+    'log-searches' => env('AALBERTS_LOG_SEARCHES', true),
 
     /*
     |--------------------------------------------------------------------------
