@@ -36,6 +36,9 @@ Set up event listening for missing translation phrases. Add the following pair t
     \Aalberts\Events\DetectedMissingTranslationPhrase::class => [
         \Aalberts\Listeners\MissingTranslationPhraseListener::class
     ], 
+    \Aalberts\Events\SearchPerformed::class => [ 
+        \Aalberts\Listeners\SearchListener::class
+    ],
 ```
 
 ## Cache
