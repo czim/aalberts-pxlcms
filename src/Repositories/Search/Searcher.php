@@ -1,6 +1,7 @@
 <?php
 namespace Aalberts\Repositories\Search;
 
+use Aalberts\Events\SearchPerformed;
 use Aalberts\Repositories\ContentRepository;
 use Aalberts\Repositories\DownloadRepository;
 use Aalberts\Repositories\NewsRepository;
@@ -50,6 +51,8 @@ class Searcher
      */
     public function searchEverything($term, $count = null)
     {
+        event( new SearchPerformed($term) );
+
         return collect([
             'news'      => $this->searchNews($term, $count),
             'content'   => $this->searchContent($term, $count),
