@@ -32,7 +32,7 @@ class ManualAdjustments extends AbstractProcessStep
 
     protected $belongsTo = [
         'cmp_item' => [
-            'product'     => [ 'table' => 'cmp_item' ],
+            'product'     => [ 'table' => 'cmp_product' ],
             'successor'   => [ 'table' => 'cmp_item', 'reverse_name' => 'reverseSuccessors' ],
             'predecessor' => [ 'table' => 'cmp_item', 'reverse_name' => 'reversePredecessors' ],
         ],
@@ -181,6 +181,8 @@ class ManualAdjustments extends AbstractProcessStep
         'cms_project'        => 'Cms\\ProjectPresenter',
         'cms_relatedproduct' => 'Cms\\RelatedproductPresenter',
 
+        'cmp_product'        => 'Compano\\ProductPresenter',
+        'cmp_item'           => 'Compano\\ItemPresenter',
         'cmp_supplier'       => 'Compano\\SupplierPresenter',
     ];
 

@@ -29,6 +29,11 @@ abstract class AbstractPresenter extends Presenter
         return $date->format('Y-m-d H:i');
     }
 
+    
+    // ------------------------------------------------------------------------------
+    //      Links and URLs
+    // ------------------------------------------------------------------------------
+
     /**
      * @param string $url
      * @return string
@@ -50,13 +55,35 @@ abstract class AbstractPresenter extends Presenter
      */
     protected function decorateUrlWithAalbertsUpload($link, $directory = null)
     {
+        return $this->decorateUrlWithHost(config('aalberts.paths.uploads'), $link, $directory);
+    }
+
+    /**
+     * Returns a link with the compano (image) host appended, if required.
+     *
+     * @param string      $link
+     * @param string|null $directory    optional extra relative directory in path
+     * @return string
+     */
+    protected function decorateUrlWithCompanoHost($link, $directory = null)
+    {
+        return $this->decorateUrlWithHost(config('aalberts.paths.compano'), $link, $directory);
+    }
+
+    /**
+     * @param string      $host
+     * @param string      $link
+     * @param string|null $directory    optional extra relative directory in path
+     * @return string
+     */
+    protected function decorateUrlWithHost($host, $link, $directory = null)
+    {
         if (preg_match('#^https?://#i', $link)) {
             return $link;
         }
 
-        return rtrim(config('aalberts.paths.uploads'), '/') . '/'
+        return rtrim($host, '/') . '/'
              . ($directory ?  trim($directory, '/') . '/' : '')
-             . $link;
+             . ltrim($link, '/');
     }
-
 }
