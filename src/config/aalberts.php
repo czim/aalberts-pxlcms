@@ -64,6 +64,15 @@ return [
                 'de',
             ],
         ],
+
+        // Common phrases that should be offered by the translator.
+        // Key = internal label, value = the phrase label in the CMS.
+        'phrase-mapping' => [
+            'yes'    => 'common.yes',
+            'no'     => 'common.no',
+            'gas'    => 'common.gas',
+            'liquid' => 'common.liquid',
+        ],
     ],
 
     /*
