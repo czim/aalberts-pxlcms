@@ -80,7 +80,7 @@ class AalbertsHelper
      */
     public function organizationCode()
     {
-        return config('aalberts.organizationcode');
+        return config('aalberts.salesorganizationcode');
     }
 
     /**
