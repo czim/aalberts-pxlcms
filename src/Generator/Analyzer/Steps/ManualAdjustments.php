@@ -46,6 +46,9 @@ class ManualAdjustments extends AbstractProcessStep
         'cms_approval_image' => [
             'entry' => [ 'table' => 'cmp_approvals', 'name' => 'approval' ],
         ],
+        'cms_connectiontype_size' => [
+            'connectiontype' => [ 'table' => 'cmp_connectiontype', 'reverse_single' => true ],
+        ],
         'cms_content' => [
             'parent'   => [ 'table' => 'cms_content', 'reverse_name' => 'children' ],
             'solution' => [ 'table' => 'cmp_solutions', 'skip_reverse' => true ],
