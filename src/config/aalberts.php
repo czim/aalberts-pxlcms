@@ -27,6 +27,10 @@ return [
 
         // location of downloadable files (and images) on the aalberts CMS server
         'uploads' => 'http://core.aiflowcontrol.com/upload',
+
+        // location of compano resources (for product drawings/images, etc)
+        'compano' => 'http://www.aalberts.compano.nl',
+        
     ],
 
 
