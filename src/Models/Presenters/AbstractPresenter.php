@@ -29,7 +29,20 @@ abstract class AbstractPresenter extends Presenter
         return $date->format('Y-m-d H:i');
     }
 
-    
+    /**
+     * Formats a given signless temperature value in Celsius.
+     * 
+     * @param $temperature
+     * @return null|string
+     */
+    protected function temperatureInCelsius($temperature)
+    {
+        if (null === $temperature || '' === $temperature) return null;
+
+        return $temperature . 'ºC';
+    }
+
+
     // ------------------------------------------------------------------------------
     //      Links and URLs
     // ------------------------------------------------------------------------------
@@ -62,21 +75,23 @@ abstract class AbstractPresenter extends Presenter
      * Returns a link with the compano (image) host appended, if required.
      *
      * @param string      $link
-     * @param string|null $directory    optional extra relative directory in path
+     * @param string|null $directory optional extra relative directory in path
+     * @param null|string $queryString
      * @return string
      */
-    protected function decorateUrlWithCompanoHost($link, $directory = null)
+    protected function decorateUrlWithCompanoHost($link, $directory = null, $queryString = null)
     {
-        return $this->decorateUrlWithHost(config('aalberts.paths.compano'), $link, $directory);
+        return $this->decorateUrlWithHost(config('aalberts.paths.compano'), $link, $directory, $queryString);
     }
 
     /**
      * @param string      $host
      * @param string      $link
-     * @param string|null $directory    optional extra relative directory in path
+     * @param string|null $directory optional extra relative directory in path
+     * @param null|string $queryString
      * @return string
      */
-    protected function decorateUrlWithHost($host, $link, $directory = null)
+    protected function decorateUrlWithHost($host, $link, $directory = null, $queryString = null)
     {
         if (preg_match('#^https?://#i', $link)) {
             return $link;
@@ -84,6 +99,7 @@ abstract class AbstractPresenter extends Presenter
 
         return rtrim($host, '/') . '/'
              . ($directory ?  trim($directory, '/') . '/' : '')
-             . ltrim($link, '/');
+             . ltrim($link, '/')
+             . ($queryString ? '?' . ltrim($queryString, '?') : '');
     }
 }
