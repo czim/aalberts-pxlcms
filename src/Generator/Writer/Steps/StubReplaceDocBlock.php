@@ -35,6 +35,11 @@ class StubReplaceDocBlock extends PxlCmsStubReplaceDocBlock
                     'name' => '$modifiedts',
                 ];
             }
+
+            // remove the rows with the incorrect timestamps, if present
+            $rows = array_filter($rows, function($row) {
+                return $row['type'] != 'string' || ($row['name'] != '$createdts' && $row['name'] != '$modifiedts');
+            });
         }
 
         return $rows;
