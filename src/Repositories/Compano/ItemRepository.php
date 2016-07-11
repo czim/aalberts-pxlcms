@@ -57,7 +57,7 @@ class ItemRepository extends AbstractCompanoRepository
     public function findBySlug($slug)
     {
         return $this->cachedQuery()
-            ->where('label', $slug)
+            ->where('code', $slug)
             ->first();
     }
 
@@ -74,8 +74,9 @@ class ItemRepository extends AbstractCompanoRepository
     protected function withBase()
     {
         return [
-            'translations' => $this->eagerLoadCachedTranslationCallable(),
-            'product'      => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
+            'translations'         => $this->eagerLoadCachedTranslationCallable(),
+            'product'              => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'product.translations' => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
         ];
     }
 
@@ -87,8 +88,6 @@ class ItemRepository extends AbstractCompanoRepository
     protected function withDetail()
     {
         return [
-            'items'        => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
-
             'approvals'                 => $this->eagerLoadCachedCallable(null, [CacheTag::APPROVAL]),
             'applications'              => $this->eagerLoadCachedCallable(null, [CacheTag::APPLICATION]),
             'applications.translations' => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::APPLICATION]),
@@ -100,7 +99,6 @@ class ItemRepository extends AbstractCompanoRepository
             'connectiontypes'                    => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
             'connectiontypes.translations'       => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
             'connectiontypes.connectiontypeSize' => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
-            'contourcodes'                       => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
             'finishings'                         => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
             'finishings.translations'            => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
             'materials'                          => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
@@ -111,8 +109,13 @@ class ItemRepository extends AbstractCompanoRepository
             'shapes'                             => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
             'shapes.translations'                => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
 
-            'successor'   => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
-            'predecessor' => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
+            'product.sealings'              => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'product.sealings.translations' => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
+            'product.shapes'                => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'product.shapes.translations'   => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
+
+            'successor'   => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'predecessor' => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
         ];
     }
 

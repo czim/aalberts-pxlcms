@@ -122,7 +122,8 @@ class ProductRepository extends AbstractCompanoRepository
     protected function withDetail()
     {
         return [
-            'items' => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
+            'items'              => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'items.translations' => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
 
             'approvals'                 => $this->eagerLoadCachedCallable(null, [CacheTag::APPROVAL]),
             'applications'              => $this->eagerLoadCachedCallable(null, [CacheTag::APPLICATION]),
@@ -146,8 +147,8 @@ class ProductRepository extends AbstractCompanoRepository
             'shapes'                             => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
             'shapes.translations'                => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
 
-            'successor'   => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
-            'predecessor' => $this->eagerLoadCachedCallable(null, [ CacheTag::CMP_PRODUCT ]),
+            'successor'   => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'predecessor' => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
         ];
     }
 
