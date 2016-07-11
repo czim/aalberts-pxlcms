@@ -166,4 +166,12 @@ class AalbertsHelper
         return $this->defaultSupplier;
     }
 
+    /**
+     * @return array    associative, keyed by property name
+     */
+    public function itemTableDimensionProperties()
+    {
+        return config('aalberts.item-fields.dimension', []);
+    }
+
 }
