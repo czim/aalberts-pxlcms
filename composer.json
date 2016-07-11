@@ -22,6 +22,7 @@
         "illuminate/support": "5.*",
         "illuminate/database": "5.*",
         "czim/laravel-dataobject": "^1.0",
+        "czim/laravel-filter": "^1.0",
         "czim/laravel-pxlcms": "^1.0",
         "czim/laravel-listify": "^0.9",
         "laracasts/presenter": "^0.2",
