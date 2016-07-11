@@ -3,7 +3,7 @@ namespace Aalberts;
 
 use Aalberts\Repositories\CountryRepository;
 use Aalberts\Repositories\LanguageRepository;
-use Aalberts\Repositories\SupplierRepository;
+use Aalberts\Repositories\Compano\SupplierRepository;
 use App\Models\Aalberts\Cms\Country;
 use App\Models\Aalberts\Cms\Language;
 use App\Models\Aalberts\Compano\Supplier;

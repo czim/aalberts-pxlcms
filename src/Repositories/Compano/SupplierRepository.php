@@ -1,7 +1,8 @@
 <?php
-namespace Aalberts\Repositories;
+namespace Aalberts\Repositories\Compano;
 
 use Aalberts\Enums\CacheTag;
+use Aalberts\Repositories\AbstractRepository;
 use App\Models\Aalberts\Compano\Supplier as SupplierModel;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
