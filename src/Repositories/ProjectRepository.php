@@ -7,6 +7,7 @@ use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Czim\Repository\Criteria\Common\OrderBy;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class ProjectRepository extends AbstractRepository
@@ -34,13 +35,21 @@ class ProjectRepository extends AbstractRepository
      * Returns records for index listing.
      * Cached.
      *
-     * @param int $count
-     * @return mixed
+     * @param int      $count
+     * @param null|int $solution
+     * @return LengthAwarePaginator|ProjectModel[]
      */
-    public function index($count = 6)
+    public function index($count = 6, $solution = null)
     {
-        return $this->cachedQuery()
-            ->paginate($count);
+        $query = $this->cachedQuery();
+
+        if (null !== $solution) {
+            $query->whereHas('solutions', function ($query) use ($solution) {
+                $query->where('cmp_solutions.id', $solution);
+            });
+        }
+
+        return $query->paginate($count);
     }
 
     /**
