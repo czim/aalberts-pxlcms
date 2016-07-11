@@ -23,4 +23,5 @@ class {{MODEL_CLASSNAME}} extends {{EXTENDS}} {{IMPLEMENTS}}
     {{ACCESSORS}}
     {{RELATIONSHIPS}}
     {{SCOPES}}
+    {{CUSTOM}}
 }

@@ -23,7 +23,14 @@ class StubReplaceSimple extends PxlCmsStubReplaceSimple
              ->stubReplace('{{EXTENDS}}', $extends)
              ->stubPregReplace('#\s*{{IMPLEMENTS}}#i', $this->getImplementsReplace())
              ->stubPregReplace('# *{{TABLE}}\n?#i', $this->getTableReplace())
-             ->stubPregReplace('# *{{TIMESTAMPS}}\n?#i', $this->getTimestampReplace());
+             ->stubPregReplace('# *{{TIMESTAMPS}}\n?#i', $this->getTimestampReplace())
+             ->stubPregReplace('# *{{CUSTOM}}\n?#i', $this->getCustomCodeReplace());
     }
 
+    protected function getCustomCodeReplace()
+    {
+        if ( ! isset($this->data->custom)) return null;
+
+        return $this->data->custom;
+    }
 }

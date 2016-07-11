@@ -20,6 +20,7 @@ class Analyzer extends CmsAnalyzer
             Analyzer\Steps\CheckTables::class,
             Analyzer\Steps\ParseTableColumns::class,
             Analyzer\Steps\ManualAdjustments::class,
+            Analyzer\Steps\CustomAdditions::class,
         ];
     }
     
