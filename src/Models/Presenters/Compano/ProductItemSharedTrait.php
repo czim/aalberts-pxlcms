@@ -96,11 +96,27 @@ trait ProductItemSharedTrait
     }
 
     /**
+     * @return string
+     */
+    public function uniqueConnectionTypesString()
+    {
+        return implode(', ', $this->uniqueConnectionTypes()->pluck('label')->toArray());
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function uniqueConnectionTypes()
     {
         return $this->entity->connectiontypes->unique();
+    }
+
+    /**
+     * @return string
+     */
+    public function uniqueContourCodesString()
+    {
+        return implode(', ', $this->uniqueContourCodes()->pluck('label')->toArray());
     }
 
     /**
@@ -223,6 +239,19 @@ trait ProductItemSharedTrait
                 })->toArray()
             )
         );
+    }
+
+    /**
+     * Comma-separated list of materials with material quality in parentheses
+     *
+     * @return null|string
+     */
+    public function materialsWithQuality()
+    {
+        $materials = $this->materials();
+        $quality   = $this->entity->productmaterialquality ? ' (' . $this->entity->productmaterialquality . ')' : null;
+
+        return ($materials || $quality) ? trim($materials . $quality) : null;
     }
 
     /**

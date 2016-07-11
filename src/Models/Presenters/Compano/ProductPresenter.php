@@ -8,6 +8,32 @@ class ProductPresenter extends AbstractPresenter
     use ProductItemSharedTrait;
 
     /**
+     * Main (h1) title of product
+     *
+     * @return string
+     */
+    public function mainTitle()
+    {
+        return $this->entity->assignedgroupdescription;
+    }
+
+    /**
+     * Secondary (h2) title of product
+     */
+    public function subTitle()
+    {
+        return $this->entity->groupcode;
+    }
+
+    /**
+     * Title for breadcrumbs &c
+     */
+    public function shortTitle()
+    {
+        return $this->entity->groupcode;
+    }
+
+    /**
      * Name of manufacturer
      *
      * @return string
@@ -44,6 +70,22 @@ class ProductPresenter extends AbstractPresenter
         return $this->entity->cbscode;
     }
 
+    /**
+     * @return string
+     */
+    public function pumpBrand()
+    {
+        return $this->entity->productpumpbrand;
+    }
+
+    /**
+     * @return string
+     */
+    public function zetaValue()
+    {
+        return $this->entity->productzetavalue;
+    }
+
 
     /**
      * Comma-separated list of shapes, with angle of bow attached if available
@@ -65,9 +107,11 @@ class ProductPresenter extends AbstractPresenter
      */
     public function boreWithFullBore()
     {
-        $bore = $this->entity->productbore . 'mm';
-        
-        return $bore . ($bore ? ' ' : '')
+        $bore = $this->entity->productbore;
+
+        if ( ! $bore) return null;
+
+        return $bore . 'mm'
              . '('
              . ($this->entity->productfullbore == 'false'
                     ?   atrans(config('aalberts.translator.phrase-mapping.no'))
@@ -126,7 +170,7 @@ class ProductPresenter extends AbstractPresenter
      *
      * @return null|string
      */
-    public function minMediumTemperature()
+    public function minimumMediumTemperature()
     {
         return $this->temperatureInCelsius($this->entity->productminmediumtemp);
     }
@@ -136,7 +180,7 @@ class ProductPresenter extends AbstractPresenter
      *
      * @return null|string
      */
-    public function maxMediumTemperature()
+    public function maximumMediumTemperature()
     {
         return $this->temperatureInCelsius($this->entity->productmaxmediumtemp);
     }
@@ -174,7 +218,7 @@ class ProductPresenter extends AbstractPresenter
     /**
      * @return null|string
      */
-    public function maxDischargeFlow()
+    public function maximumDischargeFlow()
     {
         if ( ! $this->entity->productmaxdischargeflow) return null;
 
@@ -199,6 +243,37 @@ class ProductPresenter extends AbstractPresenter
         if ( ! $this->entity->productpowerconsumption) return null;
 
         return $this->entity->productpowerconsumption . ' W';
+    }
+
+    /**
+     * List of item header display values which have a filled in value
+     * for at least one item. Used to draw dimensions table for the product
+     * detail page.
+     *
+     * @return string[]
+     */
+    public function itemDimensionHeaders()
+    {
+        $fields = app('aalberts-helper')->itemTableDimensionProperties();
+
+        $items = $this->entity->items;
+
+        if ( ! count($fields) || ! $items || ! count($items) ) return [];
+
+        $filled = [];
+
+        foreach ($fields as $field => $header) {
+
+            foreach ($items as $item) {
+
+                if ( ! empty($item->{$field})) {
+                    $filled[ $header ] = $field;
+                    break;
+                }
+            }
+        }
+
+        return array_keys($filled);
     }
 
 }
