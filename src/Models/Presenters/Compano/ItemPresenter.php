@@ -49,7 +49,13 @@ class ItemPresenter extends ProductPresenter
      */
     public function gtin()
     {
-        return (string) $this->entity->gtin ?: $this->entity->product->gtin;
+        if ($this->entity->gtin) {
+            return (string) $this->entity->gtin;
+        }
+
+        if ( ! $this->entity->product) return null;
+
+        return (string) $this->entity->product->gtin;
     }
 
     /**
