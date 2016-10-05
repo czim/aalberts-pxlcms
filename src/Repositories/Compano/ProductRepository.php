@@ -44,6 +44,7 @@ class ProductRepository extends AbstractCompanoRepository
     public function category($category, $count = 10)
     {
         $this->forCategoryOnce($category);
+        $this->filterForSalesOrganizationCodeOnce();
 
         return $this->cachedQuery()
             ->withoutGlobalScope(PositionOrderedScope::class)
