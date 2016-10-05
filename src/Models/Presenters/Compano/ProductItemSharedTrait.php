@@ -16,7 +16,7 @@ trait ProductItemSharedTrait
      */
     public function image($sizeQuery = null)
     {
-        if ( ! $this->entity->drawing) return null;
+        if ( ! $this->entity->image) return null;
 
         return $this->decorateUrlWithCompanoHost($this->entity->image, null, $sizeQuery);
     }
