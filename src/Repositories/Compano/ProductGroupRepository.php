@@ -3,6 +3,7 @@ namespace Aalberts\Repositories\Compano;
 
 use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Compano\Productgroup as ProductGroupModel;
+use Czim\Repository\Criteria\Common\WhereHas;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
 
@@ -10,6 +11,11 @@ class ProductGroupRepository extends AbstractCompanoRepository
 {
     protected $translated = true;
     protected $cacheTags = [ CacheTag::CMP_PRODUCT ];
+
+    /**
+     * @var bool
+     */
+    protected $filterByOrganizationCode = true;
 
 
     public function model()
@@ -25,6 +31,8 @@ class ProductGroupRepository extends AbstractCompanoRepository
      */
     public function getByLabel($label)
     {
+        $this->restrictForOrganizationOnce();
+
         $this->pushCriteriaOnce(
             new WithRelations($this->withBase()),
             CriteriaKey::WITH
@@ -43,6 +51,8 @@ class ProductGroupRepository extends AbstractCompanoRepository
      */
     public function getBySlug($slug)
     {
+        $this->restrictForOrganizationOnce();
+
         $this->pushCriteriaOnce(
             new WithRelations($this->withBase()),
             CriteriaKey::WITH
@@ -51,6 +61,26 @@ class ProductGroupRepository extends AbstractCompanoRepository
         return $this->cachedQuery()
             ->whereTranslation('slug', $slug)
             ->first();
+    }
+
+    /**
+     * Returns product groups for index listing.
+     * Cached.
+     *
+     * @param int|null $count
+     * @return mixed
+     */
+    public function index($count = null)
+    {
+        $this->restrictForOrganizationOnce();
+
+        $query = $this->cachedQuery();
+
+        if (null !== $count) {
+            return $query->paginate($count);
+        }
+
+        return $query->get();
     }
 
 
@@ -79,6 +109,26 @@ class ProductGroupRepository extends AbstractCompanoRepository
     {
         return [
         ];
+    }
+
+    // ------------------------------------------------------------------------------
+    //      Criteria
+    // ------------------------------------------------------------------------------
+
+    /**
+     * Restricts the results to what has been enabled, and in the order set, in the CMS.
+     *
+     * @return $this
+     */
+    protected function restrictForOrganizationOnce()
+    {
+        if ( ! $this->filterByOrganizationCode) return $this;
+
+        $this->pushCriteriaOnce(
+            new WhereHas('productgroups', $this->eagerLoadCachedCallable([ CacheTag::PRODUCTGROUP ]))
+        );
+
+        return $this;
     }
 
 }
