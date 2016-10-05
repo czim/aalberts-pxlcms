@@ -1,6 +1,8 @@
 <?php
 namespace Aalberts\Models\Presenters\Compano;
 
+use App\Models\Aalberts\Compano\Product;
+
 class ItemPresenter extends ProductPresenter
 {
     use ProductItemSharedTrait;
@@ -33,13 +35,18 @@ class ItemPresenter extends ProductPresenter
     /**
      * Name of manufacturer (of parent product)
      *
+     * @param null|Product $product
      * @return null|string
      */
-    public function manufacturer()
+    public function manufacturer(Product $product = null)
     {
         if ( ! $this->entity->product) return null;
 
-        return $this->entity->product->present()->manufacturer;
+        if ($product) {
+            return $product->present()->manufacturer;
+        }
+
+        return $this->ensureProductIsLoaded()->entity->product->present()->manufacturer;
     }
 
     /**
@@ -53,9 +60,7 @@ class ItemPresenter extends ProductPresenter
             return (string) $this->entity->gtin;
         }
 
-        if ( ! $this->entity->product) return null;
-
-        return (string) $this->entity->product->gtin;
+        return (string) $this->entity->productgtin;
     }
 
     /**
@@ -230,12 +235,24 @@ class ItemPresenter extends ProductPresenter
             case 'es6':
             case 'es7':
             case 'es8':
-                return $this->entity->product->productshowinsertiondepthweb ? $this->entity->{head($properties)} : null;
+                return $this->ensureProductIsLoaded()->entity->product->productshowinsertiondepthweb ? $this->entity->{head($properties)} : null;
 
             // default case is: one value expected, one used as is
             default:
                 return $this->entity->{head($properties)};
         }
+    }
+
+    /**
+     * @return $this
+     */
+    protected function ensureProductIsLoaded()
+    {
+        if ( ! $this->entity->relationLoaded('product')) {
+            $this->entity->load('product');
+        }
+
+        return $this;
     }
 
 }
