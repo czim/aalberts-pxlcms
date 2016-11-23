@@ -70,4 +70,20 @@ class ProjectPresenter extends AbstractPresenter
             [ $this->entity->slug ]
         );
     }
+
+    /**
+     * Returns normalized location value.
+     * If the location is empty (or just a comma), it will be returned as null.
+     *
+     * @return string|null
+     */
+    public function location()
+    {
+        if ( ! $this->entity->location || trim($this->entity->location) === ',') {
+            return null;
+        }
+
+        return $this->entity->location;
+    }
+
 }
