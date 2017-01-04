@@ -3,6 +3,7 @@ namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTag;
 use App\Models\Aalberts\Cms\Content as ContentModel;
+use App\Models\Aalberts\Cms\Content;
 use Czim\Repository\Criteria\Common\FieldIsValue;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
@@ -83,12 +84,13 @@ class ContentRepository extends AbstractRepository
      * Looks up a content entry by its translated slug.
      * Cached.
      *
-     * @param string      $slug
-     * @param null|bool   $page     if a boolean, whether to forge a page = t/f check
-     * @param null|string $locale
+     * @param string                 $slug
+     * @param int|Content|null|false $parent    force check for children of a given parent; false to force top-level
+     * @param null|bool              $page      if a boolean, whether to forge a page = t/f check
+     * @param null|string            $locale
      * @return null|ContentModel
      */
-    public function findBySlug($slug, $page = null, $locale = null)
+    public function findBySlug($slug, $parent = null, $page = null, $locale = null)
     {
         $this->pushCriteriaOnce(
             new WithRelations(array_merge($this->withBase(), $this->withDetail())),
@@ -99,25 +101,34 @@ class ContentRepository extends AbstractRepository
             $this->pushCriteriaOnce(new FieldIsValue('page', (bool) $page));
         }
 
-        return $this->cachedQuery()
+        $query = $this->cachedQuery()
             ->whereHas('translations', function ($query) use ($slug, $locale) {
                 return $query->where('language', $this->languageIdForLocale($locale))
-                             ->where('slug', $slug);
-            })
-            ->first();
+                    ->where('slug', $slug);
+            });
+
+        if (false === $parent) {
+            $query->where('parent', 0);
+        } elseif (null !== $parent) {
+            $parent = $parent instanceof Content ? $parent->getKey() : $parent;
+            $query->where('parent', $parent);
+        }
+
+        return $query->first();
     }
 
     /**
      * Looks up a content entry, that is a page, by its translated slug.
      * Cached.
      *
-     * @param string      $slug
-     * @param null|string $locale
+     * @param string                 $slug
+     * @param int|Content|null|false $parent    force check for children of a given parent; false to force top-level
+     * @param null|string            $locale
      * @return ContentModel|null
      */
-    public function findPageBySlug($slug, $locale = null)
+    public function findPageBySlug($slug, $parent = null, $locale = null)
     {
-        return $this->findBySlug($slug, true, $locale);
+        return $this->findBySlug($slug, $parent, true, $locale);
     }
 
     /**
