@@ -185,6 +185,7 @@ class ManualAdjustments extends AbstractProcessStep
         'cms_relatedproduct' => 'Cms\\RelatedproductPresenter',
 
         'cmp_product'        => 'Compano\\ProductPresenter',
+        'cmp_productgroup'   => 'Compano\\ProductgroupPresenter',
         'cmp_item'           => 'Compano\\ItemPresenter',
         'cmp_supplier'       => 'Compano\\SupplierPresenter',
     ];

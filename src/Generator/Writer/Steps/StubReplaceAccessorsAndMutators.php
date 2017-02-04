@@ -33,7 +33,7 @@ class StubReplaceAccessorsAndMutators extends PxlCmsStubReplaceAccessorsAndMutat
             $content = $this->tab(2)
                      . "return collect( empty(\$value) ? [] : explode(',', \$value) );\n";
 
-            $accessors['products'] = [
+            $accessors['productsArray'] = [
                 'parameters' => ['$value'],
                 'content'    => $content,
             ];

@@ -90,6 +90,7 @@ class ParseTableColumns extends AbstractProcessStep
                 'translated_attributes' => [],
                 'has_categories'        => false,
                 'has_organization'      => false,
+                'restrict_salesorganizationcode' => false,
                 'relationships'         => [
                     'normal'   => [],
                     'reverse'  => [],
@@ -104,6 +105,13 @@ class ParseTableColumns extends AbstractProcessStep
                 'filter_products_column' => ($prefix == 'filter'),
                 'presenter'             => null,
             ];
+
+
+            // special case: item should have restrict_salesorganizationcode
+            if ($table == 'cmp_item') {
+                $tableData['restrict_salesorganizationcode'] = true;
+            }
+
 
             // translated?
             if (array_key_exists($table . '_ml', $this->context->tableColumns)) {

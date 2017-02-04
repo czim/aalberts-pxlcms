@@ -14,6 +14,7 @@ class StubReplaceImportsAndTraits extends PxlCmsStubReplaceImportsAndTraits
         return array_merge(
             parent::collectTraits(),
             $this->collectOrganizationTrait(),
+            $this->collectOrganizationCodeTrait(),
             $this->collectPresenterTrait()
         );
     }
@@ -27,6 +28,17 @@ class StubReplaceImportsAndTraits extends PxlCmsStubReplaceImportsAndTraits
         if ( ! $this->data['has_organization']) return [];
 
         return [ 'ForOrganization' ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function collectOrganizationCodeTrait()
+    {
+        // organization
+        if ( ! $this->data['restrict_salesorganizationcode']) return [];
+
+        return [ 'ForOrganizationCode' ];
     }
 
     /**
@@ -64,6 +76,11 @@ class StubReplaceImportsAndTraits extends PxlCmsStubReplaceImportsAndTraits
         if ($this->data['has_organization']) {
             $lines[] = 'Aalberts\\Models\\Scopes\\ForOrganization';
         }
+
+        if ($this->data['restrict_salesorganizationcode']) {
+            $lines[] = 'Aalberts\\Models\\Scopes\\ForOrganizationCode';
+        }
+
 
         if ($this->data['presenter']) {
             $lines[] = config('pxlcms.generator.models.traits.presentable_fqn');
