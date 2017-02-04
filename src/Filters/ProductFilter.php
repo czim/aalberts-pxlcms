@@ -1,22 +1,58 @@
 <?php
 namespace Aalberts\Filters;
 
-use Czim\Filter\Filter;
-use Czim\Filter\ParameterFilters\NotEmpty;
+use Aalberts\Enums\CacheTag;
+use App\Models\Aalberts\Compano\Productgroup;
+use Czim\Filter\ParameterFilters as CzimParameterFilters;
+use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder;
 
-class ProductFilter extends Filter
+class ProductFilter extends AbstractFilter
 {
     protected $filterDataClass = ProductFilterData::class;
     protected $table = 'cmp_product';
 
+
     protected function strategies()
     {
         return [
-            'has_image' => new NotEmpty($this->table, 'image'),
-            'has_label' => new NotEmpty($this->table, 'label'),
+            'has_label'        => new CzimParameterFilters\NotEmpty($this->table, 'label'),
+            'for_organization' => new ParameterFilters\ProductsForOrganization(),
+            'productgroup'     => new ParameterFilters\ProductsForProductgroup(),
         ];
     }
-    
+
+    protected function countStrategies()
+    {
+        return [
+            'productgroup' => new ParameterCounters\ProductProductgroup(),
+        ];
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getCountableBaseQuery($parameter = null)
+    {
+        return Productgroup::query()
+            ->remember($this->defaultTtl())
+            ->cacheTags([CacheTag::CMP_PRODUCT]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function apply($query)
+    {
+        // Prepare query for general use.
+        $query->withoutGlobalScope(PositionOrderedScope::class);
+
+        $this->applyItemJoin($query);
+
+        parent::apply($query);
+    }
 
     /**
      * @inheritdoc
@@ -24,8 +60,51 @@ class ProductFilter extends Filter
     protected function applyParameter($name, $value, $query)
     {
 
+        switch ($name) {
+
+            // Handle sorting order and direction
+            case 'order':
+                if ( ! $value) return;
+
+                if (false !== strpos($value, ':')) {
+                    list($column, $direction) = explode(':', $value);
+                } else {
+                    $column    = $value;
+                    $direction = null;
+                }
+
+                switch ($column) {
+
+                    case 'groupcode':
+                        $query->orderBy('cmp_product.groupcode', $direction === 'desc' ? 'desc' : 'asc');
+                        break;
+                }
+                return;
+
+            // Default omitted on purpose
+        }
 
         parent::applyParameter($name, $value, $query);
+    }
+
+    /**
+     * Applies the standard cmp_item join on the query.
+     *
+     * This is required for all sensible cmp_product filtering.
+     *
+     * @param Builder|EloquentBuilder $query
+     */
+    protected function applyItemJoin($query)
+    {
+        $query
+            ->select(['cmp_product.*'])
+            ->join('cmp_item', 'cmp_item.product', '=', 'cmp_product.id')
+            ->where('cmp_item.salesorganizationcode', config('aalberts.salesorganizationcode'))
+            ->groupBy('cmp_product.id');
+
+        if (config('aalberts.queries.uses-is-webitem')) {
+            $query->where('cmp_item.iswebitem', '=', true);
+        }
     }
 
 }

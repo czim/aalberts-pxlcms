@@ -2,16 +2,22 @@
 namespace Aalberts\Repositories\Compano;
 
 use Aalberts\Enums\CacheTag;
+use Aalberts\Filters\ProductFilter;
+use Aalberts\Filters\ProductFilterData;
 use Aalberts\Repositories\Compano\Filter\SalesorganizationcodeFilterRepository;
 use App\Models\Aalberts\Compano\Product as ProductModel;
 use Czim\PxlCms\Models\Scopes\OnlyActiveScope;
-use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Czim\Repository\Criteria\Common\Custom;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository extends AbstractCompanoRepository
 {
+    const DEFAULT_PAGE_SIZE = 25;
+
     protected $translated = true;
     protected $cacheTags = [ CacheTag::CMP_PRODUCT ];
 
@@ -27,9 +33,45 @@ class ProductRepository extends AbstractCompanoRepository
     }
 
 
-    public function filter($count = 10)
+    /**
+     * Filters products, given product filter data.
+     * Cached.
+     *
+     * @param ProductFilterData $data
+     * @param int|null          $page
+     * @param int               $pageSize
+     * @param bool              $noCache    if true, does not cache the filter query
+     * @return LengthAwarePaginator
+     */
+    public function filter(ProductFilterData $data, $page = null, $pageSize = self::DEFAULT_PAGE_SIZE, $noCache = false)
     {
-        // todo
+        $this->removeCriteriaOnce(CriteriaKey::ACTIVE);
+        $this->removeCriteriaOnce(CriteriaKey::ORDER);
+
+        /** @var Builder|EloquentBuilder $results */
+        if ($noCache) {
+            $query = $this->query();
+        } else {
+            $query = $this->cachedQuery();
+        }
+
+        $filter = new ProductFilter($data);
+        $filter->apply($query);
+
+        // Handle pagination and counts
+        // Clone the query so the cache/remember doesn't only stick to the count
+        // Check pagination, prevent page from exceeding bounds
+
+        $countQuery = clone $query;
+        $total = $countQuery->count($query->getModel()->getTable() . '.' . $query->getModel()->getKeyName());
+
+        $this->calculateTotalPagesWithPageCheck($total, $pageSize, $page);
+
+        if ( ! empty($pageSize)) {
+            $query->skip( max(0, $page - 1) * $pageSize)->take($pageSize);
+        }
+
+        return new LengthAwarePaginator($query->get(), $total, $pageSize, max($page, 1));
     }
 
 
@@ -38,17 +80,26 @@ class ProductRepository extends AbstractCompanoRepository
      * Cached.
      *
      * @param string $category
-     * @param int    $count
-     * @return mixed
+     * @param int|null          $page
+     * @param int               $pageSize
+     * @param bool              $noCache    if true, does not cache the filter query
+     * @return LengthAwarePaginator
      */
-    public function category($category, $count = 10)
+    public function category($category, $page = null, $pageSize = self::DEFAULT_PAGE_SIZE, $noCache = false)
     {
-        $this->forCategoryOnce($category);
-        $this->filterForSalesOrganizationCodeOnce();
+        $data = new ProductFilterData([
+            'has_label'        => true,
+            'for_organization' => true,
+            'productgroup'     => $category,
+            'order'            => 'groupcode',
+        ]);
 
-        return $this->cachedQuery()
-            ->withoutGlobalScope(PositionOrderedScope::class)
-            ->paginate($count);
+        $this->pushCriteriaOnce(
+            new WithRelations($this->withBase()),
+            CriteriaKey::WITH
+        );
+
+        return $this->filter($data, $page, $pageSize, $noCache);
     }
 
     /**
@@ -61,7 +112,7 @@ class ProductRepository extends AbstractCompanoRepository
      */
     public function detail($find, $bySlug = true)
     {
-        $this->filterForSalesOrganizationCodeOnce();
+        $this->filterForOrganizationOnce();
 
         $this->pushCriteriaOnce(
             new WithRelations(array_merge($this->withBase(), $this->withDetail())),
@@ -72,10 +123,13 @@ class ProductRepository extends AbstractCompanoRepository
             return $this->findBySlug($find, true);
         }
 
-        return $this->cachedQuery()
+        /** @var ProductModel $product */
+        $product = $this->cachedQuery()
             ->withoutGlobalScope(OnlyActiveScope::class)
             ->where('id', (int) $find)
             ->first();
+
+        return $product;
     }
 
     /**
@@ -123,7 +177,7 @@ class ProductRepository extends AbstractCompanoRepository
     protected function withDetail()
     {
         return [
-            'items'              => $this->eagerLoadCachedCallable(null, [CacheTag::CMP_PRODUCT]),
+            'items'              => $this->eagerLoadItemCallback(),
             'items.translations' => $this->eagerLoadCachedTranslationCallable(null, null, [CacheTag::CMP_PRODUCT]),
 
             'approvals'                 => $this->eagerLoadCachedCallable(null, [CacheTag::APPROVAL]),
@@ -161,18 +215,16 @@ class ProductRepository extends AbstractCompanoRepository
     /**
      * @return $this
      */
-    protected function filterForSalesOrganizationCodeOnce()
+    protected function filterForOrganizationOnce()
     {
         if ( ! $this->filterByOrganizationCode) return $this;
 
-        /** @var SalesorganizationcodeFilterRepository $filterRepository */
-        $filterRepository = app(SalesorganizationcodeFilterRepository::class);
-
-        $ids = $filterRepository->productIds();
+        $ids = $this->getProductIdsForOrganization();
 
         $this->pushCriteriaOnce(
             new Custom(function ($query) use ($ids) {
-                return $query->whereIn('cmp_product.id', $ids);
+                /** @var Builder $query */
+                return $query->whereRaw("`cmp_product`.`id` IN ({$ids})");
             })
         );
 
@@ -180,15 +232,33 @@ class ProductRepository extends AbstractCompanoRepository
     }
 
     /**
-     * @param null|string $category
-     * @return $this
+     * @return null|string
      */
-    protected function forCategoryOnce($category)
+    protected function getProductIdsForOrganization()
     {
-        //if ($category) {
-        //    $this->pushCriteriaOnce(new FieldIsValue('type', $category));
-        //}
+        /** @var SalesorganizationcodeFilterRepository $filterRepository */
+        $filterRepository = app(SalesorganizationcodeFilterRepository::class);
 
-        return $this;
+        return $filterRepository->productIds();
     }
+
+    /**
+     * Returns callback to use for product->items relation.
+     *
+     * @return callback
+     */
+    protected function eagerLoadItemCallback()
+    {
+        return function ($query) {
+            /** @var Builder $query */
+            $query
+                ->remember($this->defaultTtl())
+                ->cacheTags([CacheTag::CMP_PRODUCT]);
+
+            if (config('aalberts.queries.uses-is-webitem')) {
+                $query->where('iswebitem', true);
+            }
+        };
+    }
+
 }

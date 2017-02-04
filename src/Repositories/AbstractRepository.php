@@ -101,6 +101,14 @@ abstract class AbstractRepository extends ExtendedRepository
             
     }
 
+    /**
+     * @return int
+     */
+    public function getActiveOrganizationId()
+    {
+        return config('aalberts.organization');
+    }
+
 
     // ------------------------------------------------------------------------------
     //      With closures
@@ -155,7 +163,7 @@ abstract class AbstractRepository extends ExtendedRepository
     }
 
     /**
-     * @param null          $locale
+     * @param null|string   $locale
      * @param null|int      $ttl
      * @param null|string[] $cacheTags
      * @param null|array    $select     if set, the columns to select for the query
@@ -197,6 +205,36 @@ abstract class AbstractRepository extends ExtendedRepository
         $model = new $class;
 
         return $model->lookUpLanguageIdForLocale($locale);
+    }
+
+    // ------------------------------------------------------------------------------
+    //      Pagination
+    // ------------------------------------------------------------------------------
+
+
+    /**
+     * Returns the total page count, and adjusts given page if out of bounds
+     *
+     * @param  int $total
+     * @param  int $pageSize
+     * @param  int $page    by reference, adjusted if necessary
+     * @return int      total page count
+     */
+    protected function calculateTotalPagesWithPageCheck($total, $pageSize, &$page)
+    {
+        if ($pageSize < 1) {
+            return 0;
+        }
+
+        $totalPages = (int) ceil($total / $pageSize);
+
+        if ($page < 0 || $totalPages == 0) {
+            $page = 0;
+        } elseif ($page > $totalPages) {
+            $page = $totalPages;
+        }
+
+        return $totalPages;
     }
 
 }

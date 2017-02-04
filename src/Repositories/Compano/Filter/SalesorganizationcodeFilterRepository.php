@@ -15,22 +15,22 @@ class SalesorganizationcodeFilterRepository extends AbstractCompanoRepository
     }
 
     /**
-     * Returns array with product IDs for a given sales organization code.
+     * Returns string with product IDs for a given sales organization code.
      *
      * @param null|string $code
-     * @return int[]
+     * @return null|string
      */
     public function productIds($code = null)
     {
         $code = $code ?: app('aalberts-helper')->organizationCode();
-        if ( ! $code) return [];
+        if ( ! $code) return null;
 
         /** @var SalesorganizationcodeFilterModel $model */
         $model = $this->cachedQuery()
             ->where('salesorganizationcode', $code)
             ->first();
 
-        if ( ! $model) return [];
+        if ( ! $model) return null;
 
         return $model->products;
     }

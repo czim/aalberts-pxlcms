@@ -136,6 +136,10 @@ return [
         'for_organization' => [
             'column' => 'organization',
         ],
+
+        'for_organization_code' => [
+            'column' => 'salesorganizationcode',
+        ],
     ],
 
     /*
