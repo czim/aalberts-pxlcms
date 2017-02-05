@@ -6,6 +6,7 @@ use Aalberts\Filters\ProductFilter;
 use Aalberts\Filters\ProductFilterData;
 use Aalberts\Repositories\Compano\Filter\SalesorganizationcodeFilterRepository;
 use App\Models\Aalberts\Compano\Product as ProductModel;
+use Czim\Filter\CountableResults;
 use Czim\PxlCms\Models\Scopes\OnlyActiveScope;
 use Czim\Repository\Criteria\Common\Custom;
 use Czim\Repository\Criteria\Common\WithRelations;
@@ -47,6 +48,11 @@ class ProductRepository extends AbstractCompanoRepository
     {
         $this->removeCriteriaOnce(CriteriaKey::ORDER);
 
+        $this->pushCriteriaOnce(
+            new WithRelations($this->withBase()),
+            CriteriaKey::WITH
+        );
+
         /** @var Builder|EloquentBuilder $results */
         $query = $noCache ? $this->query() : $this->cachedQuery();
 
@@ -69,30 +75,20 @@ class ProductRepository extends AbstractCompanoRepository
         return new LengthAwarePaginator($query->get(), $total, $pageSize, max($page, 1));
     }
 
-
     /**
-     * Returns products for a category, paginated.
+     * Returns counts for filters, given product filter data.
      * Cached.
      *
-     * @param string $category
-     * @param int|null          $page
-     * @param int               $pageSize
-     * @param bool              $noCache    if true, does not cache the filter query
-     * @return LengthAwarePaginator
+     * @param ProductFilterData $data
+     * @return CountableResults
      */
-    public function category($category, $page = null, $pageSize = self::DEFAULT_PAGE_SIZE, $noCache = false)
+    public function filterCounts(ProductFilterData $data)
     {
-        $data = new ProductFilterData([
-            'productgroup' => $category,
-            'order'        => 'groupcode',
-        ]);
+        $this->removeCriteriaOnce(CriteriaKey::ORDER);
 
-        $this->pushCriteriaOnce(
-            new WithRelations($this->withBase()),
-            CriteriaKey::WITH
-        );
+        $filter = new ProductFilter($data);
 
-        return $this->filter($data, $page, $pageSize, $noCache);
+        return $filter->getCounts();
     }
 
     /**
