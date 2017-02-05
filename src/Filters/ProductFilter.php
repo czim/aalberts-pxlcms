@@ -2,7 +2,7 @@
 namespace Aalberts\Filters;
 
 use Aalberts\Enums\CacheTag;
-use App\Models\Aalberts\Compano\Productgroup;
+use App\Models\Aalberts\Compano\Product;
 use Czim\Filter\ParameterFilters as CzimParameterFilters;
 use Czim\PxlCms\Models\Scopes\PositionOrderedScope;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -34,9 +34,9 @@ class ProductFilter extends AbstractFilter
     /**
      * {@inheritdoc}
      */
-    protected function getCountableBaseQuery($parameter = null)
+    public function getCountableBaseQuery($parameter = null)
     {
-        return Productgroup::query()
+        return Product::query()
             ->remember($this->defaultTtl())
             ->cacheTags([CacheTag::CMP_PRODUCT]);
     }
@@ -46,10 +46,7 @@ class ProductFilter extends AbstractFilter
      */
     public function apply($query)
     {
-        // Prepare query for general use.
-        $query->withoutGlobalScope(PositionOrderedScope::class);
-
-        $this->applyItemJoin($query);
+        $this->applyBaseQuery($query);
 
         parent::apply($query);
     }
@@ -59,7 +56,6 @@ class ProductFilter extends AbstractFilter
      */
     protected function applyParameter($name, $value, $query)
     {
-
         switch ($name) {
 
             // Handle sorting order and direction
@@ -85,6 +81,21 @@ class ProductFilter extends AbstractFilter
         }
 
         parent::applyParameter($name, $value, $query);
+    }
+
+    // ------------------------------------------------------------------------------
+    //      Modify base query
+    // ------------------------------------------------------------------------------
+
+    /**
+     * Applies base query setup for productfilter.
+     *
+     * @param Builder|EloquentBuilder $query
+     */
+    protected function applyBaseQuery($query)
+    {
+        $query->withoutGlobalScope(PositionOrderedScope::class);
+        $this->applyItemJoin($query);
     }
 
     /**

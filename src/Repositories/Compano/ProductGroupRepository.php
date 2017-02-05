@@ -2,7 +2,10 @@
 namespace Aalberts\Repositories\Compano;
 
 use Aalberts\Enums\CacheTag;
+use Aalberts\Filters\ParameterCounters\ProductProductgroup;
+use Aalberts\Filters\ProductFilter;
 use App\Models\Aalberts\Compano\Productgroup as ProductGroupModel;
+use App\Models\Aalberts\Compano\Productgroup;
 use Czim\Repository\Criteria\Common\WhereHas;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
@@ -25,9 +28,10 @@ class ProductGroupRepository extends AbstractCompanoRepository
     }
 
     /**
-     * @return Collection|ProductGroupModel[]
+     * @param bool $filterEmpty     if true
+     * @return ProductGroupModel[]|Collection
      */
-    public function getAllForIndex()
+    public function getAllForIndex($filterEmpty = true)
     {
         $this->restrictForOrganizationOnce();
 
@@ -39,6 +43,23 @@ class ProductGroupRepository extends AbstractCompanoRepository
         $groups = $this->cachedQuery()
             ->whereHas('translations', $this->eagerLoadCachedTranslationCallable())
             ->get();
+
+
+        // Filter out groups that have no records
+        $filter  = new ProductFilter([]);
+        $counter = new ProductProductgroup();
+
+        $query = $filter->getCountableBaseQuery();
+        $filter->apply($query);
+
+        if ($filterEmpty) {
+            $groups = $groups->filter(function (Productgroup $group) use ($filter, $query, $counter) {
+                $countQuery = clone $query;
+                $counts = $counter->count('productgroup', $countQuery, $filter, $group->id);
+                return (bool) array_get($counts, $group->id, false);
+            });
+        }
+
 
         // Order by position, label
         $groups = $groups->sort(function (ProductGroupModel $group) {
@@ -74,9 +95,12 @@ class ProductGroupRepository extends AbstractCompanoRepository
             CriteriaKey::WITH
         );
 
-        return $this->cachedQuery()
+        /** @var ProductGroupModel $model */
+        $model = $this->cachedQuery()
             ->where('label', $label)
             ->first();
+
+        return $model;
     }
 
     /**
@@ -94,9 +118,12 @@ class ProductGroupRepository extends AbstractCompanoRepository
             CriteriaKey::WITH
         );
 
-        return $this->cachedQuery()
+        /** @var ProductGroupModel $model */
+        $model = $this->cachedQuery()
             ->whereTranslation('slug', $slug)
             ->first();
+
+        return $model;
     }
 
     /**

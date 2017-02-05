@@ -11,6 +11,22 @@ class ProductgroupPresenter extends AbstractPresenter
      */
     protected $entity;
 
+
+    /**
+     * @return string
+     */
+    public function label()
+    {
+        $label = null;
+
+        if ($this->entity->relationLoaded('productgroups') && $this->entity->productgroups->count()) {
+            $label = $this->entity->productgroups->first()->label;
+        }
+
+        return $label ?: $this->entity->label;
+    }
+
+
     /**
      * @return bool
      */

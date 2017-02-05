@@ -18,8 +18,8 @@ class ProductFilterData extends FilterData
     ];
 
     protected $defaults = [
-        'has_label'        => null,
-        'for_organization' => null,
+        'has_label'        => true,
+        'for_organization' => true,
         'productgroup'     => null,
         'order'            => null,
     ];

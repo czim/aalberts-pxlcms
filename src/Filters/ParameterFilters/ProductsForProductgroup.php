@@ -24,7 +24,7 @@ class ProductsForProductgroup extends AbstractParameterFilter
      * @param mixed                   $value
      * @param EloquentBuilder|Builder $query
      * @param FilterInterface         $filter
-     * @return EloquentBuilder
+     * @return EloquentBuilder|Builder
      */
     public function apply($name, $value, $query, FilterInterface $filter)
     {

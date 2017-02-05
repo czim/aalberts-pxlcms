@@ -45,15 +45,10 @@ class ProductRepository extends AbstractCompanoRepository
      */
     public function filter(ProductFilterData $data, $page = null, $pageSize = self::DEFAULT_PAGE_SIZE, $noCache = false)
     {
-        $this->removeCriteriaOnce(CriteriaKey::ACTIVE);
         $this->removeCriteriaOnce(CriteriaKey::ORDER);
 
         /** @var Builder|EloquentBuilder $results */
-        if ($noCache) {
-            $query = $this->query();
-        } else {
-            $query = $this->cachedQuery();
-        }
+        $query = $noCache ? $this->query() : $this->cachedQuery();
 
         $filter = new ProductFilter($data);
         $filter->apply($query);
@@ -88,10 +83,8 @@ class ProductRepository extends AbstractCompanoRepository
     public function category($category, $page = null, $pageSize = self::DEFAULT_PAGE_SIZE, $noCache = false)
     {
         $data = new ProductFilterData([
-            'has_label'        => true,
-            'for_organization' => true,
-            'productgroup'     => $category,
-            'order'            => 'groupcode',
+            'productgroup' => $category,
+            'order'        => 'groupcode',
         ]);
 
         $this->pushCriteriaOnce(
