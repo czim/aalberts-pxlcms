@@ -80,15 +80,16 @@ class ProductRepository extends AbstractCompanoRepository
      * Cached.
      *
      * @param ProductFilterData $data
+     * @param string[]          $countables     specify which countables to include
      * @return CountableResults
      */
-    public function filterCounts(ProductFilterData $data)
+    public function filterCounts(ProductFilterData $data, array $countables = [])
     {
         $this->removeCriteriaOnce(CriteriaKey::ORDER);
 
         $filter = new ProductFilter($data);
 
-        return $filter->getCounts();
+        return $filter->getCounts($countables);
     }
 
     /**
@@ -138,7 +139,10 @@ class ProductRepository extends AbstractCompanoRepository
             $query->withoutGlobalScope(OnlyActiveScope::class);
         }
 
-        return $query->first();
+        /** @var ProductModel|null $product */
+        $product = $query->first();
+
+        return $product;
     }
 
 

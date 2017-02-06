@@ -1,16 +1,15 @@
 <?php
-namespace Aalberts\Filters\ParameterCounters;
+namespace Aalberts\Filters\ParameterCounters\Product;
 
 use Aalberts\Enums\CacheTag;
-use Aalberts\Filters\ParameterFilters\ProductsForProductgroup;
-use App\Models\Aalberts\Compano\Productgroup;
+use Aalberts\Filters\ParameterFilters\Product\ProductgroupParameter;
+use App\Models\Aalberts\Compano\Productgroup as ProductgroupModel;
 use Czim\Filter\Contracts\CountableFilterInterface;
 use Czim\Filter\Contracts\ParameterCounterInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 
-
-class ProductProductgroup implements ParameterCounterInterface
+class ProductgroupCounter implements ParameterCounterInterface
 {
 
     /**
@@ -31,7 +30,7 @@ class ProductProductgroup implements ParameterCounterInterface
             $ids = $this->getAllProductGroupIds();
         }
 
-        $parameter = new ProductsForProductgroup();
+        $parameter = new ProductgroupParameter();
 
         $counts = [];
 
@@ -49,7 +48,7 @@ class ProductProductgroup implements ParameterCounterInterface
      */
     protected function getAllProductGroupIds()
     {
-        return Productgroup::query()
+        return ProductgroupModel::query()
             ->remember(config('aalberts.cache.ttl.compano'))
             ->cacheTags([CacheTag::CMP_PRODUCT])
             ->pluck('id')

@@ -13,20 +13,39 @@ class ProductFilter extends AbstractFilter
     protected $filterDataClass = ProductFilterData::class;
     protected $table = 'cmp_product';
 
+    protected $countables = [
+        'productline',
+        //'producttype',
+    ];
+
+    /**
+     * List of countable keys, keyed by compano filter slug.
+     *
+     * @var string[]    associative, keyed by slug
+     */
+    protected $countableKeySlugMap = [
+        'productline' => 'productline',
+        'producttype' => 'producttype',
+        // todo
+    ];
 
     protected function strategies()
     {
         return [
             'has_label'        => new CzimParameterFilters\NotEmpty($this->table, 'label'),
             'for_organization' => new ParameterFilters\ProductsForOrganization(),
-            'productgroup'     => new ParameterFilters\ProductsForProductgroup(),
+            'productgroup'     => new ParameterFilters\Product\ProductgroupParameter(),
+            'productline'      => new ParameterFilters\Product\ProductlineParameter(),
+            // todo
         ];
     }
 
     protected function countStrategies()
     {
         return [
-            'productgroup' => new ParameterCounters\ProductProductgroup(),
+            'productgroup' => new ParameterCounters\Product\ProductgroupCounter(),
+            'productline'  => new ParameterCounters\Product\ProductlineCounter(),
+            // todo
         ];
     }
 
@@ -118,4 +137,19 @@ class ProductFilter extends AbstractFilter
         }
     }
 
+    // ------------------------------------------------------------------------------
+    //      Countable mapping
+    // ------------------------------------------------------------------------------
+
+    /**
+     * Returns countable keys for a list of filter slugs.
+     *
+     * @param string[] $slugs
+     * @return string[]
+     */
+    public function getCountablesForFilterSlugs(array $slugs)
+    {
+        return array_values(array_only($this->countableKeySlugMap, $slugs));
+    }
+    
 }

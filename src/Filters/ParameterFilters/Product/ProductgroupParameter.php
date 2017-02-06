@@ -1,20 +1,20 @@
 <?php
-namespace Aalberts\Filters\ParameterFilters;
+namespace Aalberts\Filters\ParameterFilters\Product;
 
 use Aalberts\Enums\CacheTag;
+use Aalberts\Filters\ParameterFilters\AbstractParameterFilter;
 use Aalberts\Repositories\Compano\ProductGroupRepository;
-use App\Models\Aalberts\Cms\ProductgroupFilter;
 use App\Models\Aalberts\Filter\Productgroup as FilterProductgroup;
 use Czim\Filter\Contracts\FilterInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 
 /**
- * Class ProductsForOrganization
+ * Class ProductgroupParameter
  *
  * Filters products by the list of product ids listed in cmp_filter_salesorganizationcode
  */
-class ProductsForProductgroup extends AbstractParameterFilter
+class ProductgroupParameter extends AbstractParameterFilter
 {
 
     /**

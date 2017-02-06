@@ -15,6 +15,10 @@ class ProductFilterData extends FilterData
 
         // Sorting order to use (see filter for available order strings)
         'order' => 'string',
+
+        // Standard product filters
+        'productline' => 'array|integer',
+        'producttype' => 'array|integer',
     ];
 
     protected $defaults = [
@@ -22,6 +26,9 @@ class ProductFilterData extends FilterData
         'for_organization' => true,
         'productgroup'     => null,
         'order'            => null,
+
+        'productline' => null,
+        'producttype' => null,
     ];
 
 }

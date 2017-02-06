@@ -2,7 +2,7 @@
 namespace Aalberts\Repositories\Compano;
 
 use Aalberts\Enums\CacheTag;
-use Aalberts\Filters\ParameterCounters\ProductProductgroup;
+use Aalberts\Filters\ParameterCounters\Product\ProductgroupCounter;
 use Aalberts\Filters\ProductFilter;
 use App\Models\Aalberts\Compano\Productgroup as ProductGroupModel;
 use App\Models\Aalberts\Compano\Productgroup;
@@ -47,7 +47,7 @@ class ProductGroupRepository extends AbstractCompanoRepository
 
         // Filter out groups that have no records
         $filter  = new ProductFilter([]);
-        $counter = new ProductProductgroup();
+        $counter = new ProductgroupCounter();
 
         $query = $filter->getCountableBaseQuery();
         $filter->apply($query);
