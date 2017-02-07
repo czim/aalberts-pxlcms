@@ -4,6 +4,7 @@ namespace Aalberts\Repositories;
 use Aalberts\Data\ProductFilterGroup;
 use Aalberts\Enums\CacheTag;
 use Aalberts\Filters\ProductFilter;
+use Aalberts\Filters\Strategies\Product\DefaultStrategy;
 use App\Models\Aalberts\Cms\Filtergroup;
 use App\Models\Aalberts\Cms\Filter as FilterModel;
 use Czim\Filter\CountableResults;
@@ -119,17 +120,32 @@ class FilterRepository extends AbstractRepository
     }
 
     /**
-     * Enriches a group collection based on filter countable results.
+     * Decorates a group collection based on filter countable results and currently active filter data.
      *
-     * @param Collection       $groups
+     * @param Collection|ProductFilterGroup[]       $groups
      * @param CountableResults $counts
+     * @param array            $filterData
      */
-    public function enrichGroupedFiltersWithCounts(Collection $groups, CountableResults $counts)
+    public function decorateGroupedFiltersForView(Collection $groups, CountableResults $counts, array $filterData)
     {
         // for each filter, apply the related countable results
         // filter slug should match the countable result
         // strategies should be used, default to simple checkbox-based multi-choice
 
+        foreach ($groups as $group) {
+            foreach ($group->children as $filter) {
+
+                $slug = $filter->slug;
+
+                // todo remove debug
+                if ($slug !== 'productline') continue;
+
+                $strategy = new DefaultStrategy($counts->get($slug), array_get($filterData, $slug));
+
+                $filter->viewType = $strategy->getViewType();
+                $filter->viewData = $strategy->getViewData();
+            }
+        }
     }
 
 
