@@ -100,6 +100,10 @@ class FilterRepository extends AbstractRepository
                 ->get();
         }
 
+        $collection = $collection->filter(function (ProductFilterGroup $group) {
+            return (bool) count($group->children);
+        });
+
         return $collection;
     }
 
@@ -122,9 +126,10 @@ class FilterRepository extends AbstractRepository
     /**
      * Decorates a group collection based on filter countable results and currently active filter data.
      *
-     * @param Collection|ProductFilterGroup[]       $groups
-     * @param CountableResults $counts
-     * @param array            $filterData
+     * @param Collection|ProductFilterGroup[] $groups
+     * @param CountableResults                $counts
+     * @param array                           $filterData
+     * @return ProductFilterGroup[]|Collection
      */
     public function decorateGroupedFiltersForView(Collection $groups, CountableResults $counts, array $filterData)
     {
@@ -135,7 +140,12 @@ class FilterRepository extends AbstractRepository
         /** @var FilterStrategyFactory $factory */
         $factory = app(FilterStrategyFactory::class);
 
-        foreach ($groups as $group) {
+        $emptyGroups = [];
+
+        foreach ($groups as $groupIndex => $group) {
+
+            $empty = true;
+
             foreach ($group->children as $filter) {
 
                 $slug = $filter->slug;
@@ -148,8 +158,23 @@ class FilterRepository extends AbstractRepository
 
                 $filter->viewType = $strategy->getViewType();
                 $filter->viewData = $strategy->getViewData();
+
+                if ( ! $strategy->isEmpty()) {
+                    $empty = false;
+                }
+            }
+
+            if ($empty) {
+                $emptyGroups[] = $groupIndex;
             }
         }
+
+        // Filter out the completely optionless filters, if they exist.
+        if (count($emptyGroups)) {
+            $groups = $groups->except($emptyGroups);
+        }
+
+        return $groups;
     }
 
 

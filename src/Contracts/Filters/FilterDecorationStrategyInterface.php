@@ -37,4 +37,11 @@ interface FilterDecorationStrategyInterface
      */
     public function getViewData();
 
+    /**
+     * Returns whether the filter should be considered empty, and thus should be hidden.
+     *
+     * @return bool
+     */
+    public function isEmpty();
+
 }

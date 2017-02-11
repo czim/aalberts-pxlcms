@@ -201,4 +201,14 @@ class DefaultStrategy implements FilterDecorationStrategyInterface
         return $this->data;
     }
 
+    /**
+     * Returns whether the filter should be considered empty, and thus should be hidden.
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return ! count($this->data['options']);
+    }
+
 }
