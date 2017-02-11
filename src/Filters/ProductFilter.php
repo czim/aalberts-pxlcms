@@ -94,6 +94,7 @@ class ProductFilter extends AbstractFilter
     {
         return [
             'has_label'                        => new CzimParameterFilters\NotEmpty($this->table, 'label'),
+            'has_image'                        => new CzimParameterFilters\NotEmpty($this->table, 'image'),
             'for_organization'                 => new ParameterFilters\ProductsForOrganization(),
             'productgroup'                     => new ParameterFilters\Product\ProductgroupParameter(),
             'angleofbow'                       => new ParameterFilters\Product\AngleofbowParameter(),

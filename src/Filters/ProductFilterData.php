@@ -8,6 +8,8 @@ class ProductFilterData extends FilterData
     protected $rules = [
         // Ignore products that don't have a label set
         'has_label'                          => 'boolean',
+        // Ignore products that don't have a compano image
+        'has_image'                          => 'boolean',
         // Ignore products that don't belong to this organization's cmp_filter_salesorganizationcode list
         'for_organization'                   => 'boolean',
         // Only include products for a given cmp_productgroup (uses cmp_filter_productgroup)
@@ -63,6 +65,7 @@ class ProductFilterData extends FilterData
 
     protected $defaults = [
         'has_label'        => true,
+        'has_image'        => null,
         'for_organization' => true,
         'productgroup'     => null,
         'order'            => null,

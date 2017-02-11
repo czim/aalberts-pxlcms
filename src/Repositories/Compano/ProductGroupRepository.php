@@ -4,6 +4,8 @@ namespace Aalberts\Repositories\Compano;
 use Aalberts\Enums\CacheTag;
 use Aalberts\Filters\ParameterCounters\Product\ProductgroupCounter;
 use Aalberts\Filters\ProductFilter;
+use Aalberts\Filters\ProductFilterData;
+use App\Models\Aalberts\Compano\Product;
 use App\Models\Aalberts\Compano\Productgroup as ProductGroupModel;
 use App\Models\Aalberts\Compano\Productgroup;
 use Czim\Repository\Criteria\Common\WhereHas;
@@ -144,6 +146,36 @@ class ProductGroupRepository extends AbstractCompanoRepository
         }
 
         return $query->get();
+    }
+
+    /**
+     * Returns image link
+     *
+     * @param Productgroup $productgroup
+     * @param null         $sizeQuery
+     * @return null
+     */
+    public function getProductImageForProductGroup(ProductGroupModel $productgroup, $sizeQuery = null)
+    {
+        /** @var ProductRepository $productRepository */
+        $productRepository = app(ProductRepository::class);
+
+        $filterData = new ProductFilterData([
+            'has_image'        => true,
+            'for_organization' => true,
+            'productgroup'     => $productgroup->id,
+        ]);
+
+        $result = $productRepository->filter($filterData, 1, 1);
+
+        if ( ! $result->count()) {
+            return null;
+        }
+
+        /** @var Product $product */
+        $product = head($result->items());
+
+        return $product->present()->image($sizeQuery);
     }
 
 
