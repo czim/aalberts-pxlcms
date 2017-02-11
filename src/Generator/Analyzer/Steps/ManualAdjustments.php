@@ -166,8 +166,10 @@ class ManualAdjustments extends AbstractProcessStep
         'cmp_filter_productline'                              => [ 'productline' => ['table' => 'cmp_productline', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
         'cmp_filter_producttype'                              => [ 'producttype' => ['table' => 'cmp_producttype', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
         'cmp_filter_pumpbrand'                                => [ 'pumpbrand' => ['table' => 'cmp_pumpbrand', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_series'                                   => [ 'series' => ['table' => 'cmp_series', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
         'cmp_filter_shape'                                    => [ 'shape' => ['table' => 'cmp_shape', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
         'cmp_filter_solutions'                                => [ 'solutions' => ['table' => 'cmp_solutions', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_type'                                     => [ 'type' => ['table' => 'cmp_type', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
     ];
 
     protected $hasManyThrough = [];
