@@ -14,12 +14,43 @@ class ProductFilter extends AbstractFilter
     protected $table = 'cmp_product';
 
     protected $countables = [
+        'angleofbow',
+        'applications',
+        'approvals',
+        'bowrange',
+        'brand',
+        'colors',
+        'connectiontype',
+        'contourcode',
+        'externaltubediameterofconnection',
+        'finishings',
+        'manufacturercode',
+        'materialquality',
+        'material',
+        'numberofconnections',
+
         'productline',
-        //'producttype',
+        'producttype',
     ];
 
     protected $includeSelfInCount = [
+        'angleofbow',
+        'applications',
+        'approvals',
+        'bowrange',
+        'brand',
+        'colors',
+        'connectiontype',
+        'contourcode',
+        'externaltubediameterofconnection',
+        'finishings',
+        'manufacturercode',
+        'materialquality',
+        'material',
+        'numberofconnections',
+
         'productline',
+        'producttype',
     ];
 
     /**
@@ -28,18 +59,47 @@ class ProductFilter extends AbstractFilter
      * @var string[]    associative, keyed by slug
      */
     protected $countableKeySlugMap = [
-        'productline' => 'productline',
-        'producttype' => 'producttype',
+        'angleofbow'                       => 'angleofbow',
+        'applications'                     => 'applications',
+        'approvals'                        => 'approvals',
+        'bowrange'                         => 'bowrange',
+        'brand'                            => 'brand',
+        'colors'                           => 'colors',
+        'connectiontype'                   => 'connectiontype',
+        'contourcode'                      => 'contourcode',
+        'externaltubediameterofconnection' => 'externaltubediameterofconnection',
+        'finishings'                       => 'finishings',
+        'manufacturercode'                 => 'manufacturercode',
+        'materialquality'                  => 'materialquality',
+        'material'                         => 'material',
+        'numberofconnections'              => 'numberofconnections',
         // todo
+        'productline'                      => 'productline',
+        'producttype'                      => 'producttype',
     ];
 
     protected function strategies()
     {
         return [
-            'has_label'        => new CzimParameterFilters\NotEmpty($this->table, 'label'),
-            'for_organization' => new ParameterFilters\ProductsForOrganization(),
-            'productgroup'     => new ParameterFilters\Product\ProductgroupParameter(),
-            'productline'      => new ParameterFilters\Product\ProductlineParameter(),
+            'has_label'                        => new CzimParameterFilters\NotEmpty($this->table, 'label'),
+            'for_organization'                 => new ParameterFilters\ProductsForOrganization(),
+            'productgroup'                     => new ParameterFilters\Product\ProductgroupParameter(),
+            'productline'                      => new ParameterFilters\Product\ProductlineParameter(),
+            'producttype'                      => new ParameterFilters\Product\ProducttypeParameter(),
+            'angleofbow'                       => new ParameterFilters\Product\AngleofbowParameter(),
+            'applications'                     => new ParameterFilters\Product\ApplicationParameter(),
+            'approvals'                        => new ParameterFilters\Product\ApprovalParameter(),
+            'bowrange'                         => new ParameterFilters\Product\BowrangeParameter(),
+            'brand'                            => new ParameterFilters\Product\BrandParameter(),
+            'colors'                           => new ParameterFilters\Product\ColorParameter(),
+            'connectiontype'                   => new ParameterFilters\Product\ConnectiontypeParameter(),
+            'contourcode'                      => new ParameterFilters\Product\ContourcodeParameter(),
+            'externaltubediameterofconnection' => new ParameterFilters\Product\ExternaltubediameterofconnectionParameter(),
+            'finishings'                       => new ParameterFilters\Product\FinishingParameter(),
+            'manufacturercode'                 => new ParameterFilters\Product\ManufacturercodeParameter(),
+            'materialquality'                  => new ParameterFilters\Product\MaterialqualityParameter(),
+            'materials'                        => new ParameterFilters\Product\MaterialParameter(),
+            'numberofconnections'              => new ParameterFilters\Product\NumberofconnectionsParameter(),
             // todo
         ];
     }
@@ -47,8 +107,23 @@ class ProductFilter extends AbstractFilter
     protected function countStrategies()
     {
         return [
-            'productgroup' => new ParameterCounters\Product\ProductgroupCounter(),
-            'productline'  => new ParameterCounters\Product\ProductlineCounter(),
+            'productgroup'                     => new ParameterCounters\Product\ProductgroupCounter(),
+            'productline'                      => new ParameterCounters\Product\ProductlineCounter(),
+            'producttype'                      => new ParameterCounters\Product\ProducttypeCounter(),
+            'angleofbow'                       => new ParameterCounters\Product\AngleofbowCounter(),
+            'applications'                     => new ParameterCounters\Product\ApplicationCounter(),
+            'approvals'                        => new ParameterCounters\Product\ApprovalCounter(),
+            'bowrange'                         => new ParameterCounters\Product\BowrangeCounter(),
+            'brand'                            => new ParameterCounters\Product\BrandCounter(),
+            'colors'                           => new ParameterCounters\Product\ColorCounter(),
+            'connectiontype'                   => new ParameterCounters\Product\ConnectiontypeCounter(),
+            'contourcode'                      => new ParameterCounters\Product\ContourcodeCounter(),
+            'externaltubediameterofconnection' => new ParameterCounters\Product\ExternaltubediameterofconnectionCounter(),
+            'finishings'                       => new ParameterCounters\Product\FinishingCounter(),
+            'manufacturercode'                 => new ParameterCounters\Product\ManufacturercodeCounter(),
+            'materialquality'                  => new ParameterCounters\Product\MaterialqualityCounter(),
+            'materials'                        => new ParameterCounters\Product\MaterialCounter(),
+            'numberofconnections'              => new ParameterCounters\Product\NumberofconnectionsCounter(),
             // todo
         ];
     }
