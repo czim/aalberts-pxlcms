@@ -45,12 +45,20 @@ class ProductFilterData extends FilterData
         'materials.*'                        => 'integer',
         'numberofconnections'                => 'array',
         'numberofconnections.*'              => 'integer',
-
-        'productline'   => 'array',
-        'productline.*' => 'integer',
-        'producttype'   => 'array',
-        'producttype.*' => 'integer',
-
+        'productline'                        => 'array',
+        'productline.*'                      => 'integer',
+        'producttype'                        => 'array',
+        'producttype.*'                      => 'integer',
+        'pumpbrand'                          => 'array',
+        'pumpbrand.*'                        => 'integer',
+        'series'                             => 'array',
+        'series.*'                           => 'integer',
+        'shape'                              => 'array',
+        'shape.*'                            => 'integer',
+        'solutions'                          => 'array',
+        'solutions.*'                        => 'integer',
+        'type'                               => 'array',
+        'type.*'                             => 'integer',
     ];
 
     protected $defaults = [
@@ -73,10 +81,13 @@ class ProductFilterData extends FilterData
         'materialquality'                  => null,
         'materials'                        => null,
         'numberofconnections'              => null,
-
-        'productline' => null,
-        'producttype' => null,
-
+        'productline'                      => null,
+        'producttype'                      => null,
+        'pumpbrand'                        => null,
+        'series'                           => null,
+        'shape'                            => null,
+        'solutions'                        => null,
+        'type'                             => null,
     ];
 
 }

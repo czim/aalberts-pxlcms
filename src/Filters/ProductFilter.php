@@ -28,9 +28,13 @@ class ProductFilter extends AbstractFilter
         'materialquality',
         'material',
         'numberofconnections',
-
         'productline',
         'producttype',
+        'pumpbrand',
+        'series',
+        'shape',
+        'solutions',
+        'type',
     ];
 
     protected $includeSelfInCount = [
@@ -48,9 +52,13 @@ class ProductFilter extends AbstractFilter
         'materialquality',
         'material',
         'numberofconnections',
-
         'productline',
         'producttype',
+        'pumpbrand',
+        'series',
+        'shape',
+        'solutions',
+        'type',
     ];
 
     /**
@@ -73,9 +81,13 @@ class ProductFilter extends AbstractFilter
         'materialquality'                  => 'materialquality',
         'material'                         => 'material',
         'numberofconnections'              => 'numberofconnections',
-        // todo
         'productline'                      => 'productline',
         'producttype'                      => 'producttype',
+        'pumpbrand'                        => 'pumpbrand',
+        'series'                           => 'series',
+        'shape'                            => 'shape',
+        'solutions'                        => 'solutions',
+        'type'                             => 'type',
     ];
 
     protected function strategies()
@@ -84,8 +96,6 @@ class ProductFilter extends AbstractFilter
             'has_label'                        => new CzimParameterFilters\NotEmpty($this->table, 'label'),
             'for_organization'                 => new ParameterFilters\ProductsForOrganization(),
             'productgroup'                     => new ParameterFilters\Product\ProductgroupParameter(),
-            'productline'                      => new ParameterFilters\Product\ProductlineParameter(),
-            'producttype'                      => new ParameterFilters\Product\ProducttypeParameter(),
             'angleofbow'                       => new ParameterFilters\Product\AngleofbowParameter(),
             'applications'                     => new ParameterFilters\Product\ApplicationParameter(),
             'approvals'                        => new ParameterFilters\Product\ApprovalParameter(),
@@ -100,7 +110,13 @@ class ProductFilter extends AbstractFilter
             'materialquality'                  => new ParameterFilters\Product\MaterialqualityParameter(),
             'materials'                        => new ParameterFilters\Product\MaterialParameter(),
             'numberofconnections'              => new ParameterFilters\Product\NumberofconnectionsParameter(),
-            // todo
+            'productline'                      => new ParameterFilters\Product\ProductlineParameter(),
+            'producttype'                      => new ParameterFilters\Product\ProducttypeParameter(),
+            'pumpbrand'                        => new ParameterFilters\Product\PumpbrandParameter(),
+            'series'                           => new ParameterFilters\Product\SeriesParameter(),
+            'shape'                            => new ParameterFilters\Product\ShapeParameter(),
+            'solutions'                        => new ParameterFilters\Product\SolutionParameter(),
+            'type'                             => new ParameterFilters\Product\TypeParameter(),
         ];
     }
 
@@ -108,8 +124,6 @@ class ProductFilter extends AbstractFilter
     {
         return [
             'productgroup'                     => new ParameterCounters\Product\ProductgroupCounter(),
-            'productline'                      => new ParameterCounters\Product\ProductlineCounter(),
-            'producttype'                      => new ParameterCounters\Product\ProducttypeCounter(),
             'angleofbow'                       => new ParameterCounters\Product\AngleofbowCounter(),
             'applications'                     => new ParameterCounters\Product\ApplicationCounter(),
             'approvals'                        => new ParameterCounters\Product\ApprovalCounter(),
@@ -124,7 +138,13 @@ class ProductFilter extends AbstractFilter
             'materialquality'                  => new ParameterCounters\Product\MaterialqualityCounter(),
             'materials'                        => new ParameterCounters\Product\MaterialCounter(),
             'numberofconnections'              => new ParameterCounters\Product\NumberofconnectionsCounter(),
-            // todo
+            'productline'                      => new ParameterCounters\Product\ProductlineCounter(),
+            'producttype'                      => new ParameterCounters\Product\ProducttypeCounter(),
+            'pumpbrand'                        => new ParameterCounters\Product\PumpbrandCounter(),
+            'series'                           => new ParameterCounters\Product\SeriesCounter(),
+            'shape'                            => new ParameterCounters\Product\ShapeCounter(),
+            'solutions'                        => new ParameterCounters\Product\SolutionCounter(),
+            'type'                             => new ParameterCounters\Product\TypeCounter(),
         ];
     }
 

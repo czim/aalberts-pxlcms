@@ -100,6 +100,27 @@ class FilterStrategyFactory
                 $repository = CompanoRepositories\ProductTypeRepository::class;
                 break;
 
+            case 'pumpbrand':
+                $repository = CompanoRepositories\PumpBrandRepository::class;
+                break;
+
+            case 'series':
+                $repository = CompanoRepositories\SeriesRepository::class;
+                break;
+
+            case 'shape':
+                $repository = CompanoRepositories\ShapeRepository::class;
+                break;
+
+            case 'solutions':
+                $repository = CompanoRepositories\SolutionRepository::class;
+                break;
+
+            case 'type':
+                $repository = CompanoRepositories\TypeRepository::class;
+                break;
+
+
             default:
                 $repository = false;
         }

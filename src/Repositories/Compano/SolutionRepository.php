@@ -62,6 +62,33 @@ class SolutionRepository extends AbstractCompanoRepository
             ->first();
     }
 
+    /**
+     * Returns list of display labels for filters.
+     *
+     * @return string[]
+     */
+    public function getFilterDisplayLabels()
+    {
+        $results = $this->cachedQuery()->get();
+
+        $attribute = $this->getFilterDisplayAttribute();
+
+        return $results
+            ->keyBy('id')
+            ->transform(function (Model $model) use ($attribute) {
+                return $model->{$attribute};
+            })
+            ->toArray();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getFilterDisplayAttribute()
+    {
+        return 'label';
+    }
+
 
     // ------------------------------------------------------------------------------
     //      With Relations
