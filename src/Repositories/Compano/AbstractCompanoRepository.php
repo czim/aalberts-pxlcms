@@ -12,4 +12,14 @@ abstract class AbstractCompanoRepository extends AbstractRepository
      */
     protected $defaultTtlConfigKey = 'aalberts.cache.ttl.compano';
 
+    /**
+     * Returns list of display labels for filters.
+     *
+     * @return string[]
+     */
+    public function getFilterDisplayLabels()
+    {
+        return [];
+    }
+
 }

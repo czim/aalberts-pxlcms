@@ -3,8 +3,8 @@ namespace Aalberts\Repositories;
 
 use Aalberts\Data\ProductFilterGroup;
 use Aalberts\Enums\CacheTag;
+use Aalberts\Factories\FilterStrategyFactory;
 use Aalberts\Filters\ProductFilter;
-use Aalberts\Filters\Strategies\Product\DefaultStrategy;
 use App\Models\Aalberts\Cms\Filtergroup;
 use App\Models\Aalberts\Cms\Filter as FilterModel;
 use Czim\Filter\CountableResults;
@@ -71,7 +71,7 @@ class FilterRepository extends AbstractRepository
             ->where('cms_productgroup_filtergroup.productgroup', $id)
             ->where('cms_productgroup_filtergroup.active', true)
             ->where('cms_productgroup_filtergroup.organization', $this->getActiveOrganizationId())
-            ->orderBy('cms_productgroup_filtergroup.main')
+            ->orderBy('cms_productgroup_filtergroup.main', 'desc')
             ->orderBy('cms_productgroup_filtergroup.position')
             ->get();
 
@@ -132,15 +132,19 @@ class FilterRepository extends AbstractRepository
         // filter slug should match the countable result
         // strategies should be used, default to simple checkbox-based multi-choice
 
+        /** @var FilterStrategyFactory $factory */
+        $factory = app(FilterStrategyFactory::class);
+
         foreach ($groups as $group) {
             foreach ($group->children as $filter) {
 
                 $slug = $filter->slug;
 
-                // todo remove debug
-                if ($slug !== 'productline') continue;
-
-                $strategy = new DefaultStrategy($counts->get($slug), array_get($filterData, $slug));
+                $strategy = $factory->makeDecorator(
+                    $slug,
+                    $counts->get($slug),
+                    array_get($filterData, $slug)
+                );
 
                 $filter->viewType = $strategy->getViewType();
                 $filter->viewData = $strategy->getViewData();

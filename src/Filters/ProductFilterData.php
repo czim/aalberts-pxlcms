@@ -13,12 +13,14 @@ class ProductFilterData extends FilterData
         // Only include products for a given cmp_productgroup (uses cmp_filter_productgroup)
         'productgroup' => '',
 
-        // Sorting order to use (see filter for available order strings)
+        // Sorting order to use (see filter fdor available order strings)
         'order' => 'string',
 
         // Standard product filters
-        'productline' => 'array|integer',
-        'producttype' => 'array|integer',
+        'productline'   => 'array',
+        'productline.*' => 'integer',
+        'producttype'   => 'array',
+        'producttype.*' => 'integer',
     ];
 
     protected $defaults = [

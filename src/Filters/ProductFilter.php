@@ -18,6 +18,10 @@ class ProductFilter extends AbstractFilter
         //'producttype',
     ];
 
+    protected $includeSelfInCount = [
+        'productline',
+    ];
+
     /**
      * List of countable keys, keyed by compano filter slug.
      *
@@ -49,6 +53,13 @@ class ProductFilter extends AbstractFilter
         ];
     }
 
+    /**
+     * Whether the current processing is done for countable queries.
+     *
+     * @var bool
+     */
+    protected $isQueryForCountable = false;
+
 
     /**
      * {@inheritdoc}
@@ -79,7 +90,7 @@ class ProductFilter extends AbstractFilter
 
             // Handle sorting order and direction
             case 'order':
-                if ( ! $value) return;
+                if ( ! $value || $this->isQueryForCountable) return;
 
                 if (false !== strpos($value, ':')) {
                     list($column, $direction) = explode(':', $value);
@@ -100,6 +111,20 @@ class ProductFilter extends AbstractFilter
         }
 
         parent::applyParameter($name, $value, $query);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCounts($countables = [])
+    {
+        $this->isQueryForCountable = true;
+
+        $counts = parent::getCounts($countables);
+
+        $this->isQueryForCountable = false;
+
+        return $counts;
     }
 
     // ------------------------------------------------------------------------------
@@ -129,8 +154,12 @@ class ProductFilter extends AbstractFilter
         $query
             ->select(['cmp_product.*'])
             ->join('cmp_item', 'cmp_item.product', '=', 'cmp_product.id')
-            ->where('cmp_item.salesorganizationcode', config('aalberts.salesorganizationcode'))
-            ->groupBy('cmp_product.id');
+            ->where('cmp_item.salesorganizationcode', config('aalberts.salesorganizationcode'));
+
+        if ( ! $this->isQueryForCountable) {
+            $query->groupBy('cmp_product.id');
+        }
+
 
         if (config('aalberts.queries.uses-is-webitem')) {
             $query->where('cmp_item.iswebitem', '=', true);

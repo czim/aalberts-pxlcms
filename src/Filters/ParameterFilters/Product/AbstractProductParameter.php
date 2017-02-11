@@ -26,10 +26,23 @@ abstract class AbstractProductParameter extends AbstractParameterFilter
             return $query;
         }
 
-        $ids = $this->getProductIdsForObjectModelId($value);
+        if ( ! is_array($value)) {
+            $value = [ $value ];
+        }
 
-        if ( ! empty($ids)) {
-            $query->whereRaw("`cmp_product`.`id` IN ({$ids})");
+        foreach ($value as $id) {
+
+            $ids = $this->getProductIdsForObjectModelId($id);
+
+            // The filter IDs record does not exist, which should be interpreted as it having no matches
+            // So we must force the query to 'fail' in any case
+            if (false === $ids) {
+                $query->whereRaw("1 = 0");
+            }
+
+            if ( ! empty($ids)) {
+                $query->whereRaw("`cmp_product`.`id` IN ({$ids})");
+            }
         }
 
         return $query;
@@ -39,7 +52,7 @@ abstract class AbstractProductParameter extends AbstractParameterFilter
      * Returns string of wherein-able product IDs.
      *
      * @param int $id   object model (for what is being filtered on) id
-     * @return string
+     * @return string|false
      */
     protected function getProductIdsForObjectModelId($id)
     {
@@ -48,12 +61,12 @@ abstract class AbstractProductParameter extends AbstractParameterFilter
 
         $filter = $class::query()
             ->remember($this->defaultTtl())
-            ->cacheTags([ CacheTag::CMP_PRODUCT ])
+            ->cacheTags([ CacheTag::CMP_MISC ])
             ->where($this->filterIdColumn(), $id)
             ->first();
 
         if ( ! $filter) {
-            return null;
+            return false;
         }
 
         return $filter->products;

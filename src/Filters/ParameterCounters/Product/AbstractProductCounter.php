@@ -33,9 +33,10 @@ abstract class AbstractProductCounter implements ParameterCounterInterface
 
             $clonedQuery = clone $query;
 
+            /** @var Builder $clonedQuery */
             $clonedQuery = $parameter->apply($this->countableKey(), $id, $clonedQuery, $filter);
 
-            $count = $clonedQuery->count();
+            $count = $clonedQuery->count(\DB::raw('DISTINCT `cmp_product`.`id`'));
 
             if ( ! $count) {
                 continue;
@@ -48,6 +49,8 @@ abstract class AbstractProductCounter implements ParameterCounterInterface
     }
 
     /**
+     * Returns the IDs for the models that we're filtering products by.
+     *
      * @return int[]
      */
     protected function getAllObjectIds()
