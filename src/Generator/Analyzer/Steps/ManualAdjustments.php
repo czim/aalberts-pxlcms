@@ -143,6 +143,7 @@ class ManualAdjustments extends AbstractProcessStep
         'cmp_filter_angleofbow'                               => [ 'angleofbow' => ['table' => 'cmp_angleofbow', 'reverse_name' => 'filter', 'reverse_single' => true  ] ],
         'cmp_filter_applications'                             => [ 'applications' => ['table' => 'cmp_applications', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
         'cmp_filter_approvals'                                => [ 'approvals' => ['table' => 'cmp_approvals', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
+        'cmp_filter_brand'                                    => [ 'brand' => ['table' => 'cmp_brand', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
         'cmp_filter_bowrange'                                 => [ 'bowrange' => ['table' => 'cmp_bowrange', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
         'cmp_filter_colors'                                   => [ 'colors' => ['table' => 'cmp_colors', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
         'cmp_filter_connectiontype'                           => [ 'connectiontype' => ['table' => 'cmp_connectiontype', 'reverse_name' => 'filter', 'reverse_single' => true ] ],
