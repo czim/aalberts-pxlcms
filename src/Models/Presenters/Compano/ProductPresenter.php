@@ -2,10 +2,16 @@
 namespace Aalberts\Models\Presenters\Compano;
 
 use Aalberts\Models\Presenters\AbstractPresenter;
+use App\Models\Aalberts\Compano\Product;
 
 class ProductPresenter extends AbstractPresenter
 {
     use ProductItemSharedTrait;
+
+    /**
+     * @var Product
+     */
+    protected $entity;
 
     /**
      * Main (h1) title of product
@@ -19,6 +25,8 @@ class ProductPresenter extends AbstractPresenter
 
     /**
      * Secondary (h2) title of product
+     *
+     * @return string
      */
     public function subTitle()
     {
@@ -27,10 +35,24 @@ class ProductPresenter extends AbstractPresenter
 
     /**
      * Title for breadcrumbs &c
+     *
+     * @return string
      */
     public function shortTitle()
     {
         return $this->entity->groupcode;
+    }
+
+    /**
+     * @return string
+     */
+    public function remark()
+    {
+        if ($this->entity->remark) {
+            return $this->entity->remark;
+        }
+
+        return $this->entity->productremark;
     }
 
     /**
@@ -52,6 +74,22 @@ class ProductPresenter extends AbstractPresenter
     {
         return $this->entity->productproductgroup
              . ($this->entity->productproducttype ? ' (' . $this->entity->productproducttype . ')' : '');
+    }
+
+    /**
+     * Returns category (productgroup) slug, if available.
+     *
+     * @return null|string
+     */
+    public function categorySlug()
+    {
+        $group = $this->entity->productgroup();
+
+        if ( ! $group) {
+            return null;
+        }
+
+        return $group->slug;
     }
 
     /**

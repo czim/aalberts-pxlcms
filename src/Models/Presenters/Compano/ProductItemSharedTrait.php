@@ -2,7 +2,6 @@
 namespace Aalberts\Models\Presenters\Compano;
 
 use Aalberts\Data\ConnectionSet;
-use App\Models\Aalberts\Compano\Product as ProductModel;
 use Illuminate\Support\Collection;
 
 trait ProductItemSharedTrait

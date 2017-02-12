@@ -1,6 +1,7 @@
 <?php
 namespace Aalberts\Models\Presenters\Compano;
 
+use App\Models\Aalberts\Compano\Item;
 use App\Models\Aalberts\Compano\Product;
 
 class ItemPresenter extends ProductPresenter
@@ -8,13 +9,19 @@ class ItemPresenter extends ProductPresenter
     use ProductItemSharedTrait;
 
     /**
+     * @var Item
+     */
+    protected $entity;
+
+    /**
      * String representation of item/article name/title
      *
+     * @param string $translationKey
      * @return string
      */
-    public function title()
+    public function title($translationKey = 'products.article-of')
     {
-        return $this->entity->description;
+        return $this->entity->description ?: atrans($translationKey) . $this->entity->product->present()->subTitle;
     }
 
     /**
@@ -253,6 +260,16 @@ class ItemPresenter extends ProductPresenter
         }
 
         return $this;
+    }
+
+    /**
+     * Returns whether the item/product has a technical drawing with dimensions.
+     *
+     * @return bool
+     */
+    public function hasTechnicalDrawing()
+    {
+        return (strlen(trim($this->entity->drawing)) && $this->entity->product->productshowtechnicalsketchweb != 'false');
     }
 
 }
