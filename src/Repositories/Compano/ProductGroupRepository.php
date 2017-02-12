@@ -86,9 +86,10 @@ class ProductGroupRepository extends AbstractCompanoRepository
      * Cached.
      *
      * @param string $label
-     * @return ProductGroupModel
+     * @param bool   $translated    whether to look for a translated label
+     * @return Productgroup
      */
-    public function getByLabel($label)
+    public function getByLabel($label, $translated = false)
     {
         $this->restrictForOrganizationOnce();
 
@@ -97,10 +98,18 @@ class ProductGroupRepository extends AbstractCompanoRepository
             CriteriaKey::WITH
         );
 
+        $query = $this->cachedQuery();
+
+        if ($translated) {
+            $query->whereHas('translations', function ($query) use ($label) {
+                $query->where('label', $label);
+            });
+        } else {
+            $query->where('label', $label);
+        }
+
         /** @var ProductGroupModel $model */
-        $model = $this->cachedQuery()
-            ->where('label', $label)
-            ->first();
+        $model = $query->first();
 
         return $model;
     }
