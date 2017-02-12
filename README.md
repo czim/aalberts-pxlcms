@@ -140,6 +140,19 @@ ToDo: add support for this to the package
 Note that the `Translator` expects the generated Phrase and Translation classes to be in `App\Models\Aalberts`.
 Anywhere else will break the built-in `Translator` class.
 
+### Filters
+
+#### Adding a Filter
+
+Things to update:
+
+- Add the filter slugs & validation rules to the `Aalberts\Filters\ProductFilterData` (don't forget the `$defaults` key!)
+- Add the filter slugs to the `Aalberts\Filters\ProductFilter` properties
+- Add an `Aalberts\Filters\ParameterCounters\..` Counter class
+- Add an `Aalberts\Filters\ParameterFilters\..` Parameter class
+- If it doesn't exist yet, add a repository for the Compano filter target model (such as for `cmp_applications`)
+- Update the `Aalberts\Factories\FilterStrategyFactory`: set the repository for the slug
+
 
 ## Credits
 
