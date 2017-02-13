@@ -34,10 +34,23 @@ class ProductgroupCounter implements ParameterCounterInterface
 
         $counts = [];
 
-        foreach ($ids as $id) {
+        // Skip anything already present in the parameters
+        $parameterIds = $filter->parameterValue($name) ?: [];
+
+        foreach (array_diff($ids, $parameterIds) as $id) {
+
             $clonedQuery = clone $query;
             $clonedQuery = $parameter->apply('productgroup', $id, $clonedQuery, $filter);
-            $counts[ $id ] = $clonedQuery->count();
+            $counts[ $id ] = $clonedQuery->count(\DB::raw('DISTINCT `cmp_product`.`id`'));
+        }
+
+        if (count($parameterIds)) {
+
+            $count = $query->count(\DB::raw('DISTINCT `cmp_product`.`id`'));
+
+            foreach ($parameterIds as $id) {
+                $counts[ $id ] = $count;
+            }
         }
 
         return $counts;

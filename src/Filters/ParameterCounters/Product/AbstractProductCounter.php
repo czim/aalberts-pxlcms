@@ -29,7 +29,10 @@ abstract class AbstractProductCounter implements ParameterCounterInterface
 
         $counts = [];
 
-        foreach ($ids as $id) {
+        // Skip anything already present in the parameters
+        $parameterIds = $filter->parameterValue($name) ?: [];
+
+        foreach (array_diff($ids, $parameterIds) as $id) {
 
             $clonedQuery = clone $query;
 
@@ -43,6 +46,15 @@ abstract class AbstractProductCounter implements ParameterCounterInterface
             }
 
             $counts[ $id ] = $count;
+        }
+
+        if (count($parameterIds)) {
+
+            $count = $query->count(\DB::raw('DISTINCT `cmp_product`.`id`'));
+
+            foreach ($parameterIds as $id) {
+                $counts[ $id ] = $count;
+            }
         }
 
         return $counts;
