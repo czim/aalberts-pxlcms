@@ -125,7 +125,7 @@ class DefaultStrategy implements FilterDecorationStrategyInterface
             $this->data['options'],
             function($option) {
                 return ($option['selected'] ? 0 : 1)
-                     + (1 / $option['count'])
+                     + (1 / max($option['count'], 1))
                      . ':' . $option['label'];
             }
         );
