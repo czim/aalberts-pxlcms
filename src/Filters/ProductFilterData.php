@@ -17,6 +17,8 @@ class ProductFilterData extends FilterData
         'for_organization'                   => 'boolean',
         // Only include products for a given cmp_productgroup (uses cmp_filter_productgroup)
         'productgroup'                       => '',
+        // free search term search
+        'search'                             => 'string',
 
         // Sorting order to use (see filter fdor available order strings)
         'order'                              => 'string',
@@ -72,6 +74,7 @@ class ProductFilterData extends FilterData
         'ids'              => null,
         'for_organization' => true,
         'productgroup'     => null,
+        'search'           => null,
         'order'            => null,
 
         'angleofbow'                       => null,

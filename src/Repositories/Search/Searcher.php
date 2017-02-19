@@ -2,6 +2,7 @@
 namespace Aalberts\Repositories\Search;
 
 use Aalberts\Events\SearchPerformed;
+use Aalberts\Repositories\Compano\ProductRepository;
 use Aalberts\Repositories\ContentRepository;
 use Aalberts\Repositories\DownloadRepository;
 use Aalberts\Repositories\NewsRepository;
@@ -31,17 +32,24 @@ class Searcher
      */
     protected $downloadRepository;
 
+    /**
+     * @var ProductRepository
+     */
+    protected $productRepository;
+
 
     public function __construct(
         ContentRepository $contentRepository,
         NewsRepository $newsRepository,
         ProjectRepository $projectRepository,
-        DownloadRepository $downloadRepository
+        DownloadRepository $downloadRepository,
+        ProductRepository $productRepository
     ) {
         $this->contentRepository  = $contentRepository;
         $this->newsRepository     = $newsRepository;
         $this->projectRepository  = $projectRepository;
         $this->downloadRepository = $downloadRepository;
+        $this->productRepository  = $productRepository;
     }
 
     /**
@@ -109,7 +117,7 @@ class Searcher
      */
     public function searchProducts($term, $count = null)
     {
-        return null;
+        return $this->productRepository->search($term, $count);
     }
 
 }

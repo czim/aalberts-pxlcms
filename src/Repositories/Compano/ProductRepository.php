@@ -14,6 +14,7 @@ use Czim\Repository\Enums\CriteriaKey;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ProductRepository extends AbstractCompanoRepository
 {
@@ -145,6 +146,22 @@ class ProductRepository extends AbstractCompanoRepository
         return $product;
     }
 
+    /**
+     * @param string   $term
+     * @param int|null $count
+     * @return ProductModel[]|Collection
+     */
+    public function search($term, $count = null)
+    {
+        $filterData = new ProductFilterData([
+            'search' => $term,
+            'order'  => 'groupcode',
+        ]);
+
+        $paginator = $this->filter($filterData, 1, $count);
+
+        return $paginator->items();
+    }
 
     // ------------------------------------------------------------------------------
     //      With Relations

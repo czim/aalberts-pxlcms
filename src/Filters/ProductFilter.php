@@ -98,6 +98,7 @@ class ProductFilter extends AbstractFilter
             'ids'                              => new CzimParameterFilters\SimpleInteger($this->table, 'id'),
             'for_organization'                 => new ParameterFilters\ProductsForOrganization(),
             'productgroup'                     => new ParameterFilters\Product\ProductgroupParameter(),
+            'search'                           => new ParameterFilters\ProductTextSearch(),
             'angleofbow'                       => new ParameterFilters\Product\AngleofbowParameter(),
             'applications'                     => new ParameterFilters\Product\ApplicationParameter(),
             'approvals'                        => new ParameterFilters\Product\ApprovalParameter(),

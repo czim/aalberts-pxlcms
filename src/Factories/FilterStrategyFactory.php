@@ -18,6 +18,9 @@ class FilterStrategyFactory
     {
         switch ($slug) {
 
+            case 'search':
+                return null;
+
             // Default is an array with key value pairs, where the values are just boolean true
             default:
                 return new Interpretation\DefaultStrategy();
