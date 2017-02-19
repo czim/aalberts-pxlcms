@@ -65,7 +65,7 @@ class Searcher
     /**
      * @param string $term
      * @param null|int $count   limit results for each type
-     * @return \App\Models\Aalberts\Cms\News|Collection
+     * @return \App\Models\Aalberts\Cms\News[]|Collection
      */
     public function searchNews($term, $count = null)
     {
@@ -75,7 +75,7 @@ class Searcher
     /**
      * @param string   $term
      * @param null|int $count limit results for each type
-     * @return \App\Models\Aalberts\Cms\Content|Collection
+     * @return \App\Models\Aalberts\Cms\Content[]|Collection
      */
     public function searchContent($term, $count = null)
     {
@@ -85,7 +85,7 @@ class Searcher
     /**
      * @param string   $term
      * @param null|int $count   limit results for each type
-     * @return \App\Models\Aalberts\Cms\Project|Collection
+     * @return \App\Models\Aalberts\Cms\Project[]|Collection
      */
     public function searchProjects($term, $count = null)
     {
@@ -95,7 +95,7 @@ class Searcher
     /**
      * @param string   $term
      * @param null|int $count   limit results for each type
-     * @return \App\Models\Aalberts\Cms\Download|Collection
+     * @return \App\Models\Aalberts\Cms\Download[]|Collection
      */
     public function searchDownloads($term, $count = null)
     {
@@ -105,6 +105,7 @@ class Searcher
     /**
      * @param string $term
      * @param null|int $count   limit results for each type
+     * @return \App\Models\Aalberts\Compano\Product[]|Collection
      */
     public function searchProducts($term, $count = null)
     {
