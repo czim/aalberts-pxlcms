@@ -2,7 +2,9 @@
 namespace Aalberts\Repositories;
 
 use Aalberts\Enums\CacheTag;
+use Aalberts\Enums\DownloadCategory;
 use App\Models\Aalberts\Cms\Download as DownloadModel;
+use App\Models\Aalberts\Compano\Product;
 use Czim\Repository\Criteria\Common\WhereHas;
 use Czim\Repository\Criteria\Common\WithRelations;
 use Czim\Repository\Enums\CriteriaKey;
@@ -102,6 +104,42 @@ class DownloadRepository extends AbstractRepository
     public function listPerCategory($limit = 3)
     {
         // todo
+    }
+
+    /**
+     * Returns a list of downloads for a given product.
+     *
+     * @param Product $product
+     * @return \App\Models\Aalberts\Cms\Download[]|Collection
+     */
+    public function getByProduct(Product $product)
+    {
+        // Get downloads for productlines, applications and solutions
+        // Oddly enough, the downloads should only be included if they match for ALL
+        // of these related to the product.
+        $lineIds        = $product->productlines->pluck('id');
+        $applicationIds = $product->applications->pluck('id');
+        $solutionIds    = $product->solutions->pluck('id');
+
+        $downloadIds = \DB::table('cms_download')
+            ->select('cms_download.id')
+            ->join('cms_download_productline', 'cms_download_productline.download', '=', 'cms_download.id')
+            ->join('cms_download_application', 'cms_download_application.download', '=', 'cms_download.id')
+            ->join('cms_download_solution', 'cms_download_solution.download', '=', 'cms_download.id')
+            ->whereIn('cms_download_productline.productline', $lineIds)
+            ->whereIn('cms_download_application.application', $applicationIds)
+            ->whereIn('cms_download_solution.solution', $solutionIds)
+            ->where('active', true)
+            ->where('category', DownloadCategory::DOCUMENT)
+            ->pluck('id');
+
+        if (empty($downloadIds)) {
+            return new Collection;
+        }
+
+        return $this->cachedQuery()
+            ->whereIn('id', $downloadIds)
+            ->get();
     }
     
 
