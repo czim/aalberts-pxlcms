@@ -58,6 +58,7 @@ class ProductRepository extends AbstractCompanoRepository
         $query = $noCache ? $this->query() : $this->cachedQuery();
 
         $filter = new ProductFilter($data);
+        $filter->setApplyGroupBy(false);
         $filter->apply($query);
 
         // Handle pagination and counts
@@ -66,6 +67,9 @@ class ProductRepository extends AbstractCompanoRepository
 
         $countQuery = clone $query;
         $total = $countQuery->count($query->getModel()->getTable() . '.' . $query->getModel()->getKeyName());
+
+        // Apply groupby that was not added so the count() would still function
+        $query->groupBy('cmp_product.id');
 
         $this->calculateTotalPagesWithPageCheck($total, $pageSize, $page);
 

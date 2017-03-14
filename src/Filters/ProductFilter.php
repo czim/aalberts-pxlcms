@@ -13,6 +13,15 @@ class ProductFilter extends AbstractFilter
     protected $filterDataClass = ProductFilterData::class;
     protected $table = 'cmp_product';
 
+    /**
+     * If this is false, the product groupby must be done manually after
+     * the filter is applied. This may be necessary to allow count() queries
+     * to work.
+     *
+     * @var bool
+     */
+    protected $applyProductGroupBy = true;
+
     protected $countables = [
         'angleofbow',
         'applications',
@@ -152,6 +161,17 @@ class ProductFilter extends AbstractFilter
     }
 
     /**
+     * @param bool $apply
+     * @return $this
+     */
+    public function setApplyGroupBy($apply = true)
+    {
+        $this->applyProductGroupBy = (bool) $apply;
+
+        return $this;
+    }
+
+    /**
      * Whether the current processing is done for countable queries.
      *
      * @var bool
@@ -254,7 +274,7 @@ class ProductFilter extends AbstractFilter
             ->join('cmp_item', 'cmp_item.product', '=', 'cmp_product.id')
             ->where('cmp_item.salesorganizationcode', config('aalberts.salesorganizationcode'));
 
-        if ( ! $this->isQueryForCountable) {
+        if ( ! $this->isQueryForCountable && $this->applyProductGroupBy) {
             $query->groupBy('cmp_product.id');
         }
 
