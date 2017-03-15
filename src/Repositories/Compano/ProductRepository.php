@@ -77,7 +77,9 @@ class ProductRepository extends AbstractCompanoRepository
             $query->skip( max(0, $page - 1) * $pageSize)->take($pageSize);
         }
 
-        return new LengthAwarePaginator($query->get(), $total, $pageSize, max($page, 1));
+        return new LengthAwarePaginator($query->get(), $total, $pageSize, max($page, 1), [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
     }
 
     /**
