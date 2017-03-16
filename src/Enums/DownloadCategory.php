@@ -15,7 +15,7 @@ class DownloadCategory extends Enum
     const CONDITIONS  = 'con';
 
     const BROCHURE           = 'bro';
-    const DATA_SHEET         = 'da';
+    const DATA_SHEET         = 'dat';
     const SPARE_PART         = 'spa';
     const INSTRUCTION_MANUAL = 'ins';
 }
