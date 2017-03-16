@@ -13,4 +13,9 @@ class DownloadCategory extends Enum
     const PRESS       = 'prs';
     const MANUAL      = 'man';
     const CONDITIONS  = 'con';
+
+    const BROCHURE           = 'bro';
+    const DATA_SHEET         = 'da';
+    const SPARE_PART         = 'spa';
+    const INSTRUCTION_MANUAL = 'ins';
 }
