@@ -62,6 +62,24 @@ class DownloadRepository extends AbstractRepository
     }
 
     /**
+     * Returns a list of the relevant subcategories (slugs) that have downloads.
+     * Cached.
+     *
+     * @return string[]
+     */
+    public function subCategories()
+    {
+        $this->restrictByLanguageOnce();
+
+        return $this->cachedQuery()
+            ->distinct()
+            ->select(['subcategory'])
+            ->groupBy('subcategory')
+            ->pluck('subcategory')
+            ->toArray();
+    }
+
+    /**
      * Returns a list of downloads by a given category.
      * Cached.
      *
