@@ -95,6 +95,44 @@ class DownloadRepository extends AbstractRepository
     }
 
     /**
+     * Returns a list of downloads by a given sub category (only).
+     * Cached.
+     *
+     * @param string      $subCategory
+     * @param null|int    $limit        if given, returns only the first X
+     * @param null|int    $pageSize     if given, returns paginated result
+     * @param null|string $category     if given, also restricts the result to the given category
+     * @return DownloadModel[]|Collection
+     */
+    public function getBySubCategory($subCategory, $limit = null, $pageSize = null, $category = null)
+    {
+        $this->pushCriteriaOnce(
+            new WithRelations(array_merge($this->withBase(), $this->withDetail())),
+            CriteriaKey::WITH
+        );
+
+        $this->restrictByLanguageOnce();
+
+        $query = $this->cachedQuery()
+            ->where('subcategory', $subCategory);
+
+        if (null !== $category) {
+            $query->where('category', $category);
+        }
+
+
+        if (null !== $pageSize) {
+            return $query->paginate($pageSize);
+        }
+
+        if (null !== $limit) {
+            $query->take($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
      * Returns a list of download, limited X each by category, grouped per category.
      * Cached.
      *
