@@ -56,6 +56,12 @@ class DownloadRepository extends AbstractRepository
         return $this->cachedQuery()
             ->distinct()
             ->select(['category'])
+            ->where(function ($query) {
+                /** @var Builder $query */
+                $query
+                    ->whereNotNull('category')
+                    ->andWhere('category', '!=', '');
+            })
             ->groupBy('category')
             ->pluck('category')
             ->toArray();
@@ -74,6 +80,12 @@ class DownloadRepository extends AbstractRepository
         return $this->cachedQuery()
             ->distinct()
             ->select(['subcategory'])
+            ->where(function ($query) {
+                /** @var Builder $query */
+                $query
+                    ->whereNotNull('subcategory')
+                    ->andWhere('subcategory', '!=', '');
+            })
             ->groupBy('subcategory')
             ->pluck('subcategory')
             ->toArray();
