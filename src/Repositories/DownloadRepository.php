@@ -59,8 +59,8 @@ class DownloadRepository extends AbstractRepository
             ->where(function ($query) {
                 /** @var Builder $query */
                 $query
-                    ->whereNotNull('category')
-                    ->andWhere('category', '!=', '');
+                    ->where('category', '!=', '')
+                    ->whereNotNull('category');
             })
             ->groupBy('category')
             ->pluck('category')
@@ -83,8 +83,8 @@ class DownloadRepository extends AbstractRepository
             ->where(function ($query) {
                 /** @var Builder $query */
                 $query
-                    ->whereNotNull('subcategory')
-                    ->andWhere('subcategory', '!=', '');
+                    ->where('subcategory', '!=', '')
+                    ->whereNotNull('subcategory');
             })
             ->groupBy('subcategory')
             ->pluck('subcategory')
